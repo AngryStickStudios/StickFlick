@@ -1,0 +1,33 @@
+
+Textures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Slider
+  rotate: false
+  xy: 1, 39
+  size: 320, 19
+  orig: 320, 19
+  offset: 0, 0
+  index: -1
+DarkButton
+  rotate: false
+  xy: 323, 1
+  size: 207, 57
+  orig: 207, 57
+  offset: 0, 0
+  index: -1
+LightButton
+  rotate: false
+  xy: 532, 1
+  size: 207, 57
+  orig: 207, 57
+  offset: 0, 0
+  index: -1
+SliderKnob
+  rotate: false
+  xy: 1, 18
+  size: 19, 19
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
