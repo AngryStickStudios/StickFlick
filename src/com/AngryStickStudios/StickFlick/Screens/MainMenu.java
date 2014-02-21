@@ -114,6 +114,25 @@ public class MainMenu implements Screen{
 				})));
 			}
 		});
+		
+		newGameButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+
+				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						menuTheme.stop();
+						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Game(game));
+					}
+				})));
+			}
+		});
+		
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.AngryStickStudios.StickFlick;
 
+import com.AngryStickStudios.StickFlick.Screens.MainMenu;
 import com.AngryStickStudios.StickFlick.Screens.SplashScreen;
 import com.badlogic.gdx.Game;
 
@@ -10,7 +11,7 @@ public class StickFlick extends Game {
 	
 	@Override
 	public void create() {		
-		setScreen(new SplashScreen(this));
+		setScreen(new MainMenu(this));
 	}
 
 	@Override
