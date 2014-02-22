@@ -76,21 +76,21 @@ public class MainMenu implements Screen{
 		//New Game Button
 		newGameButton = new TextButton("New Game", buttonStyle);
 		newGameButton.setWidth(Gdx.graphics.getWidth() / 6);
-		newGameButton.setHeight(Gdx.graphics.getWidth() / 24);
+		newGameButton.setHeight(Gdx.graphics.getHeight() / 12);
 		newGameButton.setX(Gdx.graphics.getWidth() / 2 - newGameButton.getWidth() / 2 - Gdx.graphics.getWidth() / 3);
 		newGameButton.setY(Gdx.graphics.getHeight() /2 + newGameButton.getHeight());
 		stage.addActor(newGameButton);
 		//Load Game Button
 		loadGameButton = new TextButton("Load Game", buttonStyle);
 		loadGameButton.setWidth(Gdx.graphics.getWidth() / 6);
-		loadGameButton.setHeight(Gdx.graphics.getWidth() / 24);
+		loadGameButton.setHeight(Gdx.graphics.getHeight() / 12);
 		loadGameButton.setX(Gdx.graphics.getWidth() / 2 - loadGameButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
 		loadGameButton.setY(Gdx.graphics.getHeight() /2 - loadGameButton.getHeight() / 2);
 		stage.addActor(loadGameButton);
 		//Settings Button
 		optionsButton = new TextButton("Settings", buttonStyle);
 		optionsButton.setWidth(Gdx.graphics.getWidth() / 6);
-		optionsButton.setHeight(Gdx.graphics.getWidth() / 24);
+		optionsButton.setHeight(Gdx.graphics.getHeight() / 12);
 		optionsButton.setX(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2 - Gdx.graphics.getWidth() / 10);
 		optionsButton.setY(Gdx.graphics.getHeight() /2 - optionsButton.getHeight() * 2);
 		stage.addActor(optionsButton);
