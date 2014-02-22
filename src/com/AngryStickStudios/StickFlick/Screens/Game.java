@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -25,16 +27,20 @@ import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 public class Game implements Screen{
 
+	public static final int GAME_RUNNING = 1;
+    public static final int GAME_PAUSED = 0;
+    private int gameStatus = 1;
+	
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground;
-	Stage stage;
+	Stage stage, pauseStage;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
-	TextButton pauseButton;
+	TextButton pauseButton, resumeButton;
 	WalkingEnemy testEnemy;
 	
 	public Game(StickFlick game){
@@ -46,25 +52,40 @@ public class Game implements Screen{
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+				
+		if (gameStatus == 1) {
+			stage.act(Gdx.graphics.getDeltaTime());
+			batch.begin();
+			stage.draw();
+			batch.end();
+		}
 		
-		//enemy1.update(delta);
-		System.out.println("");
-		
-		stage.act(Gdx.graphics.getDeltaTime());
-		
-		batch.begin();
-		stage.draw();
-		batch.end();
+		else {
+			pauseStage.act(Gdx.graphics.getDeltaTime());
+			batch.begin();
+			pauseStage.draw();
+			batch.end();
+		} 	
 	}
+	
 
 	@Override
 	public void resize(int width, int height) {
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
-		Gdx.input.setInputProcessor(new GestureDetector(new GestureDetection()));
+		pauseStage = new Stage(width, height, true);
+		pauseStage.clear();
 		
+		//Gdx.input.setInputProcessor(new GestureDetector(new GestureDetection()));
 		
+		if(gameStatus == 1) {
+			Gdx.input.setInputProcessor(stage);
+		}
+		
+		else {
+			Gdx.input.setInputProcessor(pauseStage);
+		}
 		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
 		buttonStyle.up = skin.getDrawable("LightButton");
@@ -84,11 +105,53 @@ public class Game implements Screen{
 		pauseButton.setY(Gdx.graphics.getHeight() * 0.90f);
 		stage.addActor(pauseButton);
 		
+		//Pause button stage, not main stage
+		resumeButton = new TextButton("Resume", buttonStyle);
+		resumeButton.setWidth(Gdx.graphics.getWidth() / 6);
+		resumeButton.setHeight(Gdx.graphics.getHeight() / 12);
+		resumeButton.setX(Gdx.graphics.getWidth()/2 - resumeButton.getWidth()/2);
+		resumeButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()/2);
+		pauseStage.addActor(resumeButton);
+		
 		stage.addActor(testEnemy.getImage());
 		testEnemy.getImage().addCaptureListener(new ActorGestureListener());
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
+		pauseStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		
+		pauseButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						pauseGame();
+					}
+				})));
+			}
+		});
+		
+		resumeButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						resumeGame();
+					}
+				})));
+			}
+		});
 	}
 
 	@Override
@@ -109,7 +172,17 @@ public class Game implements Screen{
 
 	@Override
 	public void pause() {
-		
+		pauseGame();
+	}
+	
+	public void pauseGame() {
+		gameStatus = GAME_PAUSED;
+		Gdx.input.setInputProcessor(pauseStage);
+	}
+	
+	public void resumeGame() {
+		gameStatus = GAME_RUNNING;
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
