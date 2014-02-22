@@ -24,9 +24,9 @@ public class WalkingEnemy extends Entity {
 		
 		// Set enemy texture depending on type
 		if(name == "basic" || name == "Basic"){
-			entTex = new Texture("data/basicEnemy.png");
+			entTex = new Texture("data/enemyTextures/basicEnemy.png");
 		} else{
-			entTex = new Texture("data/error.png");
+			entTex = new Texture("data/enemyTextures/error.png");
 		}
 		
 		// Create enemy Image/Actor
