@@ -4,35 +4,54 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
-	boolean held;
-	boolean floating;
-	Rectangle bounds;
-	Vector2 pos;
-	Vector2 lastPos;
-	Vector2 destination;
-	Vector2 flySpeed;
-	Shadow shadowent;
+	private boolean held;
+	private boolean floating;
+	private Vector2 pos;
+	private Vector2 shadowPos;
+	private Vector2 lastPos;
+	private Vector2 destination;
+	private Vector2 flySpeed;
+	
 	private Texture entTex;
+	Image enemy;
 
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
+		
+		// Set enemy texture depending on type
+		if(name == "basic" || name == "Basic"){
+			entTex = new Texture("data/basicEnemy.png");
+		} else{
+			entTex = new Texture("data/error.png");
+		}
+		
+		// Create enemy Image/Actor
+		enemy = new Image(entTex);
+		enemy.setX(posX);
+		enemy.setY(posY);
+		enemy.setScale(0.5f);
 
+		
 		pos = new Vector2(posX, posY);
 		held = false;
 		floating = false;
 		lastPos = new Vector2(pos);
 		flySpeed = new Vector2(0,0);
 		destination = FindDestOnWall();
-		shadowent = new Shadow();
-		shadowent.pos = pos;
+		
+		//shadowPos.x = pos.x;
+		//shadowPos.y = pos.y;
+
 		
 		
-		if(name == "basic" || name == "Basic"){
-			entTex = new Texture("data/basicEnemy.png");
-		}
+	}
+	
+	public Image getImage(){
+		return enemy;
 	}
 	
 	public void Update(float delta){
@@ -62,14 +81,14 @@ public class WalkingEnemy extends Entity {
 			}
 
 			flySpeed.y += 1;
-			shadowent.pos.x = pos.x;
-			shadowent.pos.y = lastPos.y;
+			shadowPos.x = pos.x;
+			shadowPos.y = lastPos.y;
 			return;
 		}
 		
 		//walk towards destination
-		shadowent.pos.x = pos.x;
-		shadowent.pos.y = pos.y;
+		shadowPos.x = pos.x;
+		shadowPos.y = pos.y;
 	}
 
 	public Vector2 FindDestOnWall() {

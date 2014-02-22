@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 public class Game implements Screen{
 
@@ -16,12 +17,11 @@ public class Game implements Screen{
 	SpriteBatch batch;
 	Texture gameBackground;
 	Stage stage;
-	//WalkingEnemy enemy1;
+	WalkingEnemy testEnemy;
 	
 	public Game(StickFlick game){
 		this.game = game;
-		//enemy1 = new WalkingEnemy(name, etc, etc);
-		
+		testEnemy = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 	}
 	
 	@Override
@@ -50,6 +50,8 @@ public class Game implements Screen{
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		stage.addActor(backgroundImage);
+		
+		stage.addActor(testEnemy.getImage());
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		

@@ -37,17 +37,6 @@ public abstract class Entity {
 		this.name = name;
 	}
 
-
-	public Texture getEntTex() {
-		return entTex;
-	}
-
-
-	public void setEntTex(Texture entTex) {
-		this.entTex = entTex;
-	}
-
-
 }
 
 
