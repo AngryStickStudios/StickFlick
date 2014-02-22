@@ -54,6 +54,13 @@ public class WalkingEnemy extends Entity {
 		return enemy;
 	}
 	
+	public void setPosition(int posX, int posY){
+		pos.x = posX;
+		enemy.setX(posX);
+		pos.y = posY;
+		enemy.setY(posY);
+	}
+	
 	public void Update(float delta){
 		if(held)
 		{

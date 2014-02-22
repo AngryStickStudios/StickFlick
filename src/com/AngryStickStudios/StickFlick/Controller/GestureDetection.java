@@ -1,15 +1,11 @@
-package Controllers;
+package com.AngryStickStudios.StickFlick.Controller;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class GestureDetection implements GestureListener{
 	
-	Stage temp;
-	
-	public GestureDetection(Stage myStage){
-		temp = myStage;
+	public GestureDetection(){
 	}
 
 	@Override
@@ -32,22 +28,13 @@ public class GestureDetection implements GestureListener{
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		System.out.println("\n\nfling");
-		System.out.println(velocityX);
-		System.out.println(velocityY);
-		System.out.println(button);
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		System.out.println("\n\npan");
-		System.out.println(x);
-		System.out.println(y);
-		System.out.println(deltaX);
-		System.out.println(deltaY);
-		
+		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -69,5 +56,4 @@ public class GestureDetection implements GestureListener{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

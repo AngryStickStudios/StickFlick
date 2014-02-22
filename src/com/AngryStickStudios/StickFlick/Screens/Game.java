@@ -1,6 +1,5 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
-import Controllers.GestureDetection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -9,12 +8,11 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 public class Game implements Screen{
@@ -23,7 +21,6 @@ public class Game implements Screen{
 	SpriteBatch batch;
 	Texture gameBackground;
 	Stage stage;
-	GestureDetector gd;
 	InputMultiplexer im;
 	WalkingEnemy testEnemy;
 	
@@ -37,8 +34,6 @@ public class Game implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		//enemy1.update(delta);
-		System.out.println("");
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		
@@ -52,9 +47,8 @@ public class Game implements Screen{
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
-		gd = new GestureDetector(new GestureDetection(stage));
-		im = new InputMultiplexer(gd, stage);
-		Gdx.input.setInputProcessor(im);
+
+		Gdx.input.setInputProcessor(new GestureDetector(new GestureDetection()));
 		
 		Texture gameBackground = new Texture("data/gameBackground.png");
 		Image backgroundImage = new Image(gameBackground);
@@ -62,8 +56,9 @@ public class Game implements Screen{
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		stage.addActor(backgroundImage);
 		
+		
+		
 		stage.addActor(testEnemy.getImage());
-		testEnemy.getImage().addCaptureListener(new ActorGestureListener());
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		
