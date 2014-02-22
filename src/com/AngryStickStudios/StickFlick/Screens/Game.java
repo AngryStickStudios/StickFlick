@@ -1,6 +1,6 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
-import Controllers.GestureDetection;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 public class Game implements Screen{
@@ -61,9 +62,7 @@ public class Game implements Screen{
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
-		gd = new GestureDetector(new GestureDetection(stage));
-		im = new InputMultiplexer(gd, stage);
-		Gdx.input.setInputProcessor(im);
+		Gdx.input.setInputProcessor(new GestureDetector(new GestureDetection()));
 		
 		
 		
