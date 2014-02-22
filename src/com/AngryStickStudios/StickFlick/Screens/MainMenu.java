@@ -29,7 +29,7 @@ public class MainMenu implements Screen{
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton newGameButton, loadGameButton, optionsButton;
+	TextButton playButton, storeButton, tutorialButton, optionsButton;
 	Sound menuTheme;
 	
 	public MainMenu(StickFlick game){
@@ -74,29 +74,56 @@ public class MainMenu implements Screen{
 		
 		// BUTTON INITIATION
 		//New Game Button
-		newGameButton = new TextButton("New Game", buttonStyle);
-		newGameButton.setWidth(Gdx.graphics.getWidth() / 6);
-		newGameButton.setHeight(Gdx.graphics.getHeight() / 12);
-		newGameButton.setX(Gdx.graphics.getWidth() / 2 - newGameButton.getWidth() / 2 - Gdx.graphics.getWidth() / 3);
-		newGameButton.setY(Gdx.graphics.getHeight() /2 + newGameButton.getHeight());
-		stage.addActor(newGameButton);
+		playButton = new TextButton("Play", buttonStyle);
+		playButton.setWidth(Gdx.graphics.getWidth() / 6);
+		playButton.setHeight(Gdx.graphics.getHeight() / 12);
+		playButton.setX(Gdx.graphics.getWidth() / 2 - playButton.getWidth() / 2 - Gdx.graphics.getWidth() / 3);
+		playButton.setY(Gdx.graphics.getHeight() /2 + playButton.getHeight());
+		stage.addActor(playButton);
 		//Load Game Button
-		loadGameButton = new TextButton("Load Game", buttonStyle);
-		loadGameButton.setWidth(Gdx.graphics.getWidth() / 6);
-		loadGameButton.setHeight(Gdx.graphics.getHeight() / 12);
-		loadGameButton.setX(Gdx.graphics.getWidth() / 2 - loadGameButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
-		loadGameButton.setY(Gdx.graphics.getHeight() /2 - loadGameButton.getHeight() / 2);
-		stage.addActor(loadGameButton);
+		storeButton = new TextButton("Store", buttonStyle);
+		storeButton.setWidth(Gdx.graphics.getWidth() / 6);
+		storeButton.setHeight(Gdx.graphics.getHeight() / 12);
+		storeButton.setX(Gdx.graphics.getWidth() / 2 - storeButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
+		storeButton.setY(Gdx.graphics.getHeight() /2 - storeButton.getHeight() / 2);
+		stage.addActor(storeButton);
 		//Settings Button
-		optionsButton = new TextButton("Settings", buttonStyle);
+		tutorialButton = new TextButton("Tutorial", buttonStyle);
+		tutorialButton.setWidth(Gdx.graphics.getWidth() / 6);
+		tutorialButton.setHeight(Gdx.graphics.getHeight() / 12);
+		tutorialButton.setX(Gdx.graphics.getWidth() / 2 - tutorialButton.getWidth() / 2 - Gdx.graphics.getWidth() / 8);
+		tutorialButton.setY(Gdx.graphics.getHeight() /2 - tutorialButton.getHeight() * 2);
+		stage.addActor(tutorialButton);
+		//Credits Button
+		optionsButton = new TextButton("Options", buttonStyle);
 		optionsButton.setWidth(Gdx.graphics.getWidth() / 6);
 		optionsButton.setHeight(Gdx.graphics.getHeight() / 12);
-		optionsButton.setX(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2 - Gdx.graphics.getWidth() / 10);
-		optionsButton.setY(Gdx.graphics.getHeight() /2 - optionsButton.getHeight() * 2);
+		optionsButton.setX(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2);
+		optionsButton.setY(Gdx.graphics.getHeight() /2 - optionsButton.getHeight() * 3.5f);
 		stage.addActor(optionsButton);
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 
+		// Play the game
+		playButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+
+				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						menuTheme.stop();
+						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Game(game));
+					}
+				})));
+			}
+		});
+		
+		// Go to options menu
 		optionsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
@@ -110,24 +137,6 @@ public class MainMenu implements Screen{
 					public void run() {
 						menuTheme.stop();
 						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Options(game));
-					}
-				})));
-			}
-		});
-		
-		newGameButton.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
-				return true;
-			}
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
-
-				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
-					@Override
-					public void run() {
-						menuTheme.stop();
-						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Game(game));
 					}
 				})));
 			}

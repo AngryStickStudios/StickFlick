@@ -6,7 +6,7 @@ import com.badlogic.gdx.Game;
 
 public class StickFlick extends Game {
 
-	public static final String version = "0.0.04 Pre-Alpha (Yay Is Music!!!!!!!)";
+	public static final String version = "0.0.1 Pre-Alpha (Omg Pausing!)";
 	public static final String LOG = "StickFlick";
 	
 	@Override

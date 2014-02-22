@@ -27,7 +27,7 @@ public class Options implements Screen {
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton howToPlayButton, practiceButton, backButton;
+	TextButton backButton, creditsButton;
 	
 	
 	public Options(StickFlick game){
@@ -90,25 +90,19 @@ public class Options implements Screen {
 		
 		
 		// BUTTON INITIATION
-		//How To Play Button
-		howToPlayButton = new TextButton("How To Play", style);
-		howToPlayButton.setWidth(Gdx.graphics.getWidth() / 6);
-		howToPlayButton.setHeight(Gdx.graphics.getWidth() / 24);
-		howToPlayButton.setX(Gdx.graphics.getWidth() / 2 - howToPlayButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
-		howToPlayButton.setY(Gdx.graphics.getHeight() /2 - howToPlayButton.getHeight() / 2);
-		stage.addActor(howToPlayButton);
-		//Practice Button
-		practiceButton = new TextButton("Practice", style);
-		practiceButton.setWidth(Gdx.graphics.getWidth() / 6);
-		practiceButton.setHeight(Gdx.graphics.getWidth() / 24);
-		practiceButton.setX(Gdx.graphics.getWidth() / 2 - practiceButton.getWidth() / 2);
-		practiceButton.setY(Gdx.graphics.getHeight() /2 - practiceButton.getHeight() / 2);
-		stage.addActor(practiceButton);
+		//Credits Button
+		creditsButton = new TextButton("Credits", style);
+		creditsButton.setWidth(Gdx.graphics.getWidth() / 6);
+		creditsButton.setHeight(Gdx.graphics.getWidth() / 24);
+		creditsButton.setX(Gdx.graphics.getWidth() / 2 - creditsButton.getWidth() / 2 - Gdx.graphics.getWidth() / 8);
+		creditsButton.setY(Gdx.graphics.getHeight() /2 - creditsButton.getHeight() / 2);
+		stage.addActor(creditsButton);
+
 		//Back Button
 		backButton = new TextButton("Main Menu", style);
 		backButton.setWidth(Gdx.graphics.getWidth() / 6);
 		backButton.setHeight(Gdx.graphics.getWidth() / 24);
-		backButton.setX(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2 + Gdx.graphics.getWidth() / 4);
+		backButton.setX(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2 + Gdx.graphics.getWidth() / 8);
 		backButton.setY(Gdx.graphics.getHeight() /2 - backButton.getHeight() / 2);
 		stage.addActor(backButton);
 		
