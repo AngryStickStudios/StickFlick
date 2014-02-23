@@ -1,10 +1,5 @@
 package com.AngryStickStudios.StickFlick.Entities;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.AngryStickStudios.StickFlick.StickFlick;
 
 public abstract class Entity {
 	private String name;
@@ -63,7 +58,7 @@ public abstract class Entity {
 		//Will add
 	}
 	
-	public boolean decreaseHealth(int x){
+	public void decreaseHealth(int x){
 		//Will add
 	}
 

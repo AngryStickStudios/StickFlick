@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,13 +25,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
-public class Game implements Screen {
+public class Game implements Screen, GestureListener {
 
 	public static final int GAME_RUNNING = 1;
     public static final int GAME_PAUSED = 0;
@@ -39,7 +38,7 @@ public class Game implements Screen {
     private int seconds = 0;
     private int minutes = 0;
     private String formattedTime = "0:00";
-	
+    
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground;
@@ -112,10 +111,9 @@ public class Game implements Screen {
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();
 		
-		//Gdx.input.setInputProcessor(new GestureDetector(new GestureDetection()));
-		
 		if(gameStatus == 1) {
-			Gdx.input.setInputProcessor(stage);
+			im = new InputMultiplexer(new GestureDetector(this), stage);
+			Gdx.input.setInputProcessor(im);
 		}
 		
 		else {
@@ -163,7 +161,16 @@ public class Game implements Screen {
 		pauseStage.addActor(mainMenuButton);
 		
 		stage.addActor(testEnemy.getImage());
-		testEnemy.getImage().addCaptureListener(new ActorGestureListener());
+		//testEnemy.getImage().addCaptureListener(new ActorGestureListener());
+		
+		testEnemy.getImage().addCaptureListener(new ActorGestureListener() {
+
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
+				//Gdx.app.log(new Float(velocityX).toString(), null);
+				System.out.println(velocityX);
+			}
+		});
+
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		pauseStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -259,6 +266,60 @@ public class Game implements Screen {
 	@Override
 	public void dispose() {
 		
+	}
+
+	/*******************
+	* Gesture Detection
+	*******************/
+	@Override
+	public boolean touchDown(float x, float y, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean tap(float x, float y, int count, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean longPress(float x, float y) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean fling(float velocityX, float velocityY, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean pan(float x, float y, float deltaX, float deltaY) {
+		// TODO Auto-generated method stub
+		testEnemy.setPosition(x, Gdx.graphics.getHeight() - y);
+		System.out.println(x + "    " + y);
+		return false;
+	}
+
+	@Override
+	public boolean panStop(float x, float y, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean zoom(float initialDistance, float distance) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
+			Vector2 pointer1, Vector2 pointer2) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
