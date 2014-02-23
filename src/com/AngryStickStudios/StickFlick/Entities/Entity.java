@@ -59,11 +59,11 @@ public abstract class Entity {
 		this.isAlive = isAlive;
 	}
 	
-	increaseHealth(int x){
+	public void increaseHealth(int x){
 		//Will add
 	}
 	
-	decreaseHealth(int x){
+	public boolean decreaseHealth(int x){
 		//Will add
 	}
 
