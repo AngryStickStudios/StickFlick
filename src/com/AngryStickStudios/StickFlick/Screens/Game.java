@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
+import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 public class Game implements Screen, GestureListener {
@@ -49,14 +50,18 @@ public class Game implements Screen, GestureListener {
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, resumeButton, mainMenuButton;
-	WalkingEnemy testEnemy;
 	LabelStyle labelStyle;
 	Label timer;
+	WalkingEnemy enemyList[];
+	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		testEnemy = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		enemyList = new WalkingEnemy[100];
+		enemyList[0] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 4, (int) (Gdx.graphics.getHeight() / 1.5));
+		enemyList[1] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, (int) (Gdx.graphics.getHeight() / 1.5));
+		enemyList[2] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 3, (int) (Gdx.graphics.getHeight() / 1.5));
 	}
 	
 	@Override
@@ -66,6 +71,9 @@ public class Game implements Screen, GestureListener {
 				
 		if (gameStatus == 1) {
 			stage.act(Gdx.graphics.getDeltaTime());
+			enemyList[0].Update(delta);
+			enemyList[1].Update(delta);
+			enemyList[2].Update(delta);
 			batch.begin();
 			stage.draw();	
 			
@@ -160,10 +168,26 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
 		
-		stage.addActor(testEnemy.getImage());
+		stage.addActor(enemyList[0].getImage());
+		stage.addActor(enemyList[1].getImage());
+		stage.addActor(enemyList[2].getImage());
 		//testEnemy.getImage().addCaptureListener(new ActorGestureListener());
 		
-		testEnemy.getImage().addCaptureListener(new ActorGestureListener() {
+		enemyList[0].getImage().addCaptureListener(new ActorGestureListener() {
+
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
+				//Gdx.app.log(new Float(velocityX).toString(), null);
+				System.out.println(velocityX);
+			}
+		});
+		enemyList[1].getImage().addCaptureListener(new ActorGestureListener() {
+
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
+				//Gdx.app.log(new Float(velocityX).toString(), null);
+				System.out.println(velocityX);
+			}
+		});
+		enemyList[2].getImage().addCaptureListener(new ActorGestureListener() {
 
 			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
 				//Gdx.app.log(new Float(velocityX).toString(), null);
@@ -298,7 +322,35 @@ public class Game implements Screen, GestureListener {
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
 		// TODO Auto-generated method stub
-		testEnemy.setPosition(x, Gdx.graphics.getHeight() - y);
+		
+		WalkingEnemy closest = null;
+		float closest_i = -1;
+		for(int i = 0; i <= 2; i++)
+		{
+			float distance = enemyList[i].getPosition().dst(x, Gdx.graphics.getHeight() - y);
+			if(distance <= 100)
+			{
+				if(closest == null)
+				{
+					closest = enemyList[i];
+					closest_i = enemyList[i].getPosition().dst(x, y);
+				}
+				else
+				{
+					if(distance < closest_i)
+					{
+						closest = enemyList[i];
+						closest_i = enemyList[i].getPosition().dst(x, y);
+					}
+				}
+			}
+		}
+		
+		if(closest != null)
+		{
+			closest.setPosition(x, Gdx.graphics.getHeight() - y);
+			closest.FindDestOnWall();
+		}
 		System.out.println(x + "    " + y);
 		return false;
 	}
