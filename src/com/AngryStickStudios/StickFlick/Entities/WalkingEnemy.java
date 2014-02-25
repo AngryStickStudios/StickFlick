@@ -93,6 +93,11 @@ public class WalkingEnemy extends Entity {
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			shadow.setX(enemy.getX());
 			shadow.setY(lastPos.y - ((enemy.getHeight() / 8) * scale));
+			
+			if(enemy.getY() <= lastPos.y)
+			{
+				setPosition(Gdx.input.getX(), lastPos.y + ((enemy.getHeight() / 2) * scale));
+			}
 			return;
 		}
 
