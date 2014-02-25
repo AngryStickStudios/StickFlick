@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
+	float scale;
 	private boolean held, floating;
 	private Vector2 lastPos, destination, flySpeed;
 	
@@ -17,6 +18,7 @@ public class WalkingEnemy extends Entity {
 
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
+		scale = 0.5f;
 		
 		// Set enemy texture depending on type
 		if(name == "basic" || name == "Basic"){
@@ -31,12 +33,12 @@ public class WalkingEnemy extends Entity {
 		enemy = new Image(entTex);
 		enemy.setX(posX);
 		enemy.setY(posY);
-		enemy.setScale(0.5f);
+		enemy.setScale(scale);
 		
 		shadow = new Image(shadowTex);
 		shadow.setX(posX);
 		shadow.setY(posY);
-		shadow.setScale(0.5f);
+		shadow.setScale(scale);
 		
 		held = false;
 		floating = false;
@@ -49,13 +51,13 @@ public class WalkingEnemy extends Entity {
 	}
 	
 	public void setPosition(float x, float y){
-		enemy.setX(x);
-		enemy.setY(y);
+		enemy.setX(x - ((enemy.getWidth() / 2) * scale));
+		enemy.setY(y - ((enemy.getHeight() / 2) * scale));
 	}
 	
 	public Vector2 getPosition()
 	{
-		return new Vector2(enemy.getX(), enemy.getY());
+		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
 	}
 	
 	public void Update(float delta){
