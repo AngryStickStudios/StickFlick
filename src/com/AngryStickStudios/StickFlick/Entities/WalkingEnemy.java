@@ -100,11 +100,11 @@ public class WalkingEnemy extends Entity {
 		{
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			shadow.setX(enemy.getX());
-			shadow.setY(lastPos.y - ((enemy.getHeight() / 8) * scale));
+			shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			
 			if(getPosition().y <= lastPos.y)
 			{
-				setPosition(Gdx.input.getX(), lastPos.y + ((enemy.getHeight() / 2) * scale));
+				setPosition(Gdx.input.getX(), lastPos.y);
 			}
 			return;
 		}
@@ -133,7 +133,7 @@ public class WalkingEnemy extends Entity {
 
 			flySpeed.y -= 1;
 			shadow.setX(enemy.getX());
-			shadow.setY(lastPos.y - ((enemy.getHeight() / 8) * scale));
+			shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			return;
 		}
 		
@@ -153,7 +153,7 @@ public class WalkingEnemy extends Entity {
 			}
 
 			shadow.setX(enemy.getX());
-			shadow.setY(enemy.getY() - ((enemy.getHeight() / 8) * scale));
+			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		}
 	}
 }
