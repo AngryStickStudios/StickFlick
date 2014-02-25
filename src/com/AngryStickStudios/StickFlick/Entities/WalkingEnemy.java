@@ -79,12 +79,14 @@ public class WalkingEnemy extends Entity {
 	public void Released(Vector2 speed) {
 		held = false;
 		floating = true;
-		flySpeed = speed;
+		flySpeed = new Vector2(speed);
+		System.out.println("->> " + flySpeed.x);
 	}
 	
 	public void Update(float delta){
 		if(held)
 		{
+			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			return;
 		}
 
@@ -92,23 +94,28 @@ public class WalkingEnemy extends Entity {
 		{
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = enemy.getX() + flySpeed.x;
+			
 			if(newPos.x < 8) newPos.x = 8;
-			if(newPos.x > Gdx.graphics.getWidth() - 8) newPos.x = Gdx.graphics.getWidth() - 8;
+			if(newPos.x > Gdx.graphics.getWidth() - 16) newPos.x = Gdx.graphics.getWidth() - 16;
 
-			if(lastPos.y <= enemy.getY() + flySpeed.y)
+			if(lastPos.y >= enemy.getY() + flySpeed.y)
 			{
 				newPos.y = lastPos.y;
 				floating = false;
-				setPosition(newPos.x, newPos.y);
+				//setPosition(newPos.x, newPos.y);
+				enemy.setX(newPos.x);
+				enemy.setY(newPos.y);
 				FindDestOnWall();
 			}
 			else
 			{
 				newPos.y = enemy.getY() + flySpeed.y;
-				setPosition(newPos.x, newPos.y);
+				//setPosition(newPos.x, newPos.y);
+				enemy.setX(newPos.x);
+				enemy.setY(newPos.y);
 			}
 
-			flySpeed.y += 1;
+			flySpeed.y -= 1;
 			shadow.setX(enemy.getX());
 			shadow.setY(lastPos.y);
 			return;
