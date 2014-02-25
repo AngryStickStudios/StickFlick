@@ -178,8 +178,11 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
 		
+		stage.addActor(enemyList.get(0).getShadow());
 		stage.addActor(enemyList.get(0).getImage());
+		stage.addActor(enemyList.get(1).getShadow());
 		stage.addActor(enemyList.get(1).getImage());
+		stage.addActor(enemyList.get(2).getShadow());
 		stage.addActor(enemyList.get(2).getImage());
 
 		

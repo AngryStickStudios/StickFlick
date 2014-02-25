@@ -27,7 +27,7 @@ public class WalkingEnemy extends Entity {
 			entTex = new Texture("data/enemyTextures/error.png");
 		}
 		
-		shadowTex = new Texture("data/enemyTextures/error.png");
+		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
 		// Create enemy Image/Actor
 		enemy = new Image(entTex);
@@ -47,6 +47,10 @@ public class WalkingEnemy extends Entity {
 	
 	public Image getImage(){
 		return enemy;
+	}
+	
+	public Image getShadow(){
+		return shadow;
 	}
 	
 	public void setPosition(float x, float y){
@@ -87,6 +91,8 @@ public class WalkingEnemy extends Entity {
 		if(held)
 		{
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+			shadow.setX(enemy.getX());
+			shadow.setY(lastPos.y - ((enemy.getHeight() / 8) * scale));
 			return;
 		}
 
@@ -117,7 +123,7 @@ public class WalkingEnemy extends Entity {
 
 			flySpeed.y -= 1;
 			shadow.setX(enemy.getX());
-			shadow.setY(lastPos.y);
+			shadow.setY(lastPos.y - ((enemy.getHeight() / 8) * scale));
 			return;
 		}
 		
@@ -132,8 +138,7 @@ public class WalkingEnemy extends Entity {
 		
 		if(enemy.getY() < 20) enemy.setY(20);
 		
-		//walk towards destination
 		shadow.setX(enemy.getX());
-		shadow.setY(enemy.getY());
+		shadow.setY(enemy.getY() - ((enemy.getHeight() / 8) * scale));
 	}
 }
