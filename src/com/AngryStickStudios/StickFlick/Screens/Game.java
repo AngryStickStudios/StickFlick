@@ -2,6 +2,8 @@ package com.AngryStickStudios.StickFlick.Screens;
 
 
 
+import java.util.Vector;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -52,16 +54,16 @@ public class Game implements Screen, GestureListener {
 	TextButton pauseButton, resumeButton, mainMenuButton;
 	LabelStyle labelStyle;
 	Label timer;
-	WalkingEnemy enemyList[];
+	Vector<WalkingEnemy> enemyList;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		enemyList = new WalkingEnemy[100];
-		enemyList[0] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 4, (int) (Gdx.graphics.getHeight() / 1.5));
-		enemyList[1] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, (int) (Gdx.graphics.getHeight() / 1.5));
-		enemyList[2] = new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 3, (int) (Gdx.graphics.getHeight() / 1.5));
+		enemyList = new Vector();
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 4, (int) (Gdx.graphics.getHeight() / 1.5)));
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, (int) (Gdx.graphics.getHeight() / 1.5)));
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 3, (int) (Gdx.graphics.getHeight() / 1.5)));
 	}
 	
 	@Override
@@ -71,9 +73,9 @@ public class Game implements Screen, GestureListener {
 				
 		if (gameStatus == 1) {
 			stage.act(Gdx.graphics.getDeltaTime());
-			enemyList[0].Update(delta);
-			enemyList[1].Update(delta);
-			enemyList[2].Update(delta);
+			enemyList.get(0).Update(delta);
+			enemyList.get(1).Update(delta);
+			enemyList.get(2).Update(delta);
 			batch.begin();
 			stage.draw();	
 			
@@ -168,32 +170,9 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
 		
-		stage.addActor(enemyList[0].getImage());
-		stage.addActor(enemyList[1].getImage());
-		stage.addActor(enemyList[2].getImage());
-		//testEnemy.getImage().addCaptureListener(new ActorGestureListener());
-		
-		enemyList[0].getImage().addCaptureListener(new ActorGestureListener() {
-
-			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
-				//Gdx.app.log(new Float(velocityX).toString(), null);
-				System.out.println(velocityX);
-			}
-		});
-		enemyList[1].getImage().addCaptureListener(new ActorGestureListener() {
-
-			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
-				//Gdx.app.log(new Float(velocityX).toString(), null);
-				System.out.println(velocityX);
-			}
-		});
-		enemyList[2].getImage().addCaptureListener(new ActorGestureListener() {
-
-			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
-				//Gdx.app.log(new Float(velocityX).toString(), null);
-				System.out.println(velocityX);
-			}
-		});
+		stage.addActor(enemyList.get(0).getImage());
+		stage.addActor(enemyList.get(1).getImage());
+		stage.addActor(enemyList.get(2).getImage());
 
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -292,6 +271,8 @@ public class Game implements Screen, GestureListener {
 		
 	}
 
+	
+	
 	/*******************
 	* Gesture Detection
 	*******************/
@@ -325,22 +306,22 @@ public class Game implements Screen, GestureListener {
 		
 		WalkingEnemy closest = null;
 		float closest_i = -1;
-		for(int i = 0; i <= 2; i++)
+		for(int i = 0; i < enemyList.size(); i++)
 		{
-			float distance = enemyList[i].getPosition().dst(x, Gdx.graphics.getHeight() - y);
+			float distance = enemyList.get(i).getPosition().dst(x, Gdx.graphics.getHeight() - y);
 			if(distance <= 100)
 			{
 				if(closest == null)
 				{
-					closest = enemyList[i];
-					closest_i = enemyList[i].getPosition().dst(x, y);
+					closest = enemyList.get(i);
+					closest_i = enemyList.get(i).getPosition().dst(x, y);
 				}
 				else
 				{
 					if(distance < closest_i)
 					{
-						closest = enemyList[i];
-						closest_i = enemyList[i].getPosition().dst(x, y);
+						closest = enemyList.get(i);
+						closest_i = enemyList.get(i).getPosition().dst(x, y);
 					}
 				}
 			}

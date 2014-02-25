@@ -94,6 +94,7 @@ public class WalkingEnemy extends Entity {
 		Vector2 compVec = new Vector2(destination.x - enemy.getX(), destination.y - enemy.getY());
 		Vector2 normVec = compVec.nor();
 		Vector2 walkVec = normVec.scl(50 * delta);
+		
 		//System.out.println("destination = " + destination.x + " " + destination.y);
 		enemy.setX(enemy.getX() + walkVec.x);
 		enemy.setY(enemy.getY() + walkVec.y);
