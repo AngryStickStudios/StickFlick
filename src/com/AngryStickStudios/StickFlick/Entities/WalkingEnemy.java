@@ -43,7 +43,6 @@ public class WalkingEnemy extends Entity {
 		held = false;
 		floating = false;
 		FindDestOnWall();
-		
 	}
 	
 	public Image getImage(){
@@ -58,6 +57,29 @@ public class WalkingEnemy extends Entity {
 	public Vector2 getPosition()
 	{
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
+	}
+	
+	public Vector2 getSize(){
+		return new Vector2(enemy.getWidth() * scale, enemy.getHeight() * scale);
+	}
+	
+	public void FindDestOnWall() {
+		Vector2 straightDown = new Vector2(enemy.getX(), 20);
+		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
+		System.out.println(adjAmt);
+		straightDown.x += adjAmt;
+		destination = straightDown;
+	}
+
+	public void pickedUp() {
+		held = true;
+		lastPos = new Vector2(enemy.getX(), enemy.getY());
+	}
+
+	public void Released(Vector2 speed) {
+		held = false;
+		floating = true;
+		flySpeed = speed;
 	}
 	
 	public void Update(float delta){
@@ -106,24 +128,5 @@ public class WalkingEnemy extends Entity {
 		//walk towards destination
 		shadow.setX(enemy.getX());
 		shadow.setY(enemy.getY());
-	}
-
-	public void FindDestOnWall() {
-		Vector2 straightDown = new Vector2(enemy.getX(), 20);
-		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
-		System.out.println(adjAmt);
-		straightDown.x += adjAmt;
-		destination = straightDown;
-	}
-
-	public void pickedUp() {
-		held = true;
-		lastPos = new Vector2(enemy.getX(), enemy.getY());
-	}
-
-	public void Released(Vector2 speed) {
-		held = false;
-		floating = true;
-		flySpeed = speed;
 	}
 }

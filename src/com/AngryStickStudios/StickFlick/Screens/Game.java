@@ -41,6 +41,8 @@ public class Game implements Screen, GestureListener {
     private int seconds = 0;
     private int minutes = 0;
     private String formattedTime = "0:00";
+    private boolean enemyGrabbed = false;
+    private int grabbedNumber = -1;
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -303,12 +305,35 @@ public class Game implements Screen, GestureListener {
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
 		// TODO Auto-generated method stub
+		y = Gdx.graphics.getHeight() - y;
+		if(enemyGrabbed == false){
+			for(int i = 0; i < enemyList.size(); i++)	// Searches through enemy list
+			{
+				Vector2 size = enemyList.get(i).getSize();
+				Vector2 pos = enemyList.get(i).getPosition();
+				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
+					grabbedNumber = i;
+					enemyGrabbed = true;
+				}
+			}
+		} else{
+			enemyList.get(grabbedNumber).setPosition(x, y);
+		}
 		
+		
+		/* ADIAN'S CODE
 		WalkingEnemy closest = null;
 		float closest_i = -1;
-		for(int i = 0; i < enemyList.size(); i++)
+		for(int i = 0; i < enemyList.size(); i++)	// Searches through enemy list
 		{
-			float distance = enemyList.get(i).getPosition().dst(x, Gdx.graphics.getHeight() - y);
+			Vector2 size = enemyList.get(i).getSize();
+			Vector2 pos = enemyList.get(i).getPosition();
+			if((pos.x - size.x / 2 <= x && x <= pos.x + size.x / 2) && (pos.y - size.y / 2 <= y && y < pos.y + size.y / 2)){
+				
+			}
+			
+			
+			float distance = enemyList.get(i).getPosition().dst(x, Gdx.graphics.getHeight() - y);	// gets distance of mouse pointer from enemy
 			if(distance <= 100)
 			{
 				if(closest == null)
@@ -332,13 +357,15 @@ public class Game implements Screen, GestureListener {
 			closest.setPosition(x, Gdx.graphics.getHeight() - y);
 			closest.FindDestOnWall();
 		}
-		System.out.println(x + "    " + y);
+		*/
 		return false;
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
 		// TODO Auto-generated method stub
+		enemyList.get(grabbedNumber).FindDestOnWall();
+		enemyGrabbed = false;
 		return false;
 	}
 
