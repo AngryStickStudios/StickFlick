@@ -12,7 +12,7 @@ public class WalkingEnemy extends Entity {
 	float scale;
 	private boolean held, floating;
 	private Vector2 lastPos, destination, flySpeed;
-	private int lastPosDist;
+	private int moveBackSpeed;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -43,6 +43,7 @@ public class WalkingEnemy extends Entity {
 		
 		held = false;
 		floating = false;
+		moveBackSpeed = 0;
 		FindDestOnWall();
 	}
 	
@@ -87,13 +88,14 @@ public class WalkingEnemy extends Entity {
 	public void pickedUp() {
 		held = true;
 		lastPos = new Vector2(getPosition().x, getPosition().y);
-		lastPosDist = 0;
 	}
 
 	public void Released(Vector2 speed) {
 		held = false;
 		floating = true;
 		flySpeed = new Vector2(speed);
+		moveBackSpeed = Math.round(flySpeed.y / 10);
+		System.out.println(moveBackSpeed);
 	}
 	
 	public void Update(float delta){
@@ -107,11 +109,6 @@ public class WalkingEnemy extends Entity {
 			{
 				setPosition(Gdx.input.getX(), lastPos.y);
 			}
-			
-			if(getPosition().y > lastPos.y)
-			{
-				
-			}
 			return;
 		}
 
@@ -120,13 +117,16 @@ public class WalkingEnemy extends Entity {
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = getPosition().x + flySpeed.x;
 			
-			if(lastPos.y < Gdx.graphics.getHeight() / 1.8f){
-				lastPos.y = lastPos.y + (Gdx.graphics.getHeight() / 500);
-			}			
+			if(lastPos.y < Gdx.graphics.getHeight() / 1.8f ){
+				lastPos.y = lastPos.y + ((Gdx.graphics.getHeight() / 500) * moveBackSpeed);
+			}
+			
+			
+			
 			
 			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
 			enemy.setScale(scale);
-			//shadow.setScale(scale);
+			shadow.setScale(scale);
 			
 			if(newPos.x < Gdx.graphics.getWidth() * 0.01f){
 				newPos.x = Gdx.graphics.getWidth() * 0.01f;
