@@ -301,7 +301,7 @@ public class Game implements Screen, GestureListener {
         setCoinage(getCoinage() + coinageAcquired);
     }
 
-    public long decreaseCoinage(long coinageSpent){
+    public void decreaseCoinage(long coinageSpent){
     	setCoinage(getCoinage() - coinageSpent);
     }
 	
