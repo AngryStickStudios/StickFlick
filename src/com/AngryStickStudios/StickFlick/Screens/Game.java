@@ -43,6 +43,7 @@ public class Game implements Screen, GestureListener {
     private String formattedTime = "0:00";
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
+    private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -281,8 +282,28 @@ public class Game implements Screen, GestureListener {
 	public void dispose() {
 		
 	}
-
 	
+	/*******************
+	* Coinage Generation & Management
+	*******************/
+	
+	// Public methods for getting and setting private long coinageTotal
+    public void setCoinage(long coinageTotal) {
+        this.coinageTotal = coinageTotal;
+    }
+    
+    public long getCoinage() {
+    	return coinageTotal;
+	 }	 
+    
+    // Methods for modifying totalCoinage
+    public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
+        setCoinage(getCoinage() + coinageAcquired);
+    }
+
+    public long decreaseCoinage(long coinageSpent){
+    	setCoinage(getCoinage() - coinageSpent);
+    }
 	
 	/*******************
 	* Gesture Detection
