@@ -12,6 +12,7 @@ public class WalkingEnemy extends Entity {
 	float scale;
 	private boolean held, floating;
 	private Vector2 lastPos, destination, flySpeed;
+	private int lastPosDist;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -86,13 +87,13 @@ public class WalkingEnemy extends Entity {
 	public void pickedUp() {
 		held = true;
 		lastPos = new Vector2(getPosition().x, getPosition().y);
+		lastPosDist = 0;
 	}
 
 	public void Released(Vector2 speed) {
 		held = false;
 		floating = true;
 		flySpeed = new Vector2(speed);
-		System.out.println("->> " + flySpeed.x);
 	}
 	
 	public void Update(float delta){
@@ -105,6 +106,11 @@ public class WalkingEnemy extends Entity {
 			if(getPosition().y <= lastPos.y)
 			{
 				setPosition(Gdx.input.getX(), lastPos.y);
+			}
+			
+			if(getPosition().y > lastPos.y)
+			{
+				
 			}
 			return;
 		}
