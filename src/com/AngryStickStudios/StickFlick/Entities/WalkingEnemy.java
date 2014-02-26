@@ -120,11 +120,9 @@ public class WalkingEnemy extends Entity {
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = getPosition().x + flySpeed.x;
 			
-			if(lastPos.y < Gdx.graphics.getHeight() / 1.8f && flySpeed.y > 0){
-				lastPos.y = lastPos.y + flySpeed.y;
-			} 
-	
-			
+			if(lastPos.y < Gdx.graphics.getHeight() / 1.8f){
+				lastPos.y = lastPos.y + (Gdx.graphics.getHeight() / 500);
+			}			
 			
 			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
 			enemy.setScale(scale);
@@ -162,7 +160,6 @@ public class WalkingEnemy extends Entity {
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(20 * delta);
-
 			
 			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
 			enemy.setScale(scale);
