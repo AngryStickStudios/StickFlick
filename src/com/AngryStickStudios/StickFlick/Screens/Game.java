@@ -44,7 +44,8 @@ public class Game implements Screen, GestureListener {
     private String formattedTime = "0:00";
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
-    
+    private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
+	
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground, castleOnly;
@@ -56,8 +57,8 @@ public class Game implements Screen, GestureListener {
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, resumeButton, mainMenuButton;
-	LabelStyle labelStyle;
-	Label timer;
+	LabelStyle labelStyle, labelStyleCoinage; // Added labelStyleCoinage to test coinage - Alex
+	Label timer, coinageDisplay;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
 	
 	
@@ -177,6 +178,16 @@ public class Game implements Screen, GestureListener {
 		timer.setX(Gdx.graphics.getWidth() * 0.025f);
 		timer.setY(Gdx.graphics.getHeight() * 0.95f);
 		fg.addActor(timer);
+		
+		// Making Label for Coinage (for testing purposes) - Alex 
+	    labelStyleCoinage = new LabelStyle(white, Color.ORANGE);
+		coinageDisplay = new Label(String.valueOf(getCoinage()), labelStyleCoinage);
+		coinageDisplay.setHeight(Gdx.graphics.getHeight() / 24);
+		coinageDisplay.setX(Gdx.graphics.getWidth() * 0.065f); // was 0.025f
+		coinageDisplay.setY(Gdx.graphics.getHeight() * 0.95f);
+		stage.addActor(coinageDisplay);
+		
+		coinageDisplay.setText(String.valueOf(getCoinage()));
 	
 		//Pause button stage, not main stage
 		resumeButton = new TextButton("Resume", buttonStyle);
@@ -294,14 +305,30 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		game.dispose();
-		gameBackground.dispose();
-		stage.dispose();
-		pauseStage.dispose();
-		skin.dispose();
+		
 	}
 
+	/*******************
+	* Coinage Generation & Management
+	*******************/
+	
+	// Public methods for getting and setting private long coinageTotal
+    public void setCoinage(long coinageTotal) {
+        this.coinageTotal = coinageTotal;
+    }
+    
+    public long getCoinage() {
+    	return coinageTotal;
+	 }	 
+    
+    // Methods for modifying totalCoinage
+    public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
+        setCoinage(getCoinage() + coinageAcquired);
+    }
+
+    public void decreaseCoinage(long coinageSpent){
+    	setCoinage(getCoinage() - coinageSpent);
+    }
 	
 	/*******************
 	* Gesture Detection
