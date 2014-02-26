@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -43,12 +44,12 @@ public class Game implements Screen, GestureListener {
     private String formattedTime = "0:00";
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
-    private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
     
 	StickFlick game;
 	SpriteBatch batch;
-	Texture gameBackground;
+	Texture gameBackground, castleOnly;
 	Stage stage, pauseStage;
+	Group bg, fg;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
@@ -130,6 +131,9 @@ public class Game implements Screen, GestureListener {
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();
 		
+		bg = new Group();
+		fg = new Group();
+		
 		if(gameStatus == 1) {
 			im = new InputMultiplexer(new GestureDetector(this), stage);
 			Gdx.input.setInputProcessor(im);
@@ -139,30 +143,40 @@ public class Game implements Screen, GestureListener {
 			Gdx.input.setInputProcessor(pauseStage);
 		}
 		
+		stage.addActor(bg);
+		stage.addActor(fg);
+		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
 		buttonStyle.up = skin.getDrawable("LightButton");
 		buttonStyle.down = skin.getDrawable("DarkButton");
 		buttonStyle.font = white;
 		
-		Texture gameBackground = new Texture("data/gameBackground.png");
+		gameBackground = new Texture("data/gameBackground.png");
 		Image backgroundImage = new Image(gameBackground);
+		backgroundImage.setZIndex(100000);
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
-		stage.addActor(backgroundImage);
+		bg.addActor(backgroundImage);
+		
+		castleOnly = new Texture("data/castleOnly.png");
+		Image castleImage = new Image(castleOnly);
+		castleImage.setWidth(Gdx.graphics.getWidth());
+		castleImage.setHeight(Gdx.graphics.getHeight());
+		fg.addActor(castleImage);
 		
 		pauseButton = new TextButton("Pause", buttonStyle);
 		pauseButton.setWidth(Gdx.graphics.getWidth() / 6);
 		pauseButton.setHeight(Gdx.graphics.getHeight() / 12);
 		pauseButton.setX(Gdx.graphics.getWidth() * 0.80f);
 		pauseButton.setY(Gdx.graphics.getHeight() * 0.90f);
-		stage.addActor(pauseButton);
+		fg.addActor(pauseButton);
 		
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
 		timer.setX(Gdx.graphics.getWidth() * 0.025f);
 		timer.setY(Gdx.graphics.getHeight() * 0.95f);
-		stage.addActor(timer);
+		fg.addActor(timer);
 	
 		//Pause button stage, not main stage
 		resumeButton = new TextButton("Resume", buttonStyle);
@@ -179,12 +193,12 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
 		
-		stage.addActor(enemyList.get(0).getShadow());
-		stage.addActor(enemyList.get(0).getImage());
-		stage.addActor(enemyList.get(1).getShadow());
-		stage.addActor(enemyList.get(1).getImage());
-		stage.addActor(enemyList.get(2).getShadow());
-		stage.addActor(enemyList.get(2).getImage());
+		bg.addActor(enemyList.get(0).getShadow());
+		bg.addActor(enemyList.get(0).getImage());
+		bg.addActor(enemyList.get(1).getShadow());
+		bg.addActor(enemyList.get(1).getImage());
+		bg.addActor(enemyList.get(2).getShadow());
+		bg.addActor(enemyList.get(2).getImage());
 
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -280,35 +294,10 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		game.dispose();
-		gameBackground.dispose();
-		stage.dispose();
-		pauseStage.dispose();
-		skin.dispose();
+		
 	}
-	
-	/*******************
-	* Coinage Generation & Management
-	*******************/
-	
-	// Public methods for getting and setting private long coinageTotal
-    public void setCoinage(long coinageTotal) {
-        this.coinageTotal = coinageTotal;
-    }
-    
-    public long getCoinage() {
-    	return coinageTotal;
-	 }	 
-    
-    // Methods for modifying totalCoinage
-    public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
-        setCoinage(getCoinage() + coinageAcquired);
-    }
 
-    public void decreaseCoinage(long coinageSpent){
-    	setCoinage(getCoinage() - coinageSpent);
-    }
+	
 	
 	/*******************
 	* Gesture Detection
@@ -325,6 +314,7 @@ public class Game implements Screen, GestureListener {
 					grabbedNumber = i;
 					enemyGrabbed = true;
 					enemyList.get(grabbedNumber).pickedUp();
+					break;
 				}
 			}
 		}
