@@ -120,8 +120,22 @@ public class WalkingEnemy extends Entity {
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = getPosition().x + flySpeed.x;
 			
-			if(newPos.x < 8) newPos.x = 8;
-			if(newPos.x > Gdx.graphics.getWidth() - 16) newPos.x = Gdx.graphics.getWidth() - 16;
+			if(lastPos.y < Gdx.graphics.getHeight() / 1.8f && flySpeed.y > 0){
+				lastPos.y = lastPos.y + flySpeed.y;
+			} 
+	
+			
+			
+			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
+			enemy.setScale(scale);
+			shadow.setScale(scale);
+			
+			if(newPos.x < Gdx.graphics.getWidth() * 0.01f){
+				newPos.x = Gdx.graphics.getWidth() * 0.01f;
+			}
+			if(newPos.x > Gdx.graphics.getWidth() * 0.99f){
+				newPos.x = Gdx.graphics.getWidth() * 0.99f;
+			}
 
 			if(lastPos.y >= getPosition().y + flySpeed.y)
 			{
@@ -133,11 +147,11 @@ public class WalkingEnemy extends Entity {
 			}
 			else
 			{
-				newPos.y = getPosition().y + flySpeed.y;
+				newPos.y = getPosition().y + (flySpeed.y * 0.5f);
 				setPosition(newPos.x, newPos.y);
 			}
 
-			flySpeed.y -= 1;
+			flySpeed.y -= 0.3f;
 			shadow.setX(enemy.getX());
 			shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			return;
@@ -147,10 +161,13 @@ public class WalkingEnemy extends Entity {
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.05f){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(50 * delta);
+			Vector2 walkVec = normVec.scl(20 * delta);
 
+			
+			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			enemy.setScale(scale);
+			shadow.setScale(scale);
 
-			//System.out.println("destination = " + destination.x + " " + destination.y);
 			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
 
 

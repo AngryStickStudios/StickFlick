@@ -31,10 +31,6 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Timer.Task;
-import java.util.*;
 
 public class Game implements Screen, GestureListener {
 
@@ -61,21 +57,15 @@ public class Game implements Screen, GestureListener {
 	LabelStyle labelStyle;
 	Label timer;
 	Vector<WalkingEnemy> enemyList;
-	Timer spawnTimer;
-	double sumSpawn = 0;
-	double timeSpawn = 0;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		enemyList = new Vector<WalkingEnemy>();
-		spawnTimer.schedule(new Task() {
-			@Override
-			public void run() {
-				spawn();
-			}
-		}, 1, 1);
+		enemyList = new Vector();
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 4, (int) (Gdx.graphics.getHeight() / 1.8f)));
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, (int) (Gdx.graphics.getHeight() / 1.8f)));
+		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 3, (int) (Gdx.graphics.getHeight() / 1.8f)));
 	}
 	
 	@Override
@@ -85,9 +75,9 @@ public class Game implements Screen, GestureListener {
 				
 		if (gameStatus == 1) {
 			stage.act(Gdx.graphics.getDeltaTime());
-			for(int i = 0; i < enemyList.size(); i++) {
-				enemyList.get(i).Update(delta);
-			}
+			enemyList.get(0).Update(delta);
+			enemyList.get(1).Update(delta);
+			enemyList.get(2).Update(delta);
 			batch.begin();
 			stage.draw();	
 			
@@ -187,6 +177,13 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setX(Gdx.graphics.getWidth()/2 - resumeButton.getWidth()/2);
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
+		
+		stage.addActor(enemyList.get(0).getShadow());
+		stage.addActor(enemyList.get(0).getImage());
+		stage.addActor(enemyList.get(1).getShadow());
+		stage.addActor(enemyList.get(1).getImage());
+		stage.addActor(enemyList.get(2).getShadow());
+		stage.addActor(enemyList.get(2).getImage());
 
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -285,40 +282,7 @@ public class Game implements Screen, GestureListener {
 		
 	}
 
-	/*******************
-	* Spawning
-	*******************/
-	public void spawn() {
-		Random generator = new Random();
-		int x;
-		int rate;
-		
-		timeSpawn++;
-		double minuteSpawn = (timeSpawn)/60;
-		
-		if(timeSpawn <= 30) {
-			sumSpawn += .5;
-		}
-		else if(timeSpawn > 30 && minuteSpawn <= 1) {
-			sumSpawn += 2*minuteSpawn;
-		}
-		else if(minuteSpawn > 1 && minuteSpawn <= 3) {
-			sumSpawn += Math.pow(2, minuteSpawn);
-		}
-		else if(minuteSpawn > 3) {
-			sumSpawn += 2*(minuteSpawn - 3) + 8;
-		}
-		
-		rate = (int) Math.floor(sumSpawn);
-		sumSpawn -= rate;
-		
-		for(int i = 0; i < rate; i++) {
-			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
-			stage.addActor(enemyList.get((enemyList.size())-1).getShadow());
-			stage.addActor(enemyList.get((enemyList.size())-1).getImage());
-		}
-	}
+	
 	
 	/*******************
 	* Gesture Detection
@@ -343,13 +307,13 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		// TODO Auto-generated method stub
+		// UNUSED
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float x, float y) {
-		// TODO Auto-generated method stub
+		// UNUSED
 		return false;
 	}
 
@@ -357,83 +321,33 @@ public class Game implements Screen, GestureListener {
 	public boolean fling(float velocityX, float velocityY, int button) {
 		if(enemyGrabbed == true)
 		{
-			//enemyList.get(grabbedNumber).FindDestOnWall();
 			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).Released(new Vector2(velocityX / 100, velocityY / -100));
+			enemyList.get(grabbedNumber).Released(new Vector2(velocityX / 1000, velocityY / -1000));
 		}
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		// TODO Auto-generated method stub
-		/*
-		y = Gdx.graphics.getHeight() - y;
-		
-		if(enemyGrabbed == true){
-			enemyList.get(grabbedNumber).setPosition(x, y);
-		}
-		*/
-		
-		
-		/* AIDAN'S CODE
-		WalkingEnemy closest = null;
-		float closest_i = -1;
-		for(int i = 0; i < enemyList.size(); i++)	// Searches through enemy list
-		{
-			Vector2 size = enemyList.get(i).getSize();
-			Vector2 pos = enemyList.get(i).getPosition();
-			if((pos.x - size.x / 2 <= x && x <= pos.x + size.x / 2) && (pos.y - size.y / 2 <= y && y < pos.y + size.y / 2)){
-				
-			}
-			
-			
-			float distance = enemyList.get(i).getPosition().dst(x, Gdx.graphics.getHeight() - y);	// gets distance of mouse pointer from enemy
-			if(distance <= 100)
-			{
-				if(closest == null)
-				{
-					closest = enemyList.get(i);
-					closest_i = enemyList.get(i).getPosition().dst(x, y);
-				}
-				else
-				{
-					if(distance < closest_i)
-					{
-						closest = enemyList.get(i);
-						closest_i = enemyList.get(i).getPosition().dst(x, y);
-					}
-				}
-			}
-		}
-		
-		if(closest != null)
-		{
-			closest.setPosition(x, Gdx.graphics.getHeight() - y);
-			closest.FindDestOnWall();
-		}
-		*/
+			// UNUSED
 		return false;
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		//enemyList.get(grabbedNumber).FindDestOnWall();
-		//enemyGrabbed = false;
+			// UNUSED
 		return false;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		// TODO Auto-generated method stub
+			// UNUSED
 		return false;
 	}
 
 	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
-			Vector2 pointer1, Vector2 pointer2) {
-		// TODO Auto-generated method stub
+	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+			// UNUSED
 		return false;
 	}
 
