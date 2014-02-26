@@ -126,7 +126,7 @@ public class WalkingEnemy extends Entity {
 			
 			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
 			enemy.setScale(scale);
-			shadow.setScale(scale);
+			//shadow.setScale(scale);
 			
 			if(newPos.x < Gdx.graphics.getWidth() * 0.01f){
 				newPos.x = Gdx.graphics.getWidth() * 0.01f;
