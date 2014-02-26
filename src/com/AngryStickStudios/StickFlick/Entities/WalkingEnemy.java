@@ -87,7 +87,10 @@ public class WalkingEnemy extends Entity {
 
 	public void pickedUp() {
 		held = true;
-		lastPos = new Vector2(getPosition().x, getPosition().y);
+		if(floating == false)
+		{
+			lastPos = new Vector2(getPosition().x, getPosition().y);
+		}
 	}
 
 	public void Released(Vector2 speed) {
