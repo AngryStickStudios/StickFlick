@@ -32,6 +32,10 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements Screen, GestureListener {
 
@@ -60,15 +64,21 @@ public class Game implements Screen, GestureListener {
 	LabelStyle labelStyle, labelStyleCoinage; // Added labelStyleCoinage to test coinage - Alex
 	Label timer, coinageDisplay;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
+	Timer spawnTimer;
+	double sumSpawn = 0;
+	double timeSpawn = 0;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		enemyList = new Vector();
-		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 4, (int) (Gdx.graphics.getHeight() / 1.8f)));
-		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 2, (int) (Gdx.graphics.getHeight() / 1.8f)));
-		enemyList.add(new WalkingEnemy("basic", 100, Gdx.graphics.getWidth() / 3, (int) (Gdx.graphics.getHeight() / 1.8f)));
+		enemyList = new Vector<WalkingEnemy>();
+		spawnTimer.schedule(new Task() {
+			@Override
+			public void run() {
+				spawn();
+			}
+		}, 0, 1);
 	}
 	
 	@Override
@@ -78,9 +88,9 @@ public class Game implements Screen, GestureListener {
 				
 		if (gameStatus == 1) {
 			stage.act(Gdx.graphics.getDeltaTime());
-			enemyList.get(0).Update(delta);
-			enemyList.get(1).Update(delta);
-			enemyList.get(2).Update(delta);
+			for(int i = 0; i < enemyList.size(); i++) {
+				enemyList.get(i).Update(delta);
+			}
 			batch.begin();
 			stage.draw();	
 			
@@ -204,13 +214,10 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
 		
-		bg.addActor(enemyList.get(0).getShadow());
-		bg.addActor(enemyList.get(0).getImage());
-		bg.addActor(enemyList.get(1).getShadow());
-		bg.addActor(enemyList.get(1).getImage());
-		bg.addActor(enemyList.get(2).getShadow());
-		bg.addActor(enemyList.get(2).getImage());
-
+		for(int i = 0; i < enemyList.size(); i++) {
+			bg.addActor(enemyList.get(i).getShadow());
+			bg.addActor(enemyList.get(i).getImage());
+		}
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		pauseStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -312,6 +319,41 @@ public class Game implements Screen, GestureListener {
 			pauseStage.dispose();
 			skin.dispose();		
 		}
+		
+		/*******************
+		* Spawning
+		*******************/
+		public void spawn() {
+			Random generator = new Random();
+			int x;
+			int rate;
+			
+			timeSpawn++;
+			double minuteSpawn = (timeSpawn)/60;
+			
+			if(timeSpawn <= 30) {
+				sumSpawn += .5;
+			}
+			else if(timeSpawn > 30 && minuteSpawn <= 1) {
+				sumSpawn += 2*minuteSpawn;
+			}
+			else if(minuteSpawn > 1 && minuteSpawn <= 3) {
+				sumSpawn += Math.pow(2, minuteSpawn);
+			}
+			else if(minuteSpawn > 3) {
+				sumSpawn += 2*(minuteSpawn - 3) + 8;
+			}
+			
+			rate = (int) Math.floor(sumSpawn);
+			sumSpawn -= rate;
+			
+			for(int i = 0; i < rate; i++) {
+				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
+				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
+			}
+		}	
 
 	/*******************
 	* Coinage Generation & Management
