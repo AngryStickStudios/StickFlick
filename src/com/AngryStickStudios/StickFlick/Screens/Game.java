@@ -303,10 +303,15 @@ public class Game implements Screen, GestureListener {
 		
 	}
 
-	@Override
-	public void dispose() {
-		
-	}
+		@Override
+		public void dispose() {
+			batch.dispose();
+			game.dispose();
+			gameBackground.dispose();
+			stage.dispose();
+			pauseStage.dispose();
+			skin.dispose();		
+		}
 
 	/*******************
 	* Coinage Generation & Management
