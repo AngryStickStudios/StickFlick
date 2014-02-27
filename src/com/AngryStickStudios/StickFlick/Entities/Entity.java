@@ -55,11 +55,20 @@ public abstract class Entity {
 	}
 	
 	public void increaseHealth(int x){
-		//Will add
+		if(healthCurrent + x >= healthMax)
+			healthCurrent = healthMax;
+		else
+			healthCurrent = healthCurrent + x;
+			
 	}
 	
 	public void decreaseHealth(int x){
-		//Will add
+		if(healthCurrent - x <= 0){
+			healthCurrent = 0;
+			isAlive = false;
+		}
+		else
+			healthCurrent = healthCurrent - x;
 	}
 
 }
