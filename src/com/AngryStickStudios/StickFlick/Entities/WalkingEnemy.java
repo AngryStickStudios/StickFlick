@@ -10,9 +10,9 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
 	float scale;
-	private boolean held, floating;
+	private boolean held, floating/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed;
+	private int moveBackSpeed, maxHeight;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -124,9 +124,6 @@ public class WalkingEnemy extends Entity {
 				lastPos.y = lastPos.y + ((Gdx.graphics.getHeight() / 500) * moveBackSpeed);
 			}
 			
-			
-			
-			
 			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
 			enemy.setScale(scale);
 			shadow.setScale(scale);
@@ -138,12 +135,15 @@ public class WalkingEnemy extends Entity {
 				newPos.x = Gdx.graphics.getWidth() * 0.99f;
 			}
 
+			//has landed back on the homeland
 			if(lastPos.y >= getPosition().y + flySpeed.y)
 			{
 				newPos.y = lastPos.y;
 				floating = false;
+				//landed = true;
 				setPosition(newPos.x, newPos.y);
-
+				
+				Damage(maxHeight);
 				FindDestOnWall();
 			}
 			else
@@ -178,5 +178,13 @@ public class WalkingEnemy extends Entity {
 			shadow.setX(enemy.getX());
 			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		}
+	}
+
+	public void Damage(int maxHeight){
+		//can change the dmgAmt ratio to whatever
+		int dmgAmt = maxHeight * 5;
+		decreaseHealth(dmgAmt);
+		if(getIsAlive() != true)
+			System.out.println("An enemy reached zero heath! Victory dance!");
 	}
 }
