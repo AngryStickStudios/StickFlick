@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
+import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements Screen, GestureListener {
 
+    public static final int GAME_LOST = 2;
 	public static final int GAME_RUNNING = 1;
     public static final int GAME_PAUSED = 0;
     private int gameStatus = 1;
@@ -64,6 +66,7 @@ public class Game implements Screen, GestureListener {
 	LabelStyle labelStyle, labelStyleCoinage; // Added labelStyleCoinage to test coinage - Alex
 	Label timer, coinageDisplay;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
+	Player player;
 	Timer spawnTimer;
 	double sumSpawn = 0;
 	double timeSpawn = 0;
@@ -72,6 +75,7 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		
+		player = new Player("testPlayer", 30000);
 		enemyList = new Vector<WalkingEnemy>();
 		spawnTimer.schedule(new Task() {
 			@Override
@@ -85,15 +89,37 @@ public class Game implements Screen, GestureListener {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		if(player.getIsAlive() == false){
+			gameStatus = GAME_LOST;
+			Gdx.input.setInputProcessor(pauseStage);
+		}
 				
-		if (gameStatus == 1) {
+		if (gameStatus == GAME_RUNNING) {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
 				if(enemyList.get(i).getIsAlive())
 					enemyList.get(i).Update(delta);
-				else
+				else{
+					bg.removeActor(enemyList.get(i).getImage());
+					
 					enemyList.remove(i);
+				}
 			}
+			
+			int enemiesAtWall = 0;
+			
+			for(int i = 0; i < enemyList.size(); i++){
+				
+				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
+					enemiesAtWall++;
+				}
+			}
+			
+			player.setEnAtWall(enemiesAtWall);
+			
+			player.Update();
+			
 			batch.begin();
 			stage.draw();	
 			
@@ -126,14 +152,25 @@ public class Game implements Screen, GestureListener {
 			}
 			
 			batch.end();
-		}
-		
-		else {
+		} else if(gameStatus == GAME_PAUSED) {
 			pauseStage.act(Gdx.graphics.getDeltaTime());
 			batch.begin();
 			pauseStage.draw();
 			batch.end();
-		} 	
+		} else if(gameStatus == GAME_LOST){
+			pauseStage.act(Gdx.graphics.getDeltaTime());
+			batch.begin();
+			pauseStage.draw();
+			batch.end();
+			/* TODO Create lost stage
+			lostStage.act(Gdx.graphics.getDeltaTime());
+			batch.begin();
+			lostStage.draw();
+			batch.end();
+			*/
+		} else{
+			System.out.println("Kudos to you... you reached a secret impossible game status?");
+		}
 	}
 	
 
@@ -148,13 +185,13 @@ public class Game implements Screen, GestureListener {
 		bg = new Group();
 		fg = new Group();
 		
-		if(gameStatus == 1) {
+		if(gameStatus == GAME_RUNNING) {
 			im = new InputMultiplexer(new GestureDetector(this), stage);
 			Gdx.input.setInputProcessor(im);
-		}
-		
-		else {
+		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
+		} else{
+			System.out.println("How did you do this?");
 		}
 		
 		stage.addActor(bg);
