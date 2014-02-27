@@ -55,16 +55,16 @@ public class Game implements Screen, GestureListener {
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground, castleOnly;
-	Stage stage, pauseStage;
+	Stage stage, pauseStage, deathStage;
 	Group bg, fg;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
-	TextButton pauseButton, resumeButton, mainMenuButton;
-	LabelStyle labelStyle, labelStyleCoinage; // Added labelStyleCoinage to test coinage - Alex
-	Label timer, coinageDisplay;              // Added coinageDisplay to test coinage - Alex
+	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
+	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath; // Added labelStyleCoinage to test coinage - Alex
+	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
 	Player player;
 	Timer spawnTimer;
@@ -92,7 +92,7 @@ public class Game implements Screen, GestureListener {
 		
 		if(player.getIsAlive() == false){
 			gameStatus = GAME_LOST;
-			Gdx.input.setInputProcessor(pauseStage);
+			Gdx.input.setInputProcessor(deathStage);
 		}
 				
 		if (gameStatus == GAME_RUNNING) {
@@ -158,16 +158,10 @@ public class Game implements Screen, GestureListener {
 			pauseStage.draw();
 			batch.end();
 		} else if(gameStatus == GAME_LOST){
-			pauseStage.act(Gdx.graphics.getDeltaTime());
+			deathStage.act(Gdx.graphics.getDeltaTime());
 			batch.begin();
-			pauseStage.draw();
+			deathStage.draw();
 			batch.end();
-			/* TODO Create lost stage
-			lostStage.act(Gdx.graphics.getDeltaTime());
-			batch.begin();
-			lostStage.draw();
-			batch.end();
-			*/
 		} else{
 			System.out.println("Kudos to you... you reached a secret impossible game status?");
 		}
@@ -182,6 +176,9 @@ public class Game implements Screen, GestureListener {
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();
 		
+		deathStage = new Stage(width, height, true);
+		deathStage.clear();
+		
 		bg = new Group();
 		fg = new Group();
 		
@@ -190,6 +187,8 @@ public class Game implements Screen, GestureListener {
 			Gdx.input.setInputProcessor(im);
 		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
+		} else if(gameStatus == GAME_LOST){
+			Gdx.input.setInputProcessor(deathStage);
 		} else{
 			System.out.println("How did you do this?");
 		}
@@ -238,7 +237,7 @@ public class Game implements Screen, GestureListener {
 		stage.addActor(coinageDisplay);
 		
 		coinageDisplay.setText(String.valueOf(getCoinage()));
-	
+		
 		//Pause button stage, not main stage
 		resumeButton = new TextButton("Resume", buttonStyle);
 		resumeButton.setWidth(Gdx.graphics.getWidth() / 6);
@@ -253,6 +252,20 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setX(Gdx.graphics.getWidth()/2 - resumeButton.getWidth()/2);
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
+		
+		//Death message for Lost Stage
+		labelStyleDeath = new LabelStyle(white, Color.RED);
+		deathMessage = new Label("You Died!!!", labelStyleDeath);
+		deathMessage.setX(Gdx.graphics.getWidth() / 2);
+		deathMessage.setY(Gdx.graphics.getHeight() / 3);
+		deathStage.addActor(deathMessage);
+		
+		mainMenuButton2 = new TextButton("Main Menu", buttonStyle);
+		mainMenuButton2.setWidth(Gdx.graphics.getWidth() / 6);
+		mainMenuButton2.setHeight(Gdx.graphics.getHeight() / 12);
+		mainMenuButton2.setX(Gdx.graphics.getWidth()/2);
+		mainMenuButton2.setY(Gdx.graphics.getHeight()/2);
+		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
 			bg.addActor(enemyList.get(i).getShadow());
@@ -305,6 +318,23 @@ public class Game implements Screen, GestureListener {
 				System.out.println("up");
 				
 				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new MainMenu(game));
+					}
+				})));
+			}
+		});
+		
+		mainMenuButton2.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				deathStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
 					public void run() {
 						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new MainMenu(game));
