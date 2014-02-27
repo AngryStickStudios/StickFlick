@@ -12,7 +12,7 @@ public class WalkingEnemy extends Entity {
 	float scale;
 	private boolean held, floating/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed, maxHeight;
+	private int moveBackSpeed, maxHeight = 10;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -182,7 +182,7 @@ public class WalkingEnemy extends Entity {
 
 	public void Damage(int maxHeight){
 		//can change the dmgAmt ratio to whatever
-		int dmgAmt = maxHeight * 5;
+		int dmgAmt = maxHeight * 10;
 		decreaseHealth(dmgAmt);
 		if(getIsAlive() != true)
 			System.out.println("An enemy reached zero heath! Victory dance!");

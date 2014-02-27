@@ -89,7 +89,10 @@ public class Game implements Screen, GestureListener {
 		if (gameStatus == 1) {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
-				enemyList.get(i).Update(delta);
+				if(enemyList.get(i).getIsAlive())
+					enemyList.get(i).Update(delta);
+				else
+					enemyList.remove(i);
 			}
 			batch.begin();
 			stage.draw();	
@@ -310,8 +313,8 @@ public class Game implements Screen, GestureListener {
 		
 	}
 
-		@Override
-		public void dispose() {
+	@Override
+	public void dispose() {
 			batch.dispose();
 			game.dispose();
 			gameBackground.dispose();
@@ -320,44 +323,44 @@ public class Game implements Screen, GestureListener {
 			skin.dispose();		
 		}
 		
-		/*******************
-		* Spawning
-		*******************/
-		public void spawn() {
-			Random generator = new Random();
-			int x;
-			int rate;
-			
-			timeSpawn++;
-			double minuteSpawn = (timeSpawn)/60;
-			
-			if(timeSpawn <= 30) {
-				sumSpawn += .5;
-			}
-			else if(timeSpawn > 30 && minuteSpawn <= 1) {
-				sumSpawn += 2*minuteSpawn;
-			}
-			else if(minuteSpawn > 1 && minuteSpawn <= 3) {
-				sumSpawn += Math.pow(2, minuteSpawn);
-			}
-			else if(minuteSpawn > 3) {
-				sumSpawn += 2*(minuteSpawn - 3) + 8;
-			}
-			
-			rate = (int) Math.floor(sumSpawn);
-			sumSpawn -= rate;
-			
-			for(int i = 0; i < rate; i++) {
-				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+	/*******************
+	* Spawning
+	*******************/
+	public void spawn() {
+		Random generator = new Random();
+		int x;
+		int rate;
+		
+		timeSpawn++;
+		double minuteSpawn = (timeSpawn)/60;
+		
+		if(timeSpawn <= 30) {
+			sumSpawn += .5;
+		}
+		else if(timeSpawn > 30 && minuteSpawn <= 1) {
+			sumSpawn += 2*minuteSpawn;
+		}
+		else if(minuteSpawn > 1 && minuteSpawn <= 3) {
+			sumSpawn += Math.pow(2, minuteSpawn);
+		}
+		else if(minuteSpawn > 3) {
+			sumSpawn += 2*(minuteSpawn - 3) + 8;
+		}
+		
+		rate = (int) Math.floor(sumSpawn);
+		sumSpawn -= rate;
+		
+		for(int i = 0; i < rate; i++) {
+			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 			}
 		}	
-
-	/*******************
+ 
+	/*********************************
 	* Coinage Generation & Management
-	*******************/
+	*********************************/
 	
 	// Public methods for getting and setting private long coinageTotal
     public void setCoinage(long coinageTotal) {
