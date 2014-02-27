@@ -10,9 +10,9 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
 	float scale;
-	private boolean held, floating;
+	private boolean held, floating/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed;
+	private int moveBackSpeed, maxHeight = 2;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -20,6 +20,7 @@ public class WalkingEnemy extends Entity {
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
 		scale = 0.5f;
+		lastPos = new Vector2(posX, posY);
 		
 		// Set enemy texture depending on type
 		if(name == "basic" || name == "Basic"){
@@ -74,7 +75,7 @@ public class WalkingEnemy extends Entity {
 		straightDown.y = Gdx.graphics.getHeight() * 0.04f;
 		
 		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
-		System.out.println(adjAmt);
+		System.out.println("Adjust Amount: " + adjAmt);
 		straightDown.x += adjAmt;
 		if(straightDown.x > Gdx.graphics.getWidth() * 0.98f){
 			straightDown.x = Gdx.graphics.getWidth() * 0.98f;
@@ -89,7 +90,8 @@ public class WalkingEnemy extends Entity {
 		held = true;
 		if(floating == false)
 		{
-			lastPos = new Vector2(getPosition().x, getPosition().y);
+			lastPos.x = getPosition().x;
+			lastPos.y = getPosition().y;
 		}
 	}
 
@@ -98,7 +100,7 @@ public class WalkingEnemy extends Entity {
 		floating = true;
 		flySpeed = new Vector2(speed);
 		moveBackSpeed = Math.round(flySpeed.y / 10);
-		System.out.println(moveBackSpeed);
+		System.out.println("MoveBackSpeed: " + moveBackSpeed);
 	}
 	
 	public void Update(float delta){
@@ -124,9 +126,6 @@ public class WalkingEnemy extends Entity {
 				lastPos.y = lastPos.y + ((Gdx.graphics.getHeight() / 500) * moveBackSpeed);
 			}
 			
-			
-			
-			
 			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
 			enemy.setScale(scale);
 			shadow.setScale(scale);
@@ -138,12 +137,15 @@ public class WalkingEnemy extends Entity {
 				newPos.x = Gdx.graphics.getWidth() * 0.99f;
 			}
 
+			//has landed back on the homeland
 			if(lastPos.y >= getPosition().y + flySpeed.y)
 			{
 				newPos.y = lastPos.y;
 				floating = false;
+				//landed = true;
 				setPosition(newPos.x, newPos.y);
-
+				
+				Damage(-flySpeed.y);
 				FindDestOnWall();
 			}
 			else
@@ -159,7 +161,7 @@ public class WalkingEnemy extends Entity {
 		}
 		
 		//walk and shit
-		if(getPosition().y > Gdx.graphics.getHeight() * 0.05f){
+		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(20 * delta);
@@ -170,13 +172,19 @@ public class WalkingEnemy extends Entity {
 
 			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
 
-
-			if(getPosition().y < 20){
-				setPosition(getPosition().x, 20);
-			}
-
 			shadow.setX(enemy.getX());
 			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		}
+	}
+
+	public void Damage(float fallingVelocity){
+		//can change the dmgAmt ratio to whatever
+		int dmgAmt = (int)fallingVelocity * 4;
+		decreaseHealth(dmgAmt);
+		System.out.println("Falling Velocity: " + fallingVelocity);
+		System.out.println("Damage Amount: " + dmgAmt);
+		System.out.println("Stickman Health: " + getHealthCurrent());
+		if(getIsAlive() != true)
+			System.out.println("An enemy reached zero heath! Victory dance!");
 	}
 }

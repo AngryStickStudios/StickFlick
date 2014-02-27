@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
+import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements Screen, GestureListener {
 
+    public static final int GAME_LOST = 2;
 	public static final int GAME_RUNNING = 1;
     public static final int GAME_PAUSED = 0;
     private int gameStatus = 1;
@@ -53,17 +55,18 @@ public class Game implements Screen, GestureListener {
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground, castleOnly;
-	Stage stage, pauseStage;
+	Stage stage, pauseStage, deathStage;
 	Group bg, fg;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
-	TextButton pauseButton, resumeButton, mainMenuButton;
-	LabelStyle labelStyle, labelStyleCoinage; // Added labelStyleCoinage to test coinage - Alex
-	Label timer, coinageDisplay;              // Added coinageDisplay to test coinage - Alex
+	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
+	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath; // Added labelStyleCoinage to test coinage - Alex
+	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
+	Player player;
 	Timer spawnTimer;
 	double sumSpawn = 0;
 	double timeSpawn = 0;
@@ -72,6 +75,7 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		
+		player = new Player("testPlayer", 30000);
 		enemyList = new Vector<WalkingEnemy>();
 		spawnTimer.schedule(new Task() {
 			@Override
@@ -85,12 +89,37 @@ public class Game implements Screen, GestureListener {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		if(player.getIsAlive() == false){
+			gameStatus = GAME_LOST;
+			Gdx.input.setInputProcessor(deathStage);
+		}
 				
-		if (gameStatus == 1) {
+		if (gameStatus == GAME_RUNNING) {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
-				enemyList.get(i).Update(delta);
+				if(enemyList.get(i).getIsAlive())
+					enemyList.get(i).Update(delta);
+				else{
+					bg.removeActor(enemyList.get(i).getImage());
+					
+					enemyList.remove(i);
+				}
 			}
+			
+			int enemiesAtWall = 0;
+			
+			for(int i = 0; i < enemyList.size(); i++){
+				
+				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
+					enemiesAtWall++;
+				}
+			}
+			
+			player.setEnAtWall(enemiesAtWall);
+			
+			player.Update();
+			
 			batch.begin();
 			stage.draw();	
 			
@@ -123,14 +152,19 @@ public class Game implements Screen, GestureListener {
 			}
 			
 			batch.end();
-		}
-		
-		else {
+		} else if(gameStatus == GAME_PAUSED) {
 			pauseStage.act(Gdx.graphics.getDeltaTime());
 			batch.begin();
 			pauseStage.draw();
 			batch.end();
-		} 	
+		} else if(gameStatus == GAME_LOST){
+			deathStage.act(Gdx.graphics.getDeltaTime());
+			batch.begin();
+			deathStage.draw();
+			batch.end();
+		} else{
+			System.out.println("Kudos to you... you reached a secret impossible game status?");
+		}
 	}
 	
 
@@ -142,16 +176,21 @@ public class Game implements Screen, GestureListener {
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();
 		
+		deathStage = new Stage(width, height, true);
+		deathStage.clear();
+		
 		bg = new Group();
 		fg = new Group();
 		
-		if(gameStatus == 1) {
+		if(gameStatus == GAME_RUNNING) {
 			im = new InputMultiplexer(new GestureDetector(this), stage);
 			Gdx.input.setInputProcessor(im);
-		}
-		
-		else {
+		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
+		} else if(gameStatus == GAME_LOST){
+			Gdx.input.setInputProcessor(deathStage);
+		} else{
+			System.out.println("How did you do this?");
 		}
 		
 		stage.addActor(bg);
@@ -198,7 +237,7 @@ public class Game implements Screen, GestureListener {
 		stage.addActor(coinageDisplay);
 		
 		coinageDisplay.setText(String.valueOf(getCoinage()));
-	
+		
 		//Pause button stage, not main stage
 		resumeButton = new TextButton("Resume", buttonStyle);
 		resumeButton.setWidth(Gdx.graphics.getWidth() / 6);
@@ -213,6 +252,20 @@ public class Game implements Screen, GestureListener {
 		mainMenuButton.setX(Gdx.graphics.getWidth()/2 - resumeButton.getWidth()/2);
 		mainMenuButton.setY(Gdx.graphics.getHeight()/2 - resumeButton.getHeight()*2);
 		pauseStage.addActor(mainMenuButton);
+		
+		//Death message for Lost Stage
+		labelStyleDeath = new LabelStyle(white, Color.RED);
+		deathMessage = new Label("You Died!!!", labelStyleDeath);
+		deathMessage.setX(Gdx.graphics.getWidth() / 2);
+		deathMessage.setY(Gdx.graphics.getHeight() / 3);
+		deathStage.addActor(deathMessage);
+		
+		mainMenuButton2 = new TextButton("Main Menu", buttonStyle);
+		mainMenuButton2.setWidth(Gdx.graphics.getWidth() / 6);
+		mainMenuButton2.setHeight(Gdx.graphics.getHeight() / 12);
+		mainMenuButton2.setX(Gdx.graphics.getWidth()/2);
+		mainMenuButton2.setY(Gdx.graphics.getHeight()/2);
+		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
 			bg.addActor(enemyList.get(i).getShadow());
@@ -272,6 +325,23 @@ public class Game implements Screen, GestureListener {
 				})));
 			}
 		});
+		
+		mainMenuButton2.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				deathStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new MainMenu(game));
+					}
+				})));
+			}
+		});
 	}
 
 	@Override
@@ -310,8 +380,8 @@ public class Game implements Screen, GestureListener {
 		
 	}
 
-		@Override
-		public void dispose() {
+	@Override
+	public void dispose() {
 			batch.dispose();
 			game.dispose();
 			gameBackground.dispose();
@@ -320,44 +390,44 @@ public class Game implements Screen, GestureListener {
 			skin.dispose();		
 		}
 		
-		/*******************
-		* Spawning
-		*******************/
-		public void spawn() {
-			Random generator = new Random();
-			int x;
-			int rate;
-			
-			timeSpawn++;
-			double minuteSpawn = (timeSpawn)/60;
-			
-			if(timeSpawn <= 30) {
-				sumSpawn += .5;
-			}
-			else if(timeSpawn > 30 && minuteSpawn <= 1) {
-				sumSpawn += 2*minuteSpawn;
-			}
-			else if(minuteSpawn > 1 && minuteSpawn <= 3) {
-				sumSpawn += Math.pow(2, minuteSpawn);
-			}
-			else if(minuteSpawn > 3) {
-				sumSpawn += 2*(minuteSpawn - 3) + 8;
-			}
-			
-			rate = (int) Math.floor(sumSpawn);
-			sumSpawn -= rate;
-			
-			for(int i = 0; i < rate; i++) {
-				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+	/*******************
+	* Spawning
+	*******************/
+	public void spawn() {
+		Random generator = new Random();
+		int x;
+		int rate;
+		
+		timeSpawn++;
+		double minuteSpawn = (timeSpawn)/60;
+		
+		if(timeSpawn <= 30) {
+			sumSpawn += .5;
+		}
+		else if(timeSpawn > 30 && minuteSpawn <= 1) {
+			sumSpawn += 2*minuteSpawn;
+		}
+		else if(minuteSpawn > 1 && minuteSpawn <= 3) {
+			sumSpawn += Math.pow(2, minuteSpawn);
+		}
+		else if(minuteSpawn > 3) {
+			sumSpawn += 2*(minuteSpawn - 3) + 8;
+		}
+		
+		rate = (int) Math.floor(sumSpawn);
+		sumSpawn -= rate;
+		
+		for(int i = 0; i < rate; i++) {
+			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 			}
 		}	
-
-	/*******************
+ 
+	/*********************************
 	* Coinage Generation & Management
-	*******************/
+	*********************************/
 	
 	// Public methods for getting and setting private long coinageTotal
     public void setCoinage(long coinageTotal) {
