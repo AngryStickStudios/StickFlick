@@ -9,10 +9,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -51,6 +55,8 @@ public class Game implements Screen, GestureListener {
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
     private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
+    private int freeze = 0;
+    private int freezeTime = 2;
 	
 	StickFlick game;
 	SpriteBatch batch;
@@ -67,6 +73,9 @@ public class Game implements Screen, GestureListener {
 	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
 	Vector<WalkingEnemy> enemyList;
 	Player player;
+	OrthographicCamera camera;
+	ShapeRenderer sp;
+	Button freezePow, explodePow;
 	Timer spawnTimer;
 	double sumSpawn = 0;
 	double timeSpawn = 0;
@@ -77,12 +86,19 @@ public class Game implements Screen, GestureListener {
 		
 		player = new Player("testPlayer", 30000);
 		enemyList = new Vector<WalkingEnemy>();
-		spawnTimer.schedule(new Task() {
+		Timer.schedule(new Task() {
 			@Override
 			public void run() {
-				spawn();
+				freezeCheck();
 			}
 		}, 0, 1);
+	
+		/* Health initialization */
+		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	    camera.update();
+	    sp = new ShapeRenderer(); 
+    
 	}
 	
 	@Override
@@ -122,6 +138,19 @@ public class Game implements Screen, GestureListener {
 			
 			batch.begin();
 			stage.draw();	
+			
+			/* Drawing health bar and decreasing health when needed */
+		
+				batch.end();
+				sp.setProjectionMatrix(camera.combined);
+				sp.begin(ShapeType.Filled);
+				sp.setColor(Color.RED);
+				
+				float healthBarSize = Gdx.graphics.getWidth()/2 * (player.getHealthCurrent()/player.getHealthMax());
+				
+				sp.rect(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()*.025f, healthBarSize, Gdx.graphics.getHeight()/24);
+				sp.end();
+				batch.begin();
 			
 			if(enemyGrabbed && !Gdx.input.isTouched())
 			{
@@ -221,6 +250,23 @@ public class Game implements Screen, GestureListener {
 		pauseButton.setY(Gdx.graphics.getHeight() * 0.90f);
 		fg.addActor(pauseButton);
 		
+		
+		//Explosion button, kills everyone!
+		explodePow = new Button(skin.getDrawable("ExplosionPowerupButtonLight"), skin.getDrawable("ExplosionPowerupButtonDark"));
+		explodePow.setWidth(Gdx.graphics.getWidth() / 16);
+		explodePow.setHeight(Gdx.graphics.getWidth() / 16);
+		explodePow.setX(Gdx.graphics.getWidth() * 0.005f);
+		explodePow.setY(Gdx.graphics.getHeight() * 0.8f);
+		fg.addActor(explodePow);
+		
+		//Freeze powerup button
+		freezePow = new Button(skin.getDrawable("IcePowerupButtonLight"), skin.getDrawable("IcePowerupButtonDark"));
+		freezePow.setWidth(Gdx.graphics.getWidth() / 16);
+		freezePow.setHeight(Gdx.graphics.getWidth() / 16);
+		freezePow.setX(Gdx.graphics.getWidth() * 0.005f);
+		freezePow.setY(Gdx.graphics.getHeight() * 0.65f);
+		fg.addActor(freezePow);
+			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
@@ -292,6 +338,29 @@ public class Game implements Screen, GestureListener {
 			}
 		});
 		
+		freezePow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				freeze = 1;
+			}
+		});
+		
+		explodePow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+			}
+		});
+		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
@@ -325,6 +394,9 @@ public class Game implements Screen, GestureListener {
 				})));
 			}
 		});
+		
+		
+		
 		
 		mainMenuButton2.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -393,6 +465,25 @@ public class Game implements Screen, GestureListener {
 	/*******************
 	* Spawning
 	*******************/
+	
+	//If the freeze powerup is enabled, spawn will not be called
+		public void freezeCheck() {
+		
+			if (freeze == 0) {
+				spawn();
+			}
+			
+			else if ((freeze == 1) && (freezeTime != 0) ) {
+				freezeTime--;
+			}
+			
+			else {
+				freezeTime = 2;
+				freeze = 0;
+			}
+		}
+	
+	
 	public void spawn() {
 		Random generator = new Random();
 		int x;

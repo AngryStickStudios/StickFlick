@@ -3,8 +3,8 @@ package com.AngryStickStudios.StickFlick.Entities;
 
 public abstract class Entity {
 	private String name;
-	private int healthMax;
-	private int healthCurrent;
+	private float healthMax;
+	private float healthCurrent;
 	private boolean isAlive;
 
 	public Entity(String name, int healthMax){
@@ -26,21 +26,21 @@ public abstract class Entity {
 	}
 	
 	
-	public int getHealthMax() {
+	public float getHealthMax() {
 		return healthMax;
 	}
 
 
-	public void setHealthMax(int healthMax) {
+	public void setHealthMax(float healthMax) {
 		this.healthMax = healthMax;
 	}
 	
-	public int getHealthCurrent() {
+	public float getHealthCurrent() {
 		return healthCurrent;
 	}
 
 
-	public void setHealthCurrent(int healthCurrent) {
+	public void setHealthCurrent(float healthCurrent) {
 		this.healthCurrent = healthCurrent;
 	}
 	
