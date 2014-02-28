@@ -1,6 +1,5 @@
 package com.AngryStickStudios.StickFlick.Entities;
 
-
 public abstract class Entity {
 	private String name;
 	private float healthMax;

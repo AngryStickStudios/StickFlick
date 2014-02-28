@@ -1,8 +1,5 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
-
-
-
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -58,6 +55,7 @@ public class Game implements Screen, GestureListener {
     private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
     private int freeze = 0;
     private float freezeTime = 10;
+    private int healthRegen = 7500;
 	
 	StickFlick game;
 	SpriteBatch batch;
@@ -76,7 +74,7 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow;
+	Button freezePow, explodePow, healthPow;
 	Timer spawnTimer, freezeTimer;
 	double sumSpawn = 0;
 	double timeSpawn = 0;
@@ -262,7 +260,6 @@ public class Game implements Screen, GestureListener {
 		pauseButton.setY(Gdx.graphics.getHeight() * 0.90f);
 		fg.addActor(pauseButton);
 		
-		
 		//Explosion button, kills everyone!
 		explodePow = new Button(skin.getDrawable("ExplosionPowerupButtonLight"), skin.getDrawable("ExplosionPowerupButtonDark"));
 		explodePow.setWidth(Gdx.graphics.getWidth() / 16);
@@ -278,6 +275,14 @@ public class Game implements Screen, GestureListener {
 		freezePow.setX(Gdx.graphics.getWidth() * 0.005f);
 		freezePow.setY(Gdx.graphics.getHeight() * 0.65f);
 		fg.addActor(freezePow);
+		
+		//Health button, restores certain percent of castle health
+		healthPow = new Button(skin.getDrawable("ExplosionPowerupButtonLight"), skin.getDrawable("ExplosionPowerupButtonDark"));
+		healthPow.setWidth(Gdx.graphics.getWidth() / 16);
+		healthPow.setHeight(Gdx.graphics.getWidth() / 16);
+		healthPow.setX(Gdx.graphics.getWidth() * 0.005f);
+		healthPow.setY(Gdx.graphics.getHeight() * 0.50f);
+		fg.addActor(healthPow);
 			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
@@ -314,15 +319,15 @@ public class Game implements Screen, GestureListener {
 		//Death message for Lost Stage
 		labelStyleDeath = new LabelStyle(white, Color.RED);
 		deathMessage = new Label("You Died!!!", labelStyleDeath);
-		deathMessage.setX(Gdx.graphics.getWidth() / 2);
-		deathMessage.setY(Gdx.graphics.getHeight() / 3);
+		deathMessage.setX(Gdx.graphics.getWidth() / 2 - deathMessage.getWidth()/2);
+		deathMessage.setY(Gdx.graphics.getHeight() / 2 - deathMessage.getHeight());
 		deathStage.addActor(deathMessage);
-		
+
 		mainMenuButton2 = new TextButton("Main Menu", buttonStyle);
 		mainMenuButton2.setWidth(Gdx.graphics.getWidth() / 6);
 		mainMenuButton2.setHeight(Gdx.graphics.getHeight() / 12);
-		mainMenuButton2.setX(Gdx.graphics.getWidth()/2);
-		mainMenuButton2.setY(Gdx.graphics.getHeight()/2);
+		mainMenuButton2.setX(Gdx.graphics.getWidth()/2 - mainMenuButton2.getWidth()/2);
+		mainMenuButton2.setY(Gdx.graphics.getHeight()/2 + mainMenuButton2.getHeight()/2);
 		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
@@ -381,6 +386,26 @@ public class Game implements Screen, GestureListener {
 			}
 		});
 		
+		healthPow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				
+				float newHealth = player.getHealthCurrent() + healthRegen;
+				
+				if(newHealth > player.getHealthMax()) {
+					player.setHealthCurrent(player.getHealthMax());
+				}
+				
+				else {
+					player.setHealthCurrent(newHealth);
+				}	 
+			}
+		});
+		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
@@ -414,9 +439,6 @@ public class Game implements Screen, GestureListener {
 				})));
 			}
 		});
-		
-		
-		
 		
 		mainMenuButton2.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
