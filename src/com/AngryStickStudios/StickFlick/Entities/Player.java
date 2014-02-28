@@ -40,6 +40,6 @@ public class Player extends Entity {
 		else{
 			setHealthCurrent(getHealthCurrent() - WallDmg);
 		}
-		System.out.println("Health after EnAtWall: " + getHealthCurrent());
+		//System.out.println("Health after EnAtWall: " + getHealthCurrent());
 	}
 }

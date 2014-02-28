@@ -2,6 +2,7 @@ package com.AngryStickStudios.StickFlick.Screens;
 
 
 
+
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -56,7 +57,7 @@ public class Game implements Screen, GestureListener {
     private int grabbedNumber = -1;
     private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
     private int freeze = 0;
-    private int freezeTime = 2;
+    private float freezeTime = 10;
 	
 	StickFlick game;
 	SpriteBatch batch;
@@ -76,7 +77,7 @@ public class Game implements Screen, GestureListener {
 	OrthographicCamera camera;
 	ShapeRenderer sp;
 	Button freezePow, explodePow;
-	Timer spawnTimer;
+	Timer spawnTimer, freezeTimer;
 	double sumSpawn = 0;
 	double timeSpawn = 0;
 	
@@ -84,14 +85,24 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		
-		player = new Player("testPlayer", 30000);
-		enemyList = new Vector<WalkingEnemy>();
-		Timer.schedule(new Task() {
+		spawnTimer.schedule(new Task() {
+			@Override
+			public void run() {
+				spawn();
+			}
+		}, 0, 5);
+		
+		freezeTimer.schedule(new Task() {
 			@Override
 			public void run() {
 				freezeCheck();
 			}
 		}, 0, 1);
+		
+		
+		
+		player = new Player("testPlayer", 30000);
+		enemyList = new Vector<WalkingEnemy>();
 	
 		/* Health initialization */
 		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -105,6 +116,7 @@ public class Game implements Screen, GestureListener {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
 		
 		if(player.getIsAlive() == false){
 			gameStatus = GAME_LOST;
@@ -345,7 +357,9 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				
+				for(int i = 0; i < enemyList.size(); i++){
+					enemyList.get(i).freeze();
+				}
 				freeze = 1;
 			}
 		});
@@ -357,7 +371,13 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				
+				for(int i = 0; i < enemyList.size(); i++){
+					Random generator = new Random();
+					int test = generator.nextInt(10) - 5;
+					Vector2 explode = new Vector2(test, 20);
+					enemyList.get(i).pickedUp();
+					enemyList.get(i).Released(explode);
+				}
 			}
 		});
 		
@@ -449,98 +469,95 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void resume() {
-		
+
 	}
 
 	@Override
 	public void dispose() {
-			batch.dispose();
-			game.dispose();
-			gameBackground.dispose();
-			stage.dispose();
-			pauseStage.dispose();
-			skin.dispose();		
-		}
-		
+		batch.dispose();
+		game.dispose();
+		gameBackground.dispose();
+		stage.dispose();
+		pauseStage.dispose();
+		skin.dispose();		
+	}
+
 	/*******************
-	* Spawning
-	*******************/
-	
+	 * Spawning
+	 *******************/
+
 	//If the freeze powerup is enabled, spawn will not be called
-		public void freezeCheck() {
-		
-			if (freeze == 0) {
-				spawn();
-			}
+	public void freezeCheck() {
+
+		if (freeze == 0) {
 			
-			else if ((freeze == 1) && (freezeTime != 0) ) {
-				freezeTime--;
+		} else if ((freeze == 1) && (freezeTime != 0) ) {
+			System.out.println(freezeTime);
+			freezeTime--;
+		} else {
+			freezeTime = 10;
+			for(int i = 0; i < enemyList.size(); i++){
+				enemyList.get(i).unfreeze();
 			}
-			
-			else {
-				freezeTime = 2;
-				freeze = 0;
-			}
+			freeze = 0;
 		}
-	
-	
+	}
+
+
 	public void spawn() {
 		Random generator = new Random();
 		int x;
 		int rate;
+
+		timeSpawn = timeSpawn + 5;
 		
-		timeSpawn++;
-		double minuteSpawn = (timeSpawn)/60;
-		
-		if(timeSpawn <= 30) {
-			sumSpawn += .5;
+		if(timeSpawn <= 10){
+			rate = 1;
+		} else if(timeSpawn > 10 && timeSpawn <= 30){
+			rate = 2;
+		} else if(timeSpawn > 30 && timeSpawn <= 90){
+			rate = 3;
+		} else if(timeSpawn > 90 && timeSpawn <= 180){
+			rate = 4;
+		} else{
+			rate = 5;
 		}
-		else if(timeSpawn > 30 && minuteSpawn <= 1) {
-			sumSpawn += 2*minuteSpawn;
-		}
-		else if(minuteSpawn > 1 && minuteSpawn <= 3) {
-			sumSpawn += Math.pow(2, minuteSpawn);
-		}
-		else if(minuteSpawn > 3) {
-			sumSpawn += 2*(minuteSpawn - 3) + 8;
-		}
-		
-		rate = (int) Math.floor(sumSpawn);
-		sumSpawn -= rate;
-		
-		for(int i = 0; i < rate; i++) {
-			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+
+		if(freeze == 0){
+			for(int i = 0; i < rate; i++){
+				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 			}
-		}	
- 
-	/*********************************
-	* Coinage Generation & Management
-	*********************************/
-	
-	// Public methods for getting and setting private long coinageTotal
-    public void setCoinage(long coinageTotal) {
-        this.coinageTotal = coinageTotal;
-    }
-    
-    public long getCoinage() {
-    	return coinageTotal;
-	 }	 
-    
-    // Methods for modifying totalCoinage
-    public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
-        setCoinage(getCoinage() + coinageAcquired);
-    }
+		}
+	}	
 
-    public void decreaseCoinage(long coinageSpent){
-    	setCoinage(getCoinage() - coinageSpent);
-    }
-	
+	/*********************************
+	 * Coinage Generation & Management
+	 *********************************/
+
+	// Public methods for getting and setting private long coinageTotal
+	public void setCoinage(long coinageTotal) {
+		this.coinageTotal = coinageTotal;
+	}
+
+	public long getCoinage() {
+		return coinageTotal;
+	}	 
+
+	// Methods for modifying totalCoinage
+	public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
+		setCoinage(getCoinage() + coinageAcquired);
+	}
+
+	public void decreaseCoinage(long coinageSpent){
+		setCoinage(getCoinage() - coinageSpent);
+	}
+
 	/*******************
-	* Gesture Detection
-	*******************/
+	 * Gesture Detection
+	 *******************/
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		y = Gdx.graphics.getHeight() - y;

@@ -10,7 +10,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
 	float scale;
-	private boolean held, floating/*, landed*/;
+	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
 	
@@ -44,8 +44,17 @@ public class WalkingEnemy extends Entity {
 		
 		held = false;
 		floating = false;
+		frozen = false;
 		moveBackSpeed = 0;
 		FindDestOnWall();
+	}
+	
+	public void freeze(){
+		frozen = true;
+	}
+	
+	public void unfreeze(){
+		frozen = false;
 	}
 	
 	public Image getImage(){
@@ -161,7 +170,7 @@ public class WalkingEnemy extends Entity {
 		}
 		
 		//walk and shit
-		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f){
+		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(20 * delta);
