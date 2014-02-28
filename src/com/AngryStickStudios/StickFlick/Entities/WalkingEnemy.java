@@ -80,17 +80,20 @@ public class WalkingEnemy extends Entity {
 	}
 	
 	public void FindDestOnWall() {
+
 		Vector2 straightDown = getPosition();
 		straightDown.y = Gdx.graphics.getHeight() * 0.04f;
-		
+
 		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
 		System.out.println("Adjust Amount: " + adjAmt);
 		straightDown.x += adjAmt;
-		if(straightDown.x > Gdx.graphics.getWidth() * 0.98f){
-			straightDown.x = Gdx.graphics.getWidth() * 0.98f;
+		
+		int tempWidth = Gdx.graphics.getWidth();
+		if(straightDown.x > tempWidth * 0.98f){
+			straightDown.x = tempWidth * 0.98f;
 		}
-		if(straightDown.x < Gdx.graphics.getWidth() * 0.02f){
-			straightDown.x = Gdx.graphics.getWidth() * 0.02f;
+		if(straightDown.x < tempWidth * 0.02f){
+			straightDown.x = tempWidth * 0.02f;
 		}
 		destination = straightDown;
 	}

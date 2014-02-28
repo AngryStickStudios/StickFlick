@@ -130,7 +130,7 @@ public class Game implements Screen, GestureListener {
 					enemyList.get(i).Update(delta);
 				else{
 					bg.removeActor(enemyList.get(i).getImage());
-					
+					bg.removeActor(enemyList.get(i).getShadow());
 					enemyList.remove(i);
 				}
 			}
@@ -283,7 +283,7 @@ public class Game implements Screen, GestureListener {
 		fg.addActor(freezePow);
 		
 		//Health button, restores certain percent of castle health
-		healthPow = new Button(skin.getDrawable("ExplosionPowerupButtonLight"), skin.getDrawable("ExplosionPowerupButtonDark"));
+		healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
 		healthPow.setWidth(Gdx.graphics.getWidth() / 16);
 		healthPow.setHeight(Gdx.graphics.getWidth() / 16);
 		healthPow.setX(Gdx.graphics.getWidth() * 0.005f);
