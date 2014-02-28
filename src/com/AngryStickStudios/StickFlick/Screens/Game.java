@@ -174,6 +174,9 @@ public class Game implements Screen, GestureListener {
 				timeTrack = timeTrack - 1f;
 				seconds++;
 				
+				// Increase coinage by 80 each second
+				increaseCoinage(80);
+				
 				if (seconds >= 60) {
 					seconds = seconds - 60;
 					minutes++;
@@ -188,6 +191,7 @@ public class Game implements Screen, GestureListener {
 				}
 				
 				timer.setText(formattedTime);
+				coinageDisplay.setText("$" + String.valueOf(getCoinage())); // To display coinage
 			}
 			
 			batch.end();
@@ -295,11 +299,9 @@ public class Game implements Screen, GestureListener {
 	    labelStyleCoinage = new LabelStyle(white, Color.ORANGE);
 		coinageDisplay = new Label(String.valueOf(getCoinage()), labelStyleCoinage);
 		coinageDisplay.setHeight(Gdx.graphics.getHeight() / 24);
-		coinageDisplay.setX(Gdx.graphics.getWidth() * 0.065f); // was 0.025f
+		coinageDisplay.setX(Gdx.graphics.getWidth() * 0.085f);
 		coinageDisplay.setY(Gdx.graphics.getHeight() * 0.95f);
 		stage.addActor(coinageDisplay);
-		
-		coinageDisplay.setText(String.valueOf(getCoinage()));
 		
 		//Pause button stage, not main stage
 		resumeButton = new TextButton("Resume", buttonStyle);
