@@ -1,9 +1,9 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
 import java.util.Vector;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -42,7 +42,11 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements Screen, GestureListener {
 
-    public static final int GAME_LOST = 2;
+	//Stores currency for future play
+	//Will store high scores when that variable is implemented
+	Preferences prefs = Gdx.app.getPreferences("Preferences");
+	
+	public static final int GAME_LOST = 2;
 	public static final int GAME_RUNNING = 1;
     public static final int GAME_PAUSED = 0;
     private int gameStatus = 1;
@@ -52,7 +56,7 @@ public class Game implements Screen, GestureListener {
     private String formattedTime = "0:00";
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
-    private long coinageTotal = 0; // Keeps track of money (coinage) earned in-game - Alex
+    private long coinageTotal = prefs.getLong("currency", 0); // Keeps track of money (coinage) earned in-game - Alex
     private int freeze = 0;
     private float freezeTime = 10;
     private int healthRegen = 7500;
@@ -96,8 +100,6 @@ public class Game implements Screen, GestureListener {
 				freezeCheck();
 			}
 		}, 0, 1);
-		
-		
 		
 		player = new Player("testPlayer", 30000);
 		enemyList = new Vector<WalkingEnemy>();
@@ -175,7 +177,7 @@ public class Game implements Screen, GestureListener {
 				seconds++;
 				
 				// Increase coinage by 80 each second
-				increaseCoinage(80);
+				increaseCoinage(8);
 				
 				if (seconds >= 60) {
 					seconds = seconds - 60;
@@ -564,6 +566,8 @@ public class Game implements Screen, GestureListener {
 	// Public methods for getting and setting private long coinageTotal
 	public void setCoinage(long coinageTotal) {
 		this.coinageTotal = coinageTotal;
+		prefs.putLong("currency", getCoinage());
+		prefs.flush();
 	}
 
 	public long getCoinage() {
@@ -573,10 +577,14 @@ public class Game implements Screen, GestureListener {
 	// Methods for modifying totalCoinage
 	public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
 		setCoinage(getCoinage() + coinageAcquired);
+		prefs.putLong("currency", getCoinage());
+		prefs.flush();
 	}
 
 	public void decreaseCoinage(long coinageSpent){
 		setCoinage(getCoinage() - coinageSpent);
+		prefs.putLong("currency", getCoinage());
+		prefs.flush();
 	}
 
 	/*******************
