@@ -92,7 +92,7 @@ public class Game implements Screen, GestureListener {
 			public void run() {
 				spawn();
 			}
-		}, 0, 5);
+		}, 0, .5f);
 		
 		freezeTimer.schedule(new Task() {
 			@Override
@@ -127,7 +127,7 @@ public class Game implements Screen, GestureListener {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
 				if(enemyList.get(i).getIsAlive())
-					enemyList.get(i).Update(delta);
+					enemyList.get(i).Update(delta/2);
 				else{
 					bg.removeActor(enemyList.get(i).getImage());
 					bg.removeActor(enemyList.get(i).getShadow());
@@ -508,10 +508,6 @@ public class Game implements Screen, GestureListener {
 		skin.dispose();		
 	}
 
-	/*******************
-	 * Spawning
-	 *******************/
-
 	//If the freeze powerup is enabled, spawn will not be called
 	public void freezeCheck() {
 
@@ -529,27 +525,35 @@ public class Game implements Screen, GestureListener {
 		}
 	}
 
-
+	/*******************
+	 * Spawning
+	 *******************/
+	
 	public void spawn() {
-		Random generator = new Random();
-		int x;
-		int rate;
-
-		timeSpawn = timeSpawn + 5;
-		
-		if(timeSpawn <= 10){
-			rate = 1;
-		} else if(timeSpawn > 10 && timeSpawn <= 30){
-			rate = 2;
-		} else if(timeSpawn > 30 && timeSpawn <= 90){
-			rate = 3;
-		} else if(timeSpawn > 90 && timeSpawn <= 180){
-			rate = 4;
-		} else{
-			rate = 5;
-		}
-
 		if(freeze == 0){
+			Random generator = new Random();
+			int x;
+			int rate;
+			
+			timeSpawn += .5;
+			double minuteSpawn = (timeSpawn)/60;
+			
+			if(timeSpawn <= 15) {
+				sumSpawn += .25;
+			}
+			else if (timeSpawn > 15 && minuteSpawn <= .5) {
+				sumSpawn += minuteSpawn;
+			}
+			else if(minuteSpawn > .5 && minuteSpawn <= 1) {
+				sumSpawn += 3*minuteSpawn - 1;
+			}
+			else if(minuteSpawn > 1) {
+				sumSpawn += Math.pow(2, minuteSpawn)/2;
+			}
+			
+			rate = (int) Math.floor(sumSpawn);
+			sumSpawn -= rate;
+			
 			for(int i = 0; i < rate; i++){
 				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
