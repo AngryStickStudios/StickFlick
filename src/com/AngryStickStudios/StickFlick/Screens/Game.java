@@ -85,20 +85,52 @@ public class Game implements Screen, GestureListener {
 	OrthographicCamera camera;
 	ShapeRenderer sp;
 	Button freezePow, explodePow, healthPow;
-	Timer spawnTimer, freezeTimer;
-	double sumSpawn = 0;
-	double timeSpawn = 0;
+	Timer spawnTimerOuter, spawnTimerInner, freezeTimer;
+	double timeSpawn, timeEquation, timeSetSpawn = 0;
+	final double DEATHTIME = .25;
+	boolean justUnfrozen = false;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		spawnTimer.schedule(new Task() {
+		spawnTimerOuter.schedule(new Task() {
 			@Override
 			public void run() {
-				spawn();
+				if(timeSpawn == 0) {
+					timeEquation = 2.625 - 0.009375*timeSpawn;
+					
+					spawnTimerInner.schedule(new Task() {
+						@Override
+						public void run() {
+							spawn();
+						}
+					}, (float)(timeEquation), 0, 0);
+				}
+				else if(timeSetSpawn >= timeEquation) {
+					timeSetSpawn = 0;
+					timeEquation = 2.625 - 0.009375*timeSpawn;
+					
+					spawnTimerInner.schedule(new Task() {
+						@Override
+						public void run() {
+							spawn();
+						}
+					}, (float)(timeEquation), 0, 0);
+				}
+				else if(timeSpawn > 240) {
+					spawnTimerInner.schedule(new Task() {
+						@Override
+						public void run() {
+							spawn();
+						}
+					}, 0, 0, 0);
+				}
+				
+				timeSpawn += .25;
+				timeSetSpawn += .25;
 			}
-		}, 0, 5);
+		}, 0, .25f);
 		
 		freezeTimer.schedule(new Task() {
 			@Override
@@ -134,7 +166,7 @@ public class Game implements Screen, GestureListener {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
 				if(enemyList.get(i).getIsAlive())
-					enemyList.get(i).Update(delta);
+					enemyList.get(i).Update(delta*.4f);
 				else{
 					bg.removeActor(enemyList.get(i).getImage());
 					bg.removeActor(enemyList.get(i).getShadow());
@@ -459,6 +491,8 @@ public class Game implements Screen, GestureListener {
 						resumeGame();
 					}
 				})));
+				
+				freeze = 0;
 			}
 		});
 		
@@ -520,11 +554,15 @@ public class Game implements Screen, GestureListener {
 	
 	public void pauseGame() {
 		gameStatus = GAME_PAUSED;
+		spawnTimerInner.instance().stop();
+		spawnTimerOuter.instance().stop();
 		Gdx.input.setInputProcessor(pauseStage);
 	}
 	
 	public void resumeGame() {
 		gameStatus = GAME_RUNNING;
+		spawnTimerInner.instance().start();
+		spawnTimerOuter.instance().start();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
@@ -543,10 +581,6 @@ public class Game implements Screen, GestureListener {
 		skin.dispose();		
 	}
 
-	/*******************
-	 * Spawning
-	 *******************/
-
 	//If the freeze powerup is enabled, spawn will not be called
 	public void freezeCheck() {
 
@@ -564,33 +598,19 @@ public class Game implements Screen, GestureListener {
 		}
 	}
 
-
+	/*******************
+	 * Spawning
+	 *******************/
+	
 	public void spawn() {
-		Random generator = new Random();
-		int x;
-		int rate;
-
-		timeSpawn = timeSpawn + 5;
-		
-		if(timeSpawn <= 10){
-			rate = 1;
-		} else if(timeSpawn > 10 && timeSpawn <= 30){
-			rate = 2;
-		} else if(timeSpawn > 30 && timeSpawn <= 90){
-			rate = 3;
-		} else if(timeSpawn > 90 && timeSpawn <= 180){
-			rate = 4;
-		} else{
-			rate = 5;
-		}
-
 		if(freeze == 0){
-			for(int i = 0; i < rate; i++){
-				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
-				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
-				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
-			}
+			Random generator = new Random();
+			
+			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			
+			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
+			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
 	}	
 
