@@ -1,7 +1,9 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
 import java.util.Vector;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -32,11 +34,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
+import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -74,7 +79,8 @@ public class Game implements Screen, GestureListener {
 	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
 	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath; // Added labelStyleCoinage to test coinage - Alex
 	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
-	Vector<WalkingEnemy> enemyList;
+	Vector<Entity> enemyList;
+	Champion curChamp;
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
@@ -102,7 +108,8 @@ public class Game implements Screen, GestureListener {
 		}, 0, 1);
 		
 		player = new Player("testPlayer", 30000);
-		enemyList = new Vector<WalkingEnemy>();
+		curChamp = null;
+		enemyList = new Vector<Entity>();
 	
 		/* Health initialization */
 		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -133,7 +140,35 @@ public class Game implements Screen, GestureListener {
 					bg.removeActor(enemyList.get(i).getShadow());
 					enemyList.remove(i);
 				}
+				
+				if(curChamp != null)
+				{
+					if(curChamp.getIsAlive())
+					{
+						curChamp.Update(delta);
+						
+						if(enemyList.size() > 0 && curChamp.getTarget() == null)
+						{
+							curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
+						}
+					}
+					else
+					{
+						bg.removeActor(curChamp.getImage());
+						bg.removeActor(curChamp.getShadow());
+						curChamp = null;
+					}
+				}
 			}
+			
+		
+			if(Gdx.input.isKeyPressed(Keys.C) && curChamp == null)
+			{
+				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				bg.addActor(curChamp.getImage());
+				bg.addActor(curChamp.getShadow());
+			}
+		
 			
 			int enemiesAtWall = 0;
 			
