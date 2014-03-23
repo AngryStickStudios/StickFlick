@@ -547,39 +547,19 @@ public class Game implements Screen, GestureListener {
 	}
 
 	//If the freeze powerup is enabled, spawn will not be called
-	/*public void freezeCheck() {
+	public void freezeCheck() {
 
 		if (freeze == 0) {
 			
 		} else if ((freeze == 1) && (freezeTime != 0) ) {
 			System.out.println(freezeTime);
 			freezeTime--;
-			spawnTimerOuter.stop();
-			spawnTimerInner.stop();
 		} else {
 			freezeTime = 10;
 			for(int i = 0; i < enemyList.size(); i++){
 				enemyList.get(i).unfreeze();
 			}
 			freeze = 0;
-			spawnTimerOuter.start();
-			spawnTimerInner.start();
-		}
-	}*/
-	
-	public void freezeCheck() {
-		System.out.println(freeze);
-		if(freeze == 1) {
-			for(int i = 0; i < enemyList.size(); i++){
-				enemyList.get(i).freeze();
-			}
-			System.out.println("Frozen yo");
-		}
-		else {
-			for(int i = 0; i < enemyList.size(); i++){
-				enemyList.get(i).unfreeze();
-			}
-			System.out.println("Unfrozen though");
 		}
 	}
 
