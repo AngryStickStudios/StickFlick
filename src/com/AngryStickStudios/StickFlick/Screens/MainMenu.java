@@ -1,7 +1,6 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -30,7 +29,7 @@ public class MainMenu implements Screen{
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton playButton, storeButton, tutorialButton, optionsButton, scoreButton;
+	TextButton playButton, storeButton, tutorialButton, optionsButton;
 	Sound menuTheme;
 	
 	public MainMenu(StickFlick game){
@@ -102,13 +101,6 @@ public class MainMenu implements Screen{
 		optionsButton.setX(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2);
 		optionsButton.setY(Gdx.graphics.getHeight() /2 - optionsButton.getHeight() * 3.5f);
 		stage.addActor(optionsButton);
-		//High Scores
-		scoreButton = new TextButton("High Scores", buttonStyle);
-		scoreButton.setWidth(Gdx.graphics.getWidth() / 6);
-		scoreButton.setHeight(Gdx.graphics.getHeight() / 12);
-		scoreButton.setX(Gdx.graphics.getWidth() * 0.80f);
-		scoreButton.setY(Gdx.graphics.getHeight() * 0.90f);
-		stage.addActor(scoreButton);
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 
@@ -145,24 +137,6 @@ public class MainMenu implements Screen{
 					public void run() {
 						menuTheme.stop();
 						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Options(game));
-					}
-				})));
-			}
-		});
-		
-		scoreButton.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
-				return true;
-			}
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
-
-				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
-					@Override
-					public void run() {
-						menuTheme.stop();
-						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Scores(game));
 					}
 				})));
 			}
