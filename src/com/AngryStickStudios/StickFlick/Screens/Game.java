@@ -140,7 +140,6 @@ public class Game implements Screen, GestureListener {
 		}, 0, 1);
 		
 		player = new Player("testPlayer", 30000);
-		System.out.println("Castle Max health: " + player.getCastleMaxHealth());
 		curChamp = null;
 		enemyList = new Vector<Entity>();
 	
@@ -204,7 +203,6 @@ public class Game implements Screen, GestureListener {
 		
 			
 			int enemiesAtWall = 0;
-			//System.out.println("Castle Health: "  + player.getHealthCurrent() + " and " + enemiesAtWall);
 			for(int i = 0; i < enemyList.size(); i++){
 				
 				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
@@ -224,7 +222,6 @@ public class Game implements Screen, GestureListener {
 					
 				}
 			}
-			//System.out.println("En At Wall: " + enemiesAtWall);
 			player.setEnAtWall(enemiesAtWall);
 			player.Update();
 			

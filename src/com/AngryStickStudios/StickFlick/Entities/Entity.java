@@ -8,8 +8,6 @@ public abstract class Entity {
 	private float healthMax;
 	private float healthCurrent;
 	private boolean isAlive;
-	
-	private int castleMaxHealth;
 
 	public Entity(String name, int healthMax){
 		this.name = name;
@@ -49,13 +47,6 @@ public abstract class Entity {
 		this.name = name;
 	}
 	
-	public float getCastleMaxHealth() {
-		return castleMaxHealth;
-	}
-	
-	public void setCastleMaxHealth(int castleMaxHealth) {
-		this.castleMaxHealth = castleMaxHealth;
-	}
 	
 	public float getHealthMax() {
 		return healthMax;
