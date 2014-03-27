@@ -47,8 +47,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements Screen, GestureListener {
 
-	//Stores currency for future play
-	//Will store high scores when that variable is implemented
+	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
 	public static final int GAME_LOST = 2;
@@ -61,11 +60,14 @@ public class Game implements Screen, GestureListener {
     private String formattedTime = "0:00";
     private boolean enemyGrabbed = false;
     private int grabbedNumber = -1;
-    private long coinageTotal = prefs.getLong("currency", 0); // Keeps track of money (coinage) earned in-game - Alex
+    private long coinageTotal = prefs.getLong("currency", 0); 
     private int freeze = 0;
     private float freezeTime = 10;
     private int healthRegen = 7500;
-	
+    private int score = 0;
+    private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
+    
+    
 	StickFlick game;
 	SpriteBatch batch;
 	Texture gameBackground, castleOnly;
@@ -77,8 +79,8 @@ public class Game implements Screen, GestureListener {
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
-	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath; // Added labelStyleCoinage to test coinage - Alex
-	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
+	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath, labelStyleScore; 
+	Label timer, coinageDisplay, deathMessage, finalScore;             
 	Vector<Entity> enemyList;
 	Champion curChamp;
 	Player player;
@@ -160,6 +162,31 @@ public class Game implements Screen, GestureListener {
 		if(player.getIsAlive() == false){
 			gameStatus = GAME_LOST;
 			Gdx.input.setInputProcessor(deathStage);
+			
+			//Saves currency count when game is over
+			prefs.putLong("currency", getCoinage());
+			prefs.flush();
+			
+			//Saves potential high score
+			finalScore.setText("Score: " + ((60 * minutes) + seconds));	
+			score = (60 * minutes) + seconds;
+			if (score > scores[0]) {
+				prefs.putInteger("score1", score);
+				prefs.putInteger("score2", scores[0]);
+				prefs.putInteger("score3", scores[1]);
+				prefs.flush();
+			}
+			
+			else if (score > scores[1]) {
+				prefs.putInteger("score2", score);
+				prefs.putInteger("score3", scores[1]);
+				prefs.flush();
+			}
+			
+			else if (score > scores[2]){
+				prefs.putInteger("score3", score);
+				prefs.flush();
+			}
 		}
 				
 		if (gameStatus == GAME_RUNNING) {
@@ -207,7 +234,7 @@ public class Game implements Screen, GestureListener {
 			for(int i = 0; i < enemyList.size(); i++){
 				
 				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
-					enemiesAtWall++;
+					enemiesAtWall++;	
 				}
 			}
 			
@@ -225,6 +252,8 @@ public class Game implements Screen, GestureListener {
 				sp.begin(ShapeType.Filled);
 				sp.setColor(Color.RED);
 				
+				System.out.println(player.getHealthCurrent());
+				System.out.println(player.getHealthMax());
 				float healthBarSize = Gdx.graphics.getWidth()/2 * (player.getHealthCurrent()/player.getHealthMax());
 				
 				sp.rect(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()*.025f, healthBarSize, Gdx.graphics.getHeight()/24);
@@ -249,6 +278,7 @@ public class Game implements Screen, GestureListener {
 				if (seconds >= 60) {
 					seconds = seconds - 60;
 					minutes++;
+					
 				}
 				
 				if (seconds < 10) {
@@ -389,16 +419,24 @@ public class Game implements Screen, GestureListener {
 		
 		//Death message for Lost Stage
 		labelStyleDeath = new LabelStyle(white, Color.RED);
-		deathMessage = new Label("You Died!!!", labelStyleDeath);
+		deathMessage = new Label("Game Over...", labelStyleDeath);
 		deathMessage.setX(Gdx.graphics.getWidth() / 2 - deathMessage.getWidth()/2);
-		deathMessage.setY(Gdx.graphics.getHeight() / 2 - deathMessage.getHeight());
+		deathMessage.setY(Gdx.graphics.getHeight() / 2 + deathMessage.getHeight() * 3);
 		deathStage.addActor(deathMessage);
-
+		
+		//Final score
+		labelStyleScore = new LabelStyle(white, Color.ORANGE);
+		finalScore = new Label("Score: 999", labelStyleScore);
+		finalScore.setX(Gdx.graphics.getWidth() / 2 - finalScore.getWidth()/2);
+		finalScore.setY(Gdx.graphics.getHeight() / 2);
+		deathStage.addActor(finalScore);
+		
+		//Return to main menu
 		mainMenuButton2 = new TextButton("Main Menu", buttonStyle);
 		mainMenuButton2.setWidth(Gdx.graphics.getWidth() / 6);
 		mainMenuButton2.setHeight(Gdx.graphics.getHeight() / 12);
 		mainMenuButton2.setX(Gdx.graphics.getWidth()/2 - mainMenuButton2.getWidth()/2);
-		mainMenuButton2.setY(Gdx.graphics.getHeight()/2 + mainMenuButton2.getHeight()/2);
+		mainMenuButton2.setY(Gdx.graphics.getHeight()/2 - mainMenuButton2.getHeight() * 2);
 		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
@@ -621,8 +659,8 @@ public class Game implements Screen, GestureListener {
 	// Public methods for getting and setting private long coinageTotal
 	public void setCoinage(long coinageTotal) {
 		this.coinageTotal = coinageTotal;
-		prefs.putLong("currency", getCoinage());
-		prefs.flush();
+		//prefs.putLong("currency", getCoinage());
+		//prefs.flush();
 	}
 
 	public long getCoinage() {
@@ -632,14 +670,14 @@ public class Game implements Screen, GestureListener {
 	// Methods for modifying totalCoinage
 	public void increaseCoinage(long coinageAcquired){ // adds coins to wallet
 		setCoinage(getCoinage() + coinageAcquired);
-		prefs.putLong("currency", getCoinage());
-		prefs.flush();
+		//prefs.putLong("currency", getCoinage());
+		//prefs.flush();
 	}
 
 	public void decreaseCoinage(long coinageSpent){
 		setCoinage(getCoinage() - coinageSpent);
-		prefs.putLong("currency", getCoinage());
-		prefs.flush();
+		//prefs.putLong("currency", getCoinage());
+		//prefs.flush();
 	}
 
 	/*******************
