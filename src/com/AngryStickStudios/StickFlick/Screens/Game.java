@@ -207,19 +207,7 @@ public class Game implements Screen, GestureListener {
 			for(int i = 0; i < enemyList.size(); i++){
 				
 				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
-					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
-						enemiesAtWall++;
-					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
-					}
-					else if((enemyList.get(i).getName()).equals("BigDude")){
-						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
-					}
-					else if((enemyList.get(i).getName()).equals("Demo")){
-						//immediately decreases castle health by 1.2%
-						player.decreaseHealth((int)(player.getCastleMaxHealth() * (1.2 / 100)));
-					}
+					enemiesAtWall++;
 				}
 			}
 			
@@ -620,7 +608,7 @@ public class Game implements Screen, GestureListener {
 			
 			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
-			enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
