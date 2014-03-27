@@ -12,6 +12,7 @@ public class Player extends Entity {
 	
 	public Player(String name, int health){
 		super(name,health);
+		super.setCastleMaxHealth(health);
 		numEnAtWall = 0;
 	}
 	
@@ -31,8 +32,7 @@ public class Player extends Entity {
 	}
 	
 	public void Update(){
-		int WallDmg = numEnAtWall;
-		
+		float WallDmg = getCastleMaxHealth() * ((float)numEnAtWall / 10000); //int of numEnAtWall made to be 0.1% of castle health
 		if(getHealthCurrent() - WallDmg <= 0){
 			setHealthCurrent(0);
 			setIsAlive(false);
@@ -40,6 +40,5 @@ public class Player extends Entity {
 		else{
 			setHealthCurrent(getHealthCurrent() - WallDmg);
 		}
-		//System.out.println("Health after EnAtWall: " + getHealthCurrent());
 	}
 }
