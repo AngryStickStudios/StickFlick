@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -64,6 +65,8 @@ public class Game implements Screen, GestureListener {
     private int freeze = 0;
     private float freezeTime = 10;
     private int healthRegen = 7500;
+    private boolean god = false;
+    private int godTime = 5;
     private int score = 0;
     private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
     
@@ -86,8 +89,8 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow;
-	Timer spawnTimerOuter, spawnTimerInner, freezeTimer;
+	Button freezePow, explodePow, healthPow, godPow;
+	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
@@ -138,6 +141,13 @@ public class Game implements Screen, GestureListener {
 			@Override
 			public void run() {
 				freezeCheck();
+			}
+		}, 0, 1);
+		
+		godTimer.schedule(new Task() {
+			@Override
+			public void run() {
+				godCheck();
 			}
 		}, 0, 1);
 		
@@ -230,45 +240,32 @@ public class Game implements Screen, GestureListener {
 		
 			
 			int enemiesAtWall = 0;
+			
 			for(int i = 0; i < enemyList.size(); i++){
 				
 				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
-					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
-						enemiesAtWall++;
-					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
-					}
-					else if((enemyList.get(i).getName()).equals("BigDude")){
-						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
-					}
-					else if((enemyList.get(i).getName()).equals("Demo")){
-						//immediately decreases castle health by 1.2%
-						player.decreaseHealth((int)(player.getCastleMaxHealth() * (1.2 / 100)));
-					}
-					
+					enemiesAtWall++;	
 				}
 			}
+			
 			player.setEnAtWall(enemiesAtWall);
+			
 			player.Update();
 			
 			batch.begin();
 			stage.draw();	
 			
 			/* Drawing health bar and decreasing health when needed */
-		
-				batch.end();
-				sp.setProjectionMatrix(camera.combined);
-				sp.begin(ShapeType.Filled);
-				sp.setColor(Color.RED);
+			batch.end();
+			sp.setProjectionMatrix(camera.combined);
+			sp.begin(ShapeType.Filled);
+			sp.setColor(Color.RED);
 				
-				System.out.println(player.getHealthCurrent());
-				System.out.println(player.getHealthMax());
-				float healthBarSize = Gdx.graphics.getWidth()/2 * (player.getHealthCurrent()/player.getHealthMax());
+			float healthBarSize = Gdx.graphics.getWidth()/2 * (player.getHealthCurrent()/player.getHealthMax());
 				
-				sp.rect(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()*.025f, healthBarSize, Gdx.graphics.getHeight()/24);
-				sp.end();
-				batch.begin();
+			sp.rect(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()*.025f, healthBarSize, Gdx.graphics.getHeight()/24);
+			sp.end();
+			batch.begin();
 			
 			if(enemyGrabbed && !Gdx.input.isTouched())
 			{
@@ -288,7 +285,6 @@ public class Game implements Screen, GestureListener {
 				if (seconds >= 60) {
 					seconds = seconds - 60;
 					minutes++;
-					
 				}
 				
 				if (seconds < 10) {
@@ -396,6 +392,14 @@ public class Game implements Screen, GestureListener {
 		healthPow.setX(Gdx.graphics.getWidth() * 0.005f);
 		healthPow.setY(Gdx.graphics.getHeight() * 0.50f);
 		fg.addActor(healthPow);
+		
+		//Finger of God button, tap to kill!
+		godPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
+		godPow.setWidth(Gdx.graphics.getWidth() / 16);
+		godPow.setHeight(Gdx.graphics.getWidth() / 16);
+		godPow.setX(Gdx.graphics.getWidth() * 0.005f);
+		godPow.setY(Gdx.graphics.getHeight() * 0.35f);
+		fg.addActor(godPow);
 			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
@@ -525,6 +529,17 @@ public class Game implements Screen, GestureListener {
 			}
 		});
 		
+		godPow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up"); 
+				god = true;	
+			}
+		});
+		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
@@ -581,6 +596,7 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void show() {
+		
 		batch = new SpriteBatch();
 		
 		atlas = new TextureAtlas("data/Textures.atlas");
@@ -626,7 +642,7 @@ public class Game implements Screen, GestureListener {
 		gameBackground.dispose();
 		stage.dispose();
 		pauseStage.dispose();
-		skin.dispose();		
+		skin.dispose();	
 	}
 
 	//If the freeze powerup is enabled, spawn will not be called
@@ -645,6 +661,16 @@ public class Game implements Screen, GestureListener {
 			freeze = 0;
 		}
 	}
+	
+	public void godCheck() {
+		if (god == true && (godTime != 0)) {
+			godTime--;
+		}
+		else {
+			godTime = 5;
+			god = false;
+		}
+	}
 
 	/*******************
 	 * Spawning
@@ -656,7 +682,7 @@ public class Game implements Screen, GestureListener {
 			
 			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
-			enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
@@ -714,7 +740,14 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		// UNUSED
+	
+		//tap to kill
+		if(enemyGrabbed == true && god)
+		{
+			enemyGrabbed = false;
+			enemyList.get(grabbedNumber).setIsAlive(false);
+		}
+		
 		return false;
 	}
 
