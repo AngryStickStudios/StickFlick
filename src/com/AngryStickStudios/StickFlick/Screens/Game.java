@@ -693,14 +693,46 @@ public class Game implements Screen, GestureListener {
 		if(freeze == 0){
 			Random generator = new Random();
 			
-			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5 + 1)) + (int)(Gdx.graphics.getWidth()/10);
 			
-			enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
-			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
-			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
+			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+			
+			double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10)) 
+					+ (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9)) 
+					+ (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8)) 
+					+ (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7)) 
+					+ (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6)) 
+					+ (-0.0000381433485700688 * Math.pow(per_x,5)) 
+					+ (0.00112983288812486 * Math.pow(per_x,4)) 
+					+ (-0.0179778462008673 * Math.pow(per_x,3)) 
+					+ (0.120431228628006 * Math.pow(per_x,2)) 
+					+ (0.227287085911332 * per_x) 
+					+ (53.4555698252754));
+			
+			int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+			
+			int person = generator.nextInt(100) + 1;
+			
+			if(person <= 50 && person >= 1) {
+				enemyList.add(new WalkingEnemy("Basic", 100, x, y));
+			}
+			else if(person > 50 && person <= 100) {
+				enemyList.add(new ArcherDude("Archer", 100, x, y));	
+			}
+			else {
+				System.out.println("ERROR");
+				System.exit(1);
+			}
+			
+			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
+			//enemyList.add(new WalkingEnemy("Basic", 100, x, y));
+			
+			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			//bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
+			//bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 			
 			//Just to test with Archer
-			enemyList.add(new ArcherDude("Archer", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			//enemyList.add(new ArcherDude("Archer", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
