@@ -694,7 +694,26 @@ public class Game implements Screen, GestureListener {
 			
 			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
-			enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+			
+			double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10)) 
+					+ (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9)) 
+					+ (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8)) 
+					+ (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7)) 
+					+ (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6)) 
+					+ (-0.0000381433485700688 * Math.pow(per_x,5)) 
+					+ (0.00112983288812486 * Math.pow(per_x,4)) 
+					+ (-0.0179778462008673 * Math.pow(per_x,3)) 
+					+ (0.120431228628006 * Math.pow(per_x,2)) 
+					+ (0.227287085911332 * per_x) 
+					+ (53.4555698252754));
+			
+			int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+			
+			System.out.println("y = " + y);
+			
+			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
+			enemyList.add(new WalkingEnemy("Basic", 100, x, y));
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
