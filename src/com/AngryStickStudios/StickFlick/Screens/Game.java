@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
+import com.AngryStickStudios.StickFlick.Entities.ArcherDude;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
@@ -695,6 +696,11 @@ public class Game implements Screen, GestureListener {
 			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
 			enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
+			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
+			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
+			
+			//Just to test with Archer
+			enemyList.add(new ArcherDude("Archer", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
 		}
