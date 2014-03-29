@@ -1,10 +1,15 @@
 package com.AngryStickStudios.StickFlick.Entities;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 public abstract class Entity {
 	private String name;
 	private float healthMax;
 	private float healthCurrent;
 	private boolean isAlive;
+	
+	private int castleMaxHealth;
 
 	public Entity(String name, int healthMax){
 		this.name = name;
@@ -13,7 +18,27 @@ public abstract class Entity {
 		this.isAlive = true;
 				
 	}
-
+	
+	public void Released(Vector2 speed) {
+	}
+	
+	public void freeze(){
+	}
+	
+	public void unfreeze(){
+	}
+	
+	public void pickedUp() {
+	}
+	
+	public Vector2 getPosition()
+	{
+		return new Vector2();
+	}
+	
+	public Vector2 getSize(){
+		return new Vector2();
+	}
 
 	public String getName() {
 		return name;
@@ -24,6 +49,13 @@ public abstract class Entity {
 		this.name = name;
 	}
 	
+	public float getCastleMaxHealth() {
+		return castleMaxHealth;
+	}
+	
+	public void setCastleMaxHealth(int castleMaxHealth) {
+		this.castleMaxHealth = castleMaxHealth;
+	}
 	
 	public float getHealthMax() {
 		return healthMax;
@@ -48,6 +80,16 @@ public abstract class Entity {
 		return isAlive;	
 	}
 	
+	public void Update(float delta){
+	}
+	
+	public Image getImage(){
+		return new Image();
+	}
+	
+	public Image getShadow(){
+		return new Image();
+	}
 	
 	public void setIsAlive(boolean isAlive){
 		this.isAlive = isAlive;
