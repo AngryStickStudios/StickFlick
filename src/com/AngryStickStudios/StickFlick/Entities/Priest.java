@@ -229,36 +229,34 @@ public class Priest extends Entity {
 				return;
 			}
 		}
+		
+		Vector2 compVec;
+		if(!target.onGround())
+		{
+			if(Math.abs(target.getGroundPosition().x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.09f))
+			{
+				if(Math.abs(target.getLastPos().y - getGroundPosition().y) < (Gdx.graphics.getHeight() * 0.07f))
+				{
+					return;
+				}
+			}
+			compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getLastPos().y - getGroundPosition().y);
+		}
 		else
 		{
-			Vector2 compVec;
-			if(!target.onGround())
-			{
-				if(Math.abs(target.getGroundPosition().x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.09f))
-				{
-					if(Math.abs(target.getLastPos().y - getGroundPosition().y) < (Gdx.graphics.getHeight() * 0.07f))
-					{
-						return;
-					}
-				}
-				compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getLastPos().y - getGroundPosition().y);
-			}
-			else
-			{
-				compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getGroundPosition().y - getGroundPosition().y);
-			}
-			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(120 * delta);
-			
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
-			enemy.setScale(scale);
-			shadow.setScale(scale);
-
-			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
-
-			shadow.setX(enemy.getX());
-			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+			compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getGroundPosition().y - getGroundPosition().y);
 		}
+		Vector2 normVec = compVec.nor();
+		Vector2 walkVec = normVec.scl(120 * delta);
+			
+		scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+		enemy.setScale(scale);
+		shadow.setScale(scale);
+
+		setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
+
+		shadow.setX(enemy.getX());
+		shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		return;
 	}
 

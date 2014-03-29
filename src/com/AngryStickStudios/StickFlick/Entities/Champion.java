@@ -3,6 +3,9 @@ package com.AngryStickStudios.StickFlick.Entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -15,6 +18,12 @@ public class Champion extends Entity {
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
+	Animation           enemyanim;      // #3
+    Texture             walkTex;      // #4
+    TextureRegion[]         walkframes;     // #5
+    SpriteBatch         spriteBatch;        // #6
+    TextureRegion           currentFrame;
+    float stateTime;
 
 	public Champion(String name, int health, int posX, int posY){
 		super(name, health);
@@ -23,11 +32,25 @@ public class Champion extends Entity {
 		entTex = new Texture("data/enemyTextures/champion.png");
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
+		Texture walkTex = new Texture("data/enemyTextures/champion_walkf.png");
+		TextureRegion[][] tmp = TextureRegion.split(walkTex, walkTex.getWidth()/4, walkTex.getHeight()/5);
+		TextureRegion[] walkframes = new TextureRegion[4 * 5];
+		int index = 0;
+		for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 4; j++) {
+                walkframes[index++] = tmp[i][j];
+            }
+        }
+        
 		// Create enemy Image/Actor
 		enemy = new Image(entTex);
 		enemy.setX(posX);
 		enemy.setY(posY);
 		enemy.setScale(scale);
+		
+		enemyanim = new Animation(0.025f, walkframes);
+		spriteBatch = new SpriteBatch();
+		stateTime = 0f;
 		
 		shadow = new Image(shadowTex);
 		shadow.setX(posX);
@@ -37,6 +60,15 @@ public class Champion extends Entity {
 		life = 45f;
 		attackdelay = 0;
 		target = null;
+	}
+	
+	public void Anim(float delta)
+	{
+		stateTime += Gdx.graphics.getDeltaTime();           // #15
+		currentFrame = enemyanim.getKeyFrame(stateTime, true);  // #16
+		spriteBatch.begin();
+		spriteBatch.draw(currentFrame, 50, 50);             // #17
+		spriteBatch.end();
 	}
 	
 	public Entity getTarget(){
@@ -49,6 +81,10 @@ public class Champion extends Entity {
 	
 	public Image getImage(){
 		return enemy;
+	}
+	
+	public Animation getAnim(){
+		return enemyanim;
 	}
 	
 	public Image getShadow(){
@@ -106,36 +142,34 @@ public class Champion extends Entity {
 				return;
 			}
 		}
+			
+		Vector2 compVec;
+		if(!target.onGround())
+		{
+			if(Math.abs(target.getGroundPosition().x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.03f))
+			{
+				if(Math.abs(target.getLastPos().y - getGroundPosition().y) < (Gdx.graphics.getHeight() * 0.02f))
+				{
+					return;
+				}
+			}
+			compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getLastPos().y - getGroundPosition().y);
+		}
 		else
 		{
-			Vector2 compVec;
-			if(!target.onGround())
-			{
-				if(Math.abs(target.getGroundPosition().x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.03f))
-				{
-					if(Math.abs(target.getLastPos().y - getGroundPosition().y) < (Gdx.graphics.getHeight() * 0.02f))
-					{
-						return;
-					}
-				}
-				compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getLastPos().y - getGroundPosition().y);
-			}
-			else
-			{
-				compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getGroundPosition().y - getGroundPosition().y);
-			}
-			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(150 * delta);
-			
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
-			enemy.setScale(scale / 2);
-			shadow.setScale(scale * 2);
-
-			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
-
-			shadow.setX(getGroundPosition().x - ((shadow.getWidth() / 2) * (scale*2)));
-			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * (scale * 2)));
+			compVec = new Vector2(target.getGroundPosition().x - getGroundPosition().x, target.getGroundPosition().y - getGroundPosition().y);
 		}
+		Vector2 normVec = compVec.nor();
+		Vector2 walkVec = normVec.scl(150 * delta);
+			
+		scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+		enemy.setScale(scale / 2);
+		shadow.setScale(scale * 2);
+
+		setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
+
+		shadow.setX(getGroundPosition().x - ((shadow.getWidth() / 2) * (scale*2)));
+		shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * (scale * 2)));
 		return;
 	}
 }

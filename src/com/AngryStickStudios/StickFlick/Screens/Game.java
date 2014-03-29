@@ -196,6 +196,7 @@ public class Game implements Screen, GestureListener {
 				if(curChamp.getIsAlive())
 				{
 					curChamp.Update(delta);
+					curChamp.Anim(delta);
 
 					if(enemyList.size() > 0 && (curChamp.getTarget() == null || curChamp.getTarget().getIsAlive() == false))
 					{
