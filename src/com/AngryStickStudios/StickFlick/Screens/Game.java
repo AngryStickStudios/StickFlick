@@ -90,7 +90,7 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow;
+	Button freezePow, explodePow, healthPow, godPow, serfPow;
 	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
@@ -419,7 +419,15 @@ public class Game implements Screen, GestureListener {
 		godPow.setX(Gdx.graphics.getWidth() * 0.005f);
 		godPow.setY(Gdx.graphics.getHeight() * 0.35f);
 		fg.addActor(godPow);
-			
+		
+		// Serf "Powerup": Gradually heals (increases castle health) in the style of Health Button
+		serfPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
+		serfPow.setWidth(Gdx.graphics.getWidth() / 16);
+		serfPow.setHeight(Gdx.graphics.getWidth() / 16);
+		serfPow.setX(Gdx.graphics.getWidth() * 0.005f);
+		serfPow.setY(Gdx.graphics.getHeight() * 0.20f);
+		fg.addActor(serfPow);
+		
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
@@ -556,6 +564,28 @@ public class Game implements Screen, GestureListener {
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up"); 
 				god = true;	
+			}
+		});
+		
+		serfPow.addListener(new InputListener(){ 
+			
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				//serf = Gdx.audio.newSound(Gdx.files.internal("data/serf.wav"));
+				//serf.play();
+				float newHealth = player.getHealthCurrent() + healthRegen;
+				
+				if(newHealth > player.getHealthMax()) {
+					player.setHealthCurrent(player.getHealthMax());
+				}
+				
+				else {
+					player.setHealthCurrent(newHealth);
+				}	 
 			}
 		});
 		

@@ -33,7 +33,7 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 			entTex = new Texture("data/enemyTextures/error.png");
 		}
 	
-		shadowTex = new Texture("data/enemyTextures/shadow.png");
+		shadowTex = new Texture("data/enemyTextures/shadow.png"); // Do we need a shadow for the flyer?
 		
 		// Create enemy Image/Actor
 		enemy = new Image(entTex);
@@ -130,7 +130,10 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 			{
 				setPosition(Gdx.input.getX(), lastPos.y);
 			}
+
 			return;
+	
+	
 		}
 
 		if(floating)
@@ -160,9 +163,9 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 				floating = false;
 				//landed = true;
 				
-				setPosition(newPos.x, newPos.y); // COMMENTED OUT HERE
+				setPosition(newPos.x, newPos.y); 
 				
-				Damage(-flySpeed.y);
+				//Damage(-flySpeed.y);
 				FindDestOnWall();
 			}
 			else
