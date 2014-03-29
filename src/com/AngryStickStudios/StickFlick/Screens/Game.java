@@ -244,12 +244,9 @@ public class Game implements Screen, GestureListener {
 			
 			for(int i = 0; i < enemyList.size(); i++){
 				
-				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
-					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
+				if((enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f) && !(enemyList.get(i).getName()).equals("HeavyFlier") && !(enemyList.get(i).getName()).equals("Flier")){
+					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer")){
 						enemiesAtWall++;
-					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
 					}
 					else if((enemyList.get(i).getName()).equals("BigDude")){
 						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
@@ -259,6 +256,15 @@ public class Game implements Screen, GestureListener {
 						player.decreaseHealth((int)(player.getCastleMaxHealth() * (1.2 / 100)));
 					}
 				}
+				else if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.25f){ // USED TO BE 0.11f
+					if((enemyList.get(i).getName()).equals("Flier")){
+						enemiesAtWall++;
+					}
+					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
+						enemiesAtWall += 2;
+					}
+				}
+			
 			}
 			
 			player.setEnAtWall(enemiesAtWall);
@@ -694,6 +700,7 @@ public class Game implements Screen, GestureListener {
 			Random generator = new Random();
 			
 			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			int x2 = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
 			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
 			
@@ -714,13 +721,13 @@ public class Game implements Screen, GestureListener {
 			System.out.println("y = " + y);
 			
 			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
-			enemyList.add(new WalkingEnemy("Basic", 100, x, y));
+			//enemyList.add(new WalkingEnemy("Basic", 100, x, y));
 			//Testing the spawning of flying units (we can balance this and make it happen only in later rounds in Sprint 3)
 			enemyList.add(new FlyingEnemy("Flier", 100, x2, y));
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
-			bg.addActor(enemyList.get((enemyList.size())-2).getShadow());
-			bg.addActor(enemyList.get((enemyList.size())-2).getImage());
+			//bg.addActor(enemyList.get((enemyList.size())-2).getShadow());
+			//bg.addActor(enemyList.get((enemyList.size())-2).getImage());
 		}
 	}	
 

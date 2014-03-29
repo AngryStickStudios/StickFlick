@@ -10,7 +10,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) different kinds of units
 	float scale;
-	private boolean held, floating, frozen/*, landed*/; // May neeed landed for flying units
+	private boolean held, floating, frozen/*, landed*/; // May need landed for flying units
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2; // May have to modify maxHeight?
 	
@@ -24,7 +24,7 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 		
 		// Set flying enemy texture depending on type
 		if(name == "flier" || name == "Flier"){
-			entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			entTex = new Texture("data/enemyTextures/FLier.png"); // basicEnemy
 		} 
 		//else if(name == "heavyflier" || name == "HeavyFlier"){
 		//	
@@ -86,7 +86,7 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 	public void FindDestOnWall() {
 
 		Vector2 straightDown = getPosition();
-		straightDown.y = Gdx.graphics.getHeight() * 0.16f; // used to be 0.4f
+		straightDown.y = Gdx.graphics.getHeight() * 0.24f; // used to be 0.4f
 
 		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
 		System.out.println("Adjust Amount: " + adjAmt);
@@ -113,7 +113,7 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 
 	public void Released(Vector2 speed) {
 		held = false;
-		floating = true;
+		floating = true; 
 		flySpeed = new Vector2(speed);
 		moveBackSpeed = Math.round(flySpeed.y / 10);
 		System.out.println("MoveBackSpeed: " + moveBackSpeed);
@@ -159,7 +159,8 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 				newPos.y = lastPos.y;
 				floating = false;
 				//landed = true;
-				setPosition(newPos.x, newPos.y);
+				
+				setPosition(newPos.x, newPos.y); // COMMENTED OUT HERE
 				
 				Damage(-flySpeed.y);
 				FindDestOnWall();
@@ -176,7 +177,7 @@ public class FlyingEnemy extends Entity { // FlyingEnemy contains three (3) diff
 			return;
 		}
 		
-		//walk and shit
+		//walk
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
