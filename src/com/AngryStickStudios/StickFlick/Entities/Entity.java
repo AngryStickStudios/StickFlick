@@ -8,6 +8,8 @@ public abstract class Entity {
 	private float healthMax;
 	private float healthCurrent;
 	private boolean isAlive;
+	
+	private int castleMaxHealth;
 
 	public Entity(String name, int healthMax){
 		this.name = name;
@@ -29,6 +31,7 @@ public abstract class Entity {
 	public void pickedUp() {
 	}
 	
+<<<<<<< HEAD
 	public Entity getTarget(){
 		return null;
 	}
@@ -37,11 +40,14 @@ public abstract class Entity {
 		
 	}
 	
+=======
+>>>>>>> origin/master
 	public Vector2 getPosition()
 	{
 		return new Vector2();
 	}
 	
+<<<<<<< HEAD
 	public boolean onGround()
 	{
 		return false;
@@ -57,6 +63,8 @@ public abstract class Entity {
 		return new Vector2();
 	}
 	
+=======
+>>>>>>> origin/master
 	public Vector2 getSize(){
 		return new Vector2();
 	}
@@ -70,6 +78,13 @@ public abstract class Entity {
 		this.name = name;
 	}
 	
+	public float getCastleMaxHealth() {
+		return castleMaxHealth;
+	}
+	
+	public void setCastleMaxHealth(int castleMaxHealth) {
+		this.castleMaxHealth = castleMaxHealth;
+	}
 	
 	public float getHealthMax() {
 		return healthMax;

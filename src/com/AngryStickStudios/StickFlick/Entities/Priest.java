@@ -10,11 +10,14 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class Priest extends Entity {
 	float scale;
+<<<<<<< HEAD
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
 	Entity target;
 	float healdelay;
+=======
+>>>>>>> origin/master
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -23,8 +26,11 @@ public class Priest extends Entity {
 		super(name, health);
 		scale = 0.5f;
 		
+<<<<<<< HEAD
 		lastPos = new Vector2(posX, posY);
 		
+=======
+>>>>>>> origin/master
 		entTex = new Texture("data/enemyTextures/priest.png");
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
@@ -38,6 +44,7 @@ public class Priest extends Entity {
 		shadow.setX(posX);
 		shadow.setY(posY);
 		shadow.setScale(scale);
+<<<<<<< HEAD
 		
 		healdelay = 0;
 		target = null;
@@ -62,6 +69,8 @@ public class Priest extends Entity {
 	
 	public void unfreeze(){
 		frozen = false;
+=======
+>>>>>>> origin/master
 	}
 	
 	public Image getImage(){
@@ -72,6 +81,7 @@ public class Priest extends Entity {
 		return shadow;
 	}
 	
+<<<<<<< HEAD
 	public Vector2 getLastPos(){
 		return lastPos;
 	}
@@ -88,6 +98,8 @@ public class Priest extends Entity {
 		return true;
 	}
 	
+=======
+>>>>>>> origin/master
 	public void setPosition(float x, float y){
 		enemy.setX(x - ((enemy.getWidth() / 2) * scale));
 		enemy.setY(y - ((enemy.getHeight() / 2) * scale));
@@ -98,6 +110,7 @@ public class Priest extends Entity {
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
 	}
 	
+<<<<<<< HEAD
 	public Vector2 getGroundPosition()
 	{
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY());
@@ -269,5 +282,13 @@ public class Priest extends Entity {
 		System.out.println("Stickman Health: " + getHealthCurrent());
 		if(getIsAlive() != true)
 			System.out.println("An enemy reached zero heath! Victory dance!");
+=======
+	public Vector2 getSize(){
+		return new Vector2(enemy.getWidth() * scale, enemy.getHeight() * scale);
+	}
+	
+	public void Update(float delta){
+		
+>>>>>>> origin/master
 	}
 }
