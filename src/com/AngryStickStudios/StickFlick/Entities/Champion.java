@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class Champion extends Entity {
@@ -16,41 +17,45 @@ public class Champion extends Entity {
 	Entity target;
 	float life, attackdelay;
 	
+	private int    FRAME_COLS = 4;     // #1
+    private int    FRAME_ROWS = 4;
+	
 	private Texture entTex, shadowTex;
+	private Animation walk_d;
+	private Texture walkSheet;
+	private TextureRegion[] walkFrames;
+	private TextureRegion currentframe;
+	private TextureRegionDrawable walkDrawable;
+	float animationStateTime;
+	
 	Image enemy, shadow;
-	Animation           enemyanim;      // #3
-    Texture             walkTex;      // #4
-    TextureRegion[]         walkframes;     // #5
-    SpriteBatch         spriteBatch;        // #6
-    TextureRegion           currentFrame;
-    float stateTime;
 
 	public Champion(String name, int health, int posX, int posY){
 		super(name, health);
 		scale = 0.1f;
-		
-		entTex = new Texture("data/enemyTextures/champion.png");
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
-		Texture walkTex = new Texture("data/enemyTextures/champion_walkf.png");
-		TextureRegion[][] tmp = TextureRegion.split(walkTex, walkTex.getWidth()/4, walkTex.getHeight()/5);
-		TextureRegion[] walkframes = new TextureRegion[4 * 5];
-		int index = 0;
-		for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 4; j++) {
-                walkframes[index++] = tmp[i][j];
-            }
-        }
-        
+		walkSheet = new Texture(Gdx.files.internal("data/enemyTextures/champion_walkf.png")); // #9
+	    TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);              // #10
+	    walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+	    int index = 0;
+	        
+	    for (int i = 0; i < FRAME_ROWS; i++) {
+	    	for (int j = 0; j < FRAME_COLS; j++) {
+	    		walkFrames[index++] = tmp[i][j];
+	        }
+	    }
+	    
+	    animationStateTime = 0;
+	    walk_d = new Animation((float) 0.025, walkFrames);
+	    currentframe = walk_d.getKeyFrame(animationStateTime, true);
+	    walkDrawable = new TextureRegionDrawable(currentframe);
+		
 		// Create enemy Image/Actor
-		enemy = new Image(entTex);
+		enemy = new Image(walkDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
 		enemy.setScale(scale);
-		
-		enemyanim = new Animation(0.025f, walkframes);
-		spriteBatch = new SpriteBatch();
-		stateTime = 0f;
 		
 		shadow = new Image(shadowTex);
 		shadow.setX(posX);
@@ -60,15 +65,6 @@ public class Champion extends Entity {
 		life = 45f;
 		attackdelay = 0;
 		target = null;
-	}
-	
-	public void Anim(float delta)
-	{
-		stateTime += Gdx.graphics.getDeltaTime();           // #15
-		currentFrame = enemyanim.getKeyFrame(stateTime, true);  // #16
-		spriteBatch.begin();
-		spriteBatch.draw(currentFrame, 50, 50);             // #17
-		spriteBatch.end();
 	}
 	
 	public Entity getTarget(){
@@ -82,10 +78,7 @@ public class Champion extends Entity {
 	public Image getImage(){
 		return enemy;
 	}
-	
-	public Animation getAnim(){
-		return enemyanim;
-	}
+
 	
 	public Image getShadow(){
 		return shadow;
@@ -171,5 +164,13 @@ public class Champion extends Entity {
 		shadow.setX(getGroundPosition().x - ((shadow.getWidth() / 2) * (scale*2)));
 		shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * (scale * 2)));
 		return;
+	}
+	
+	public void Anim(float delta)
+	{
+		currentframe = walk_d.getKeyFrame(animationStateTime += delta, true);
+		walkDrawable.setRegion(currentframe);
+		enemy.setDrawable(walkDrawable);
+		
 	}
 }

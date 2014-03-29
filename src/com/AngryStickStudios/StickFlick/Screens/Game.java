@@ -196,7 +196,6 @@ public class Game implements Screen, GestureListener {
 				if(curChamp.getIsAlive())
 				{
 					curChamp.Update(delta);
-					curChamp.Anim(delta);
 
 					if(enemyList.size() > 0 && (curChamp.getTarget() == null || curChamp.getTarget().getIsAlive() == false))
 					{
@@ -254,7 +253,11 @@ public class Game implements Screen, GestureListener {
 			player.Update();
 			
 			batch.begin();
-			stage.draw();	
+			if(curChamp != null)
+			{
+				curChamp.Anim(delta);
+			}
+			stage.draw();
 			
 			/* Drawing health bar and decreasing health when needed */
 			batch.end();
