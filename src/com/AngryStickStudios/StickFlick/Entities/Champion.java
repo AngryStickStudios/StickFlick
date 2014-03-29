@@ -11,22 +11,14 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 public class Champion extends Entity {
 	float scale;
 	Entity target;
-<<<<<<< HEAD
 	float life, attackdelay;
-=======
-	float life;
->>>>>>> origin/master
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
 
 	public Champion(String name, int health, int posX, int posY){
 		super(name, health);
-<<<<<<< HEAD
 		scale = 0.1f;
-=======
-		scale = 0.2f;
->>>>>>> origin/master
 		
 		entTex = new Texture("data/enemyTextures/champion.png");
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
@@ -42,12 +34,8 @@ public class Champion extends Entity {
 		shadow.setY(posY);
 		shadow.setScale(scale*4);
 		
-<<<<<<< HEAD
 		life = 45f;
 		attackdelay = 0;
-=======
-		life = 45;
->>>>>>> origin/master
 		target = null;
 	}
 	
@@ -68,17 +56,12 @@ public class Champion extends Entity {
 	}
 	
 	public void setPosition(float x, float y){
-<<<<<<< HEAD
 		enemy.setX(x - ((enemy.getWidth() / 2) * (scale / 2)));
-=======
-		enemy.setX(x - ((enemy.getWidth() / 2) * scale));
->>>>>>> origin/master
 		enemy.setY(y - ((enemy.getHeight() / 2) * scale));
 	}
 	
 	public Vector2 getPosition()
 	{
-<<<<<<< HEAD
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * (scale / 2)), enemy.getY() + ((enemy.getHeight() / 2) * scale));
 	}
 	
@@ -89,13 +72,6 @@ public class Champion extends Entity {
 	
 	public Vector2 getSize(){
 		return new Vector2(enemy.getWidth() * (scale / 2), enemy.getHeight() * scale);
-=======
-		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
-	}
-	
-	public Vector2 getSize(){
-		return new Vector2(enemy.getWidth() * scale, enemy.getHeight() * scale);
->>>>>>> origin/master
 	}
 	
 	public void Update(float delta){
@@ -107,22 +83,14 @@ public class Champion extends Entity {
 		}
 		else
 		{
-<<<<<<< HEAD
 			life -= Gdx.graphics.getDeltaTime();
 		}
 		
 		if(target == null || target.getIsAlive() == false)
-=======
-			life -= delta;
-		}
-		
-		if(target == null)
->>>>>>> origin/master
 		{
 			return;
 		}
 		
-<<<<<<< HEAD
 		if(attackdelay > 0)
 		{
 			attackdelay -= Gdx.graphics.getDeltaTime();
@@ -167,27 +135,6 @@ public class Champion extends Entity {
 
 			shadow.setX(getGroundPosition().x - ((shadow.getWidth() / 2) * (scale*2)));
 			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * (scale * 2)));
-=======
-		if((Math.abs(target.getPosition().y) - Math.abs(getPosition().y) < (Gdx.graphics.getHeight() * 0.02f)) && (Math.abs(target.getPosition().x) - Math.abs(getPosition().x) < (Gdx.graphics.getWidth() * 0.04f)))
-		{
-			//attack
-			return;
-		}
-		else
-		{
-			Vector2 compVec = new Vector2(target.getPosition().x - getPosition().x, target.getPosition().y - getPosition().y);
-			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(30 * delta);
-			
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
-			enemy.setScale(scale);
-			shadow.setScale(scale);
-
-			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
-
-			shadow.setX(enemy.getX());
-			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
->>>>>>> origin/master
 		}
 		return;
 	}

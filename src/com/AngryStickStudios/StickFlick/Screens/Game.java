@@ -83,30 +83,18 @@ public class Game implements Screen, GestureListener {
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
-<<<<<<< HEAD
-	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath; // Added labelStyleCoinage to test coinage - Alex
-	Label timer, coinageDisplay, deathMessage;              // Added coinageDisplay to test coinage - Alex
-=======
 	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath, labelStyleScore; 
-	Label timer, coinageDisplay, deathMessage, finalScore;             
->>>>>>> origin/master
+	Label timer, coinageDisplay, deathMessage, finalScore;
 	Vector<Entity> enemyList;
 	Champion curChamp;
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-<<<<<<< HEAD
-	Button freezePow, explodePow, healthPow;
-	Timer spawnTimer, freezeTimer;
-	double sumSpawn = 0;
-	double timeSpawn = 0;
-=======
 	Button freezePow, explodePow, healthPow, godPow;
-	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
+	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
->>>>>>> origin/master
 	
 	
 	public Game(StickFlick game){
@@ -200,35 +188,15 @@ public class Game implements Screen, GestureListener {
 					bg.removeActor(enemyList.get(i).getImage());
 					bg.removeActor(enemyList.get(i).getShadow());
 					enemyList.remove(i);
-				}
-				
-				if(curChamp != null)
-				{
-					if(curChamp.getIsAlive())
-					{
-						curChamp.Update(delta);
-						
-						if(enemyList.size() > 0 && curChamp.getTarget() == null)
-						{
-							curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
-						}
-					}
-					else
-					{
-						bg.removeActor(curChamp.getImage());
-						bg.removeActor(curChamp.getShadow());
-						curChamp = null;
-					}
-				}
+				}	
 			}
 			
-<<<<<<< HEAD
 			if(curChamp != null)
 			{
 				if(curChamp.getIsAlive())
 				{
 					curChamp.Update(delta);
-					
+
 					if(enemyList.size() > 0 && (curChamp.getTarget() == null || curChamp.getTarget().getIsAlive() == false))
 					{
 						//curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
@@ -242,9 +210,6 @@ public class Game implements Screen, GestureListener {
 					curChamp = null;
 				}
 			}
-			
-=======
->>>>>>> origin/master
 		
 			if(Gdx.input.isKeyPressed(Keys.C) && curChamp == null)
 			{
@@ -252,7 +217,6 @@ public class Game implements Screen, GestureListener {
 				bg.addActor(curChamp.getImage());
 				bg.addActor(curChamp.getShadow());
 			}
-<<<<<<< HEAD
 			
 			if(Gdx.input.isKeyPressed(Keys.P))
 			{
@@ -261,8 +225,6 @@ public class Game implements Screen, GestureListener {
 				bg.addActor(newPriest.getImage());
 				bg.addActor(newPriest.getShadow());
 			}
-=======
->>>>>>> origin/master
 		
 			
 			int enemiesAtWall = 0;
@@ -809,17 +771,9 @@ public class Game implements Screen, GestureListener {
 		}
 
 		if(freeze == 0){
-<<<<<<< HEAD
-			for(int i = 0; i < rate; i++){
-				x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-				enemyList.add(new WalkingEnemy("basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));		
-				bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
-				bg.addActor(enemyList.get((enemyList.size())-1).getImage());
-			}
-=======
-			Random generator = new Random();
+			generator = new Random();
 			
-			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
+			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
 			
 			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
 			
@@ -843,7 +797,6 @@ public class Game implements Screen, GestureListener {
 			enemyList.add(new WalkingEnemy("Basic", 100, x, y));
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
->>>>>>> origin/master
 		}
 	}	
 

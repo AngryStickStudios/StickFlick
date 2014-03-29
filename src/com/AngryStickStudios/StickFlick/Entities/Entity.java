@@ -31,7 +31,6 @@ public abstract class Entity {
 	public void pickedUp() {
 	}
 	
-<<<<<<< HEAD
 	public Entity getTarget(){
 		return null;
 	}
@@ -39,15 +38,11 @@ public abstract class Entity {
 	public void setTarget(Entity target){
 		
 	}
-	
-=======
->>>>>>> origin/master
 	public Vector2 getPosition()
 	{
 		return new Vector2();
 	}
 	
-<<<<<<< HEAD
 	public boolean onGround()
 	{
 		return false;
@@ -63,8 +58,6 @@ public abstract class Entity {
 		return new Vector2();
 	}
 	
-=======
->>>>>>> origin/master
 	public Vector2 getSize(){
 		return new Vector2();
 	}
