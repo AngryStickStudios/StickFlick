@@ -39,6 +39,7 @@ import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
+import com.AngryStickStudios.StickFlick.Entities.FlyingEnemy;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -714,8 +715,12 @@ public class Game implements Screen, GestureListener {
 			
 			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
 			enemyList.add(new WalkingEnemy("Basic", 100, x, y));
+			//Testing the spawning of flying units (we can balance this and make it happen only in later rounds in Sprint 3)
+			enemyList.add(new FlyingEnemy("Flier", 100, x2, y));
 			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
 			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
+			bg.addActor(enemyList.get((enemyList.size())-2).getShadow());
+			bg.addActor(enemyList.get((enemyList.size())-2).getImage());
 		}
 	}	
 
