@@ -65,6 +65,18 @@ public class WalkingEnemy extends Entity {
 		return shadow;
 	}
 	
+	public Vector2 getLastPos(){
+		return lastPos;
+	}
+	
+	public boolean onGround(){
+		if(held || floating)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public void setPosition(float x, float y){
 		enemy.setX(x - ((enemy.getWidth() / 2) * scale));
 		enemy.setY(y - ((enemy.getHeight() / 2) * scale));
@@ -73,6 +85,11 @@ public class WalkingEnemy extends Entity {
 	public Vector2 getPosition()
 	{
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
+	}
+	
+	public Vector2 getGroundPosition()
+	{
+		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY());
 	}
 	
 	public Vector2 getSize(){

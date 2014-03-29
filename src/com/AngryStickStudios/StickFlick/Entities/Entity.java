@@ -29,7 +29,30 @@ public abstract class Entity {
 	public void pickedUp() {
 	}
 	
+	public Entity getTarget(){
+		return null;
+	}
+	
+	public void setTarget(Entity target){
+		
+	}
+	
 	public Vector2 getPosition()
+	{
+		return new Vector2();
+	}
+	
+	public boolean onGround()
+	{
+		return false;
+	}
+	
+	public Vector2 getLastPos()
+	{
+		return new Vector2();
+	}
+	
+	public Vector2 getGroundPosition()
 	{
 		return new Vector2();
 	}
