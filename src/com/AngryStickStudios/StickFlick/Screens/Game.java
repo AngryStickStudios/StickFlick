@@ -162,6 +162,9 @@ public class Game implements Screen, GestureListener {
 	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.update();
 	    sp = new ShapeRenderer(); 
+	    
+	    // Reset Powerups
+	    numberOfSerfs = 0;
     
 	}
 	
