@@ -96,7 +96,7 @@ public class Game implements Screen, GestureListener {
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
-	boolean justUnfrozen = false;
+	boolean justUnfrozen = false, priestButtonDown = false;
 	
 	
 	public Game(StickFlick game){
@@ -226,9 +226,12 @@ public class Game implements Screen, GestureListener {
 				}
 				else
 				{
-					hg.removeActor(enemyList.get(i).getImage());
 					hg.removeActor(enemyList.get(i).getShadow());
-					enemyList.remove(i);
+					if(enemyList.get(i).getSplatting() != 1)
+					{
+						hg.removeActor(enemyList.get(i).getImage());
+						enemyList.remove(i);
+					}
 				}	
 			}
 			
@@ -259,12 +262,19 @@ public class Game implements Screen, GestureListener {
 				hg.addActor(curChamp.getShadow());
 			}
 			
-			if(Gdx.input.isKeyPressed(Keys.P))
+			if(Gdx.input.isKeyPressed(Keys.P) && priestButtonDown == false)
 			{
 				Entity newPriest = new Priest("priest", 100, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				enemyList.add(newPriest);
 				hg.addActor(newPriest.getImage());
 				hg.addActor(newPriest.getShadow());
+				newPriest.setChanged(true);
+				newPriest.setPeak(0);
+				priestButtonDown = true;
+			}
+			else
+			{
+				priestButtonDown = false;
 			}
 		
 			
@@ -304,6 +314,8 @@ public class Game implements Screen, GestureListener {
 						enemyList.get(i).setChanged(true);
 					}
 				}
+				
+				enemyList.get(i).Anim(delta);
 			}
 			
 			batch.begin();
@@ -380,7 +392,7 @@ public class Game implements Screen, GestureListener {
 		Entity lEnt = null;
 		
 		for(int i = 0; i < enemyList.size(); i++) {
-			if(enemyList.get(i).getIsAlive()) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged()) {
 				if(!enemyList.get(i).onGround())
 				{
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curChamp.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curChamp.getGroundPosition().y));
@@ -418,7 +430,7 @@ public class Game implements Screen, GestureListener {
 		Entity lEnt = null;
 		
 		for(int i = 0; i < enemyList.size(); i++) {
-			if(enemyList.get(i).getIsAlive() && enemyList.get(i) != curPriest && enemyList.get(i).getHealthCurrent() < enemyList.get(i).getHealthMax()) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i) != curPriest && enemyList.get(i).getHealthCurrent() < enemyList.get(i).getHealthMax() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged()) {
 				if(!enemyList.get(i).onGround())
 				{
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curPriest.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curPriest.getGroundPosition().y));
@@ -702,11 +714,14 @@ public class Game implements Screen, GestureListener {
 					explodeCDTimer = 30;
 					fg.addActor(explodeCD);
 					for(int i = 0; i < enemyList.size(); i++){
-						Random generator = new Random();
-						int test = generator.nextInt(10) - 5;
-						Vector2 explode = new Vector2(test, 20);
-						enemyList.get(i).pickedUp();
-						enemyList.get(i).Released(explode);
+						if(enemyList.get(i).getChanged() == true && enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0)
+						{
+							Random generator = new Random();
+							int test = generator.nextInt(10) - 5;
+							Vector2 explode = new Vector2(test, 20);
+							enemyList.get(i).pickedUp();
+							enemyList.get(i).Released(explode);
+						}
 					}
 				}
 			}
@@ -983,10 +998,13 @@ public class Game implements Screen, GestureListener {
 				Vector2 size = enemyList.get(i).getSize();
 				Vector2 pos = enemyList.get(i).getPosition();
 				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
-					grabbedNumber = i;
-					enemyGrabbed = true;
-					enemyList.get(grabbedNumber).pickedUp();
-					break;
+					if(enemyList.get(i).getChanged() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getIsAlive())
+					{
+						grabbedNumber = i;
+						enemyGrabbed = true;
+						enemyList.get(grabbedNumber).pickedUp();
+						break;
+					}
 				}
 			}
 		}
@@ -1000,7 +1018,11 @@ public class Game implements Screen, GestureListener {
 		if(enemyGrabbed == true && god)
 		{
 			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).setIsAlive(false);
+			enemyList.get(grabbedNumber).decreaseHealth(100);
+			enemyList.get(grabbedNumber).setState(0);
+			enemyList.get(grabbedNumber).setSplatting(1);
+			//enemyList.get(grabbedNumber).setIsAlive(false);
+			
 		}
 		
 		return false;

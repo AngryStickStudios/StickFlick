@@ -1,5 +1,9 @@
 package com.AngryStickStudios.StickFlick.Entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -9,7 +13,8 @@ public abstract class Entity {
 	private float healthCurrent;
 	private boolean isAlive;
 	private float peakamt = 1;
-	private boolean changedLayer;
+	private boolean changedLayer = false;
+	private int splatting = 0;
 	
 	private int castleMaxHealth;
 
@@ -21,9 +26,49 @@ public abstract class Entity {
 				
 	}
 	
+	public Animation setupAnim(String file, int cols, int rows, float speed)
+	{
+		Texture sheet = new Texture(Gdx.files.internal(file)); // #9
+	    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth()/cols, sheet.getHeight()/rows);
+	    TextureRegion[] frames = new TextureRegion[cols * rows];
+	    int index = 0;
+	    for (int i = 0; i < rows; i++) {
+	    	for (int j = 0; j < cols; j++) {
+	    		frames[index++] = tmp[i][j];
+	        }
+	    }
+	    
+	    return new Animation(speed, frames);
+	}
+	
+	public Entity getHealthEnt()
+	{
+		return null;
+	}
+	
+	public int getSplatting()
+	{
+		return splatting;
+	}
+	
+	public void setSplatting(int splat)
+	{
+		
+	}
+	
+	public void setState(float state)
+	{
+		
+	}
+	
 	public boolean getChanged()
 	{
 		return changedLayer;
+	}
+	
+	public void setPeak(float newamt)
+	{
+		
 	}
 	
 	public void setChanged(boolean change)
@@ -83,7 +128,6 @@ public abstract class Entity {
 	public String getName() {
 		return name;
 	}
-
 
 	public void setName(String name) {
 		this.name = name;
@@ -150,6 +194,10 @@ public abstract class Entity {
 		}
 		else
 			healthCurrent = healthCurrent - x;
+	}
+	
+	public void Anim(float delta){
+		
 	}
 
 }

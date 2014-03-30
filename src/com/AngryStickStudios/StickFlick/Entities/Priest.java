@@ -3,35 +3,56 @@ package com.AngryStickStudios.StickFlick.Entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class Priest extends Entity {
-	float scale;
+	float scale, mscale;
 
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed, maxHeight = 2;
+	private int moveBackSpeed;
+	private int splatting;
 	Entity target;
 	float healdelay;
+	float peakamt =  .05f * Gdx.graphics.getHeight();
 	
-	private Texture entTex, shadowTex;
+	private Texture shadowTex;
+	private Animation currentanim, walk_d, walk_u, walk_l, walk_r, splat;
+	private TextureRegion currentframe;
+	private TextureRegionDrawable enemyDrawable;
+	float animationStateTime;
+	
 	Image enemy, shadow;
 
 	public Priest(String name, int health, int posX, int posY){
 		super(name, health);
 		scale = 0.5f;
+		mscale = 0.5f;
 		
-
 		lastPos = new Vector2(posX, posY);
 		
-		entTex = new Texture("data/enemyTextures/priest.png");
+		animationStateTime = 0;
+		walk_d = setupAnim("data/enemyTextures/priest_front.png", 6, 5, (float) 0.025);
+		walk_u = setupAnim("data/enemyTextures/priest_back.png", 6, 5, (float) 0.025);
+		walk_l = setupAnim("data/enemyTextures/priest_left.png", 6, 5, (float) 0.025);
+		walk_r = setupAnim("data/enemyTextures/priest_right.png", 6, 5, (float) 0.025);
+		splat = setupAnim("data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
+		currentanim = walk_d;
+		currentframe = walk_d.getKeyFrame(animationStateTime, true);
+		enemyDrawable = new TextureRegionDrawable(currentframe);
+		    
+		splatting = 0;
+		
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
 		// Create enemy Image/Actor
-		enemy = new Image(entTex);
+		enemy = new Image(enemyDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
 		enemy.setScale(scale);
@@ -48,6 +69,29 @@ public class Priest extends Entity {
 		frozen = false;
 		moveBackSpeed = 0;
 		RandomDest();
+	}
+	
+	public int getSplatting()
+	{
+		return splatting;
+	}
+	
+	public void setSplatting(int val)
+	{
+		splatting = val;
+	}
+	
+	public void setState(float sta)
+	{
+		animationStateTime = sta;
+	}
+	
+	public float getPeak(){
+		return peakamt;
+	}
+	
+	public void setPeak(float newamt){
+		peakamt = newamt;
 	}
 	
 	public Entity getTarget(){
@@ -127,8 +171,11 @@ public class Priest extends Entity {
 	}
 	
 	public void Update(float delta){
+		
+		if(getIsAlive() == false) return;
 		if(held)
 		{
+			currentanim = walk_d;
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			shadow.setX(enemy.getX());
 			shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
@@ -142,6 +189,7 @@ public class Priest extends Entity {
 
 		if(floating)
 		{
+			currentanim = walk_d;
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = getPosition().x + flySpeed.x;
 			
@@ -149,9 +197,9 @@ public class Priest extends Entity {
 				lastPos.y = lastPos.y + ((Gdx.graphics.getHeight() / 500) * moveBackSpeed);
 			}
 			
-			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
+			scale = ((Gdx.graphics.getHeight() - lastPos.y) / 1000) * mscale;
 			enemy.setScale(scale);
-			shadow.setScale(scale);
+			shadow.setScale(scale / mscale);
 			
 			if(newPos.x < Gdx.graphics.getWidth() * 0.01f){
 				newPos.x = Gdx.graphics.getWidth() * 0.01f;
@@ -182,6 +230,21 @@ public class Priest extends Entity {
 			return;
 		}
 		
+		//walk up... and shit
+				if(peakamt > 0 && frozen == false)
+				{
+					currentanim = walk_d;
+					scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
+					enemy.setScale(scale);
+					shadow.setScale(scale / mscale);
+					
+					setPosition(getPosition().x, getPosition().y + (20 * delta));
+					peakamt -= (20*delta);
+					shadow.setX(enemy.getX());
+					shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+					return;
+				}
+		
 		if(healdelay > 0)
 		{
 			healdelay -= Gdx.graphics.getDeltaTime();
@@ -193,11 +256,13 @@ public class Priest extends Entity {
 			return;
 		}
 		
+		
+		
 		if(target == null || target.getIsAlive() == false || target.getHealthCurrent() == target.getHealthMax())
 		{
-			if(Math.abs(destination.y - getGroundPosition().y) < (Gdx.graphics.getHeight() * 0.04f))
+			if(Math.abs(destination.y - getPosition().y) < (Gdx.graphics.getHeight() * 0.04f))
 			{
-				if(Math.abs(destination.x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.05f))
+				if(Math.abs(destination.x - getPosition().x) < (Gdx.graphics.getWidth() * 0.05f))
 				{
 					RandomDest();
 					return;
@@ -206,10 +271,25 @@ public class Priest extends Entity {
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(120 * delta);
+			
+			if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
+			{
+				if(walkVec.x < 0)
+					currentanim = walk_l;
+				else
+					currentanim = walk_r;
+			}
+			else
+			{
+				if(walkVec.y < 0)
+					currentanim = walk_d;
+				else
+					currentanim = walk_u;
+			}
 				
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
 			enemy.setScale(scale);
-			shadow.setScale(scale);
+			shadow.setScale(scale / mscale);
 
 			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
 
@@ -223,6 +303,7 @@ public class Priest extends Entity {
 			if(Math.abs(target.getGroundPosition().x - getGroundPosition().x) < (Gdx.graphics.getWidth() * 0.1f))
 			{
 				target.increaseHealth(100);
+				target.getImage().setColor(0,255,0,255);
 				healdelay = 1f;
 				target = null;
 				RandomDest();
@@ -248,10 +329,25 @@ public class Priest extends Entity {
 		}
 		Vector2 normVec = compVec.nor();
 		Vector2 walkVec = normVec.scl(120 * delta);
+		
+		if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
+		{
+			if(walkVec.x < 0)
+				currentanim = walk_l;
+			else
+				currentanim = walk_r;
+		}
+		else
+		{
+			if(walkVec.y < 0)
+				currentanim = walk_d;
+			else
+				currentanim = walk_u;
+		}
 			
-		scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
 		enemy.setScale(scale);
-		shadow.setScale(scale);
+		shadow.setScale(scale / mscale);
 
 		setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
 
@@ -268,6 +364,32 @@ public class Priest extends Entity {
 		System.out.println("Damage Amount: " + dmgAmt);
 		System.out.println("Stickman Health: " + getHealthCurrent());
 		if(getIsAlive() != true)
+		{
 			System.out.println("An enemy reached zero heath! Victory dance!");
+			splatting = 1;
+			animationStateTime = 0;
+		}
+	}
+	
+	public void Anim(float delta)
+	{
+		if(splatting == 0)
+		{
+			currentframe = currentanim.getKeyFrame(animationStateTime += delta, true);
+			enemyDrawable.setRegion(currentframe);
+			enemy.setDrawable(enemyDrawable);
+		}
+		else
+		{
+			currentframe = splat.getKeyFrame(animationStateTime += delta, false);
+			enemyDrawable.setRegion(currentframe);
+			enemy.setDrawable(enemyDrawable);
+			
+			if(animationStateTime >= 1)
+			{
+				splatting = 2;
+			}
+		}
+		
 	}
 }
