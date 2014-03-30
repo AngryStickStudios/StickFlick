@@ -11,7 +11,8 @@ public class StickFlick extends Game {
 	
 	@Override
 	public void create() {		
-		setScreen(new SplashScreen(this));
+		//setScreen(new SplashScreen(this));
+		setScreen(new MainMenu(this));
 	}
 
 	@Override
