@@ -39,6 +39,7 @@ import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.Priest;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
+import com.AngryStickStudios.StickFlick.Entities.FlyingEnemy;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class Game implements Screen, GestureListener {
     
 	StickFlick game;
 	SpriteBatch batch;
-	Texture gameBackground, castleOnly, gameHills;
+	Texture gameBackground, castleOnly, gameHills, serfTex;
 	Stage stage, pauseStage, deathStage;
 	Group bg, hg, fg;
 	Skin skin;
@@ -92,12 +93,12 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow, freezeCD, godCD, healthCD, explodeCD;
+	Button freezePow, explodePow, healthPow, godPow, serfPow, freezeCD, godCD, healthCD, explodeCD;
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
-	
+	int numberOfSerfs;
 	
 	public Game(StickFlick game){
 		this.game = game;
@@ -171,7 +172,9 @@ public class Game implements Screen, GestureListener {
 	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.update();
 	    sp = new ShapeRenderer(); 
-    
+	    
+	    // Reset Powerups
+	    numberOfSerfs = 0;
 	}
 	
 	@Override
@@ -272,12 +275,9 @@ public class Game implements Screen, GestureListener {
 			
 			for(int i = 0; i < enemyList.size(); i++){
 				
-				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
-					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
+				if((enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f) && !(enemyList.get(i).getName()).equals("HeavyFlier") && !(enemyList.get(i).getName()).equals("Flier")){
+					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer")){
 						enemiesAtWall++;
-					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
 					}
 					else if((enemyList.get(i).getName()).equals("BigDude")){
 						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
@@ -287,6 +287,15 @@ public class Game implements Screen, GestureListener {
 						player.decreaseHealth((int)(player.getCastleMaxHealth() * (1.2 / 100)));
 					}
 				}
+				else if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.25f){ // USED TO BE 0.11f
+					if((enemyList.get(i).getName()).equals("Flier")){
+						enemiesAtWall++;
+					}
+					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
+						enemiesAtWall += 2;
+					}
+				}
+			
 			}
 			
 			player.setEnAtWall(enemiesAtWall);
@@ -337,9 +346,24 @@ public class Game implements Screen, GestureListener {
 				timeTrack = timeTrack - 1f;
 				seconds++;
 				
-				// Increase coinage by 80 each second
+				// Increase coinage by 8 each second
 				increaseCoinage(8);
 				
+				// THIS INCREASES HEALTH OF CASTLE 0.1% (1/1000) every second IF THERE ARE SERFS IN PLAY
+				if (numberOfSerfs >= 1){
+					
+					float newHealth = player.getHealthCurrent() + 30;
+					
+					if(newHealth > player.getHealthMax()) {
+						player.setHealthCurrent(player.getHealthMax());
+					}
+					else {
+						player.increaseHealth((int)(player.getCastleMaxHealth() * ((0.1*numberOfSerfs) / 100)));
+						//player.setHealthCurrent(newHealth);
+					}	 
+				
+				}
+
 				if (seconds >= 60) {
 					seconds = seconds - 60;
 					minutes++;
@@ -587,7 +611,16 @@ public class Game implements Screen, GestureListener {
 		if (godCDTimer != 0) {
 			fg.addActor(godCD);
 		}
-			
+		
+		// Serf "Powerup": Gradually heals (increases castle health) in the style of Health Button
+		serfPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
+		serfPow.setWidth(Gdx.graphics.getWidth() / 16);
+		serfPow.setHeight(Gdx.graphics.getWidth() / 16);
+		serfPow.setX(Gdx.graphics.getWidth() * 0.005f);
+		serfPow.setY(Gdx.graphics.getHeight() * 0.20f);
+		fg.addActor(serfPow);
+
+		
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
@@ -748,6 +781,30 @@ public class Game implements Screen, GestureListener {
 				}
 			}
 		});
+		
+		serfPow.addListener(new InputListener(){ 
+			
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+				//serf = Gdx.audio.newSound(Gdx.files.internal("data/serf.wav"));
+				//serf.play();
+				// Place the serf on the castle
+				// Put a number below the serf to indicate serfs currently in play
+				numberOfSerfs += 1;
+				Image serfImage;
+				serfTex = new Texture("data/serf.png");
+				serfImage = new Image(serfTex);
+				serfImage.setX(Gdx.graphics.getWidth() * 0.85f); 
+				serfImage.setY(Gdx.graphics.getHeight() * 0.04f);
+				serfImage.setScale(0.5f);
+				fg.addActor(serfImage);
+			}
+		});
+
 		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
