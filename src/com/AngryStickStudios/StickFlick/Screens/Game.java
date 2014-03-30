@@ -970,7 +970,18 @@ public class Game implements Screen, GestureListener {
                
                 int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
                 
-                WalkingEnemy newEnemy = new WalkingEnemy("Basic", 100, x, y);
+                Entity newEnemy = null;
+                
+                int yourFate = generator.nextInt(100) + 1;
+                if(yourFate > 0 && yourFate < 6){
+                	newEnemy = new WalkingEnemy("BigDude", 100, x, y);
+                } else if(yourFate > 5 && yourFate < 11){
+                	newEnemy = new Priest("Priest", 100, x, y);
+                } else if(yourFate > 10 && yourFate < 21){
+                	newEnemy = new WalkingEnemy("Demo", 100, x, y);
+                } else{
+                	newEnemy = new WalkingEnemy("Basic", 100, x, y);
+                }
                
                 enemyList.add(newEnemy);
                 //enemyList.add(new StickDude("Basic", 100, x, y));

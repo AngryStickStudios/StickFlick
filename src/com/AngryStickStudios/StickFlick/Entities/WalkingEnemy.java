@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
-	float scale;
+	float scale, scaleMultiplier;
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
@@ -22,20 +22,23 @@ public class WalkingEnemy extends Entity {
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
 		lastPos = new Vector2(posX, posY);
+		scale = 0.5f;
 		
 		// Set enemy texture depending on type
 		if(name == "Basic"){
 			entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			scale = 0.2f;
+			scaleMultiplier = 1f;
 		} else if(name == "Demo"){
-			entTex = new Texture("data/enemyTexture/basicEnemy.png");
-			scale = 0.2f;
+			entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			scaleMultiplier = 0.4f;
 		} else if(name == "BigDude"){
-			entTex = new Texture("data/enemyTexture/basicEnemy.png");
-			scale = 1.5f;
+			entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			scaleMultiplier = 3f;
+			setHealthMax(health * 10);
+			setHealthCurrent(getHealthMax());
 		} else{
 			entTex = new Texture("data/enemyTextures/error.png");
-			scale = 1f;
+			scaleMultiplier = 10f;
 		}
 		
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
@@ -170,7 +173,7 @@ public class WalkingEnemy extends Entity {
 				lastPos.y = lastPos.y + ((Gdx.graphics.getHeight() / 500) * moveBackSpeed);
 			}
 			
-			scale = (Gdx.graphics.getHeight() - lastPos.y) / 1000;
+			scale = ((Gdx.graphics.getHeight() - lastPos.y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);
 			shadow.setScale(scale);
 			
@@ -207,7 +210,7 @@ public class WalkingEnemy extends Entity {
 		//walk up... and shit
 		if(peakamt > 0)
 		{
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);
 			shadow.setScale(scale);
 			
@@ -224,7 +227,7 @@ public class WalkingEnemy extends Entity {
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(8 * delta);
 			
-			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);
 			shadow.setScale(scale);
 
