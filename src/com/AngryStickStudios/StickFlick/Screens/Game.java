@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -51,26 +50,29 @@ public class Game implements Screen, GestureListener {
 
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
-	
+		
 	public static final int GAME_LOST = 2;
 	public static final int GAME_RUNNING = 1;
-    public static final int GAME_PAUSED = 0;
-    private int gameStatus = 1;
-    private float timeTrack = 0;
-    private int seconds = 0;
-    private int minutes = 0;
-    private String formattedTime = "0:00";
-    private boolean enemyGrabbed = false;
-    private int grabbedNumber = -1;
-    private long coinageTotal = prefs.getLong("currency", 0); 
-    private int freeze = 0;
-    private float freezeTime = 10;
-    private int healthRegen = 7500;
-    private boolean god = false;
-    private int godTime = 5;
-    private int score = 0;
-    private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
-    
+	public static final int GAME_PAUSED = 0;
+	private int gameStatus = 1;
+	private float timeTrack = 0;
+	private int seconds = 0;
+	private int minutes = 0;
+	private String formattedTime = "0:00";
+	private boolean enemyGrabbed = false;
+	private int grabbedNumber = -1;
+	private long coinageTotal = prefs.getLong("currency", 0); 
+	private int explodeCDTimer = 0;
+	private int healthCDTimer = 0;
+	private int freeze = 0;
+	private float freezeTime = 10;
+	private int freezeCDTimer = 0;
+	private int healthRegen = 7500;
+	private boolean god = false;
+	private int godTime = 5;
+	private int godCDTimer = 0;
+	private int score = 0;
+	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -90,8 +92,8 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow;
-	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
+	Button freezePow, explodePow, healthPow, godPow, freezeCD, godCD, healthCD, explodeCD;
+	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
@@ -150,6 +152,13 @@ public class Game implements Screen, GestureListener {
 			@Override
 			public void run() {
 				godCheck();
+			}
+		}, 0, 1);
+		
+		coolDownTimer.schedule(new Task() {
+			@Override
+			public void run() {
+				coolDownCheck();
 			}
 		}, 0, 1);
 		
@@ -515,6 +524,16 @@ public class Game implements Screen, GestureListener {
 		explodePow.setY(Gdx.graphics.getHeight() * 0.8f);
 		fg.addActor(explodePow);
 		
+		//Explosion button cool down
+		explodeCD = new Button(skin.getDrawable("ExplosionPowerupButtonDark"));
+		explodeCD.setWidth(Gdx.graphics.getWidth() / 16);
+		explodeCD.setHeight(Gdx.graphics.getWidth() / 16);
+		explodeCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		explodeCD.setY(Gdx.graphics.getHeight() * 0.8f);
+		if (explodeCDTimer != 0) {
+			fg.addActor(explodeCD);
+		}
+		
 		//Freeze powerup button
 		freezePow = new Button(skin.getDrawable("IcePowerupButtonLight"), skin.getDrawable("IcePowerupButtonDark"));
 		freezePow.setWidth(Gdx.graphics.getWidth() / 16);
@@ -522,6 +541,16 @@ public class Game implements Screen, GestureListener {
 		freezePow.setX(Gdx.graphics.getWidth() * 0.005f);
 		freezePow.setY(Gdx.graphics.getHeight() * 0.65f);
 		fg.addActor(freezePow);
+		
+		//Freeze powerup cooldown button
+		freezeCD = new Button(skin.getDrawable("IcePowerupButtonDark"));
+		freezeCD.setWidth(Gdx.graphics.getWidth() / 16);
+		freezeCD.setHeight(Gdx.graphics.getWidth() / 16);
+		freezeCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		freezeCD.setY(Gdx.graphics.getHeight() * 0.65f);
+		if (freezeCDTimer != 0) {
+			fg.addActor(freezeCD);
+		}
 		
 		//Health button, restores certain percent of castle health
 		healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
@@ -531,6 +560,16 @@ public class Game implements Screen, GestureListener {
 		healthPow.setY(Gdx.graphics.getHeight() * 0.50f);
 		fg.addActor(healthPow);
 		
+		//Health cool down button
+		healthCD = new Button(skin.getDrawable("HealPowerupButtonDark"));
+		healthCD.setWidth(Gdx.graphics.getWidth() / 16);
+		healthCD.setHeight(Gdx.graphics.getWidth() / 16);
+		healthCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		healthCD.setY(Gdx.graphics.getHeight() * 0.50f);
+		if (healthCDTimer != 0) {
+			fg.addActor(healthCD);
+		}
+		
 		//Finger of God button, tap to kill!
 		godPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
 		godPow.setWidth(Gdx.graphics.getWidth() / 16);
@@ -538,6 +577,16 @@ public class Game implements Screen, GestureListener {
 		godPow.setX(Gdx.graphics.getWidth() * 0.005f);
 		godPow.setY(Gdx.graphics.getHeight() * 0.35f);
 		fg.addActor(godPow);
+		
+		//Finger of God cooldown button
+		godCD = new Button(skin.getDrawable("HealPowerupButtonDark"));
+		godCD.setWidth(Gdx.graphics.getWidth() / 16);
+		godCD.setHeight(Gdx.graphics.getWidth() / 16);
+		godCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		godCD.setY(Gdx.graphics.getHeight() * 0.35f);
+		if (godCDTimer != 0) {
+			fg.addActor(godCD);
+		}
 			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
@@ -631,10 +680,14 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				for(int i = 0; i < enemyList.size(); i++){
-					enemyList.get(i).freeze();
+				if (freezeCDTimer == 0) {
+					freezeCDTimer = 15;
+					fg.addActor(freezeCD);
+					for(int i = 0; i < enemyList.size(); i++){
+						enemyList.get(i).freeze();
+					}
+					freeze = 1;
 				}
-				freeze = 1;
 			}
 		});
 		
@@ -645,12 +698,16 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				for(int i = 0; i < enemyList.size(); i++){
-					Random generator = new Random();
-					int test = generator.nextInt(10) - 5;
-					Vector2 explode = new Vector2(test, 20);
-					enemyList.get(i).pickedUp();
-					enemyList.get(i).Released(explode);
+				if (explodeCDTimer == 0) {
+					explodeCDTimer = 30;
+					fg.addActor(explodeCD);
+					for(int i = 0; i < enemyList.size(); i++){
+						Random generator = new Random();
+						int test = generator.nextInt(10) - 5;
+						Vector2 explode = new Vector2(test, 20);
+						enemyList.get(i).pickedUp();
+						enemyList.get(i).Released(explode);
+					}
 				}
 			}
 		});
@@ -662,15 +719,17 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
+				if (healthCDTimer == 0) {
+					healthCDTimer = 20;
+					fg.addActor(healthCD);
+					float newHealth = player.getHealthCurrent() + healthRegen;
 				
-				float newHealth = player.getHealthCurrent() + healthRegen;
-				
-				if(newHealth > player.getHealthMax()) {
-					player.setHealthCurrent(player.getHealthMax());
-				}
-				
-				else {
-					player.setHealthCurrent(newHealth);
+					if(newHealth > player.getHealthMax()) {
+						player.setHealthCurrent(player.getHealthMax());
+					}
+					else {
+						player.setHealthCurrent(newHealth);
+					}	
 				}	 
 			}
 		});
@@ -682,7 +741,11 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up"); 
-				god = true;	
+				if (godCDTimer == 0) {
+					godCDTimer = 20;
+					fg.addActor(godCD);
+					god = true;	
+				}
 			}
 		});
 		
@@ -815,7 +878,36 @@ public class Game implements Screen, GestureListener {
 			god = false;
 		}
 	}
-
+	
+	public void coolDownCheck() {
+		if (freezeCDTimer != 0) {
+			freezeCDTimer--;
+			if (freezeCDTimer == 0) {
+				fg.removeActor(freezeCD);
+			}
+		}
+		
+		if (godCDTimer != 0) {
+			godCDTimer--;
+			if (godCDTimer == 0) {
+				fg.removeActor(godCD);
+			}
+		}
+		
+		if (explodeCDTimer != 0) {
+			explodeCDTimer--;
+			if (explodeCDTimer == 0) {
+				fg.removeActor(explodeCD);
+			}
+		}
+		
+		if (healthCDTimer != 0) {
+			healthCDTimer--;
+			if (healthCDTimer == 0) {
+				fg.removeActor(healthCD);
+			}
+		}
+	}
 
 	public void spawn() {
         if(freeze == 0){
