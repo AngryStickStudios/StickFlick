@@ -13,6 +13,7 @@ public class WalkingEnemy extends Entity {
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
+	private float peakamt =  .05f * Gdx.graphics.getHeight();
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -189,11 +190,25 @@ public class WalkingEnemy extends Entity {
 			return;
 		}
 		
+		//walk up... and shit
+		if(peakamt > 0)
+		{
+			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			enemy.setScale(scale);
+			shadow.setScale(scale);
+			
+			setPosition(getPosition().x, getPosition().y + (20 * delta));
+			peakamt -= (20*delta);
+			shadow.setX(enemy.getX());
+			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+			return;
+		}
+		
 		//walk and shit
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(20 * delta);
+			Vector2 walkVec = normVec.scl(8 * delta);
 			
 			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
 			enemy.setScale(scale);

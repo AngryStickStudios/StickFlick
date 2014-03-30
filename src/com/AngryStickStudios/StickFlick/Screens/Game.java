@@ -91,7 +91,7 @@ public class Game implements Screen, GestureListener {
 	OrthographicCamera camera;
 	ShapeRenderer sp;
 	Button freezePow, explodePow, healthPow, godPow;
-	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
+	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
@@ -100,12 +100,44 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		
-		spawnTimer.schedule(new Task() {
-			@Override
-			public void run() {
-				spawn();
-			}
-		}, 0, 5);
+		 spawnTimerOuter.schedule(new Task() {
+             @Override
+             public void run() {
+                     if(timeSpawn == 0) {
+                             timeEquation = 2.625 - 0.009375*timeSpawn;
+                            
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, (float)(timeEquation), 0, 0);
+                     }
+                     else if(timeSetSpawn >= timeEquation) {
+                             timeSetSpawn = 0;
+                             timeEquation = 2.625 - 0.009375*timeSpawn;
+                            
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, (float)(timeEquation), 0, 0);
+                     }
+                     else if(timeSpawn > 240) {
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, 0, 0, 0);
+                     }
+                    
+                     timeSpawn += .25;
+                     timeSetSpawn += .25;
+             }
+     }, 0, .25f);
+
 		
 		freezeTimer.schedule(new Task() {
 			@Override
@@ -756,53 +788,38 @@ public class Game implements Screen, GestureListener {
 
 
 	public void spawn() {
-		Random generator = new Random();
-		int x;
-		int rate;
-
-		timeSpawn = timeSpawn + 5;
-		
-		if(timeSpawn <= 10){
-			rate = 1;
-		} else if(timeSpawn > 10 && timeSpawn <= 30){
-			rate = 2;
-		} else if(timeSpawn > 30 && timeSpawn <= 90){
-			rate = 3;
-		} else if(timeSpawn > 90 && timeSpawn <= 180){
-			rate = 4;
-		} else{
-			rate = 5;
-		}
-
-		if(freeze == 0){
-			generator = new Random();
-			
-			x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-			
-			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
-			
-			double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10)) 
-					+ (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9)) 
-					+ (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8)) 
-					+ (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7)) 
-					+ (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6)) 
-					+ (-0.0000381433485700688 * Math.pow(per_x,5)) 
-					+ (0.00112983288812486 * Math.pow(per_x,4)) 
-					+ (-0.0179778462008673 * Math.pow(per_x,3)) 
-					+ (0.120431228628006 * Math.pow(per_x,2)) 
-					+ (0.227287085911332 * per_x) 
-					+ (53.4555698252754));
-			
-			int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
-			
-			System.out.println("y = " + y);
-			
-			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
-			enemyList.add(new WalkingEnemy("Basic", 100, x, y));
-			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
-			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
-		}
-	}	
+        if(freeze == 0){
+                Random generator = new Random();
+               
+                int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
+               
+                double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+               
+                double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
+                                + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
+                                + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
+                                + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
+                                + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
+                                + (-0.0000381433485700688 * Math.pow(per_x,5))
+                                + (0.00112983288812486 * Math.pow(per_x,4))
+                                + (-0.0179778462008673 * Math.pow(per_x,3))
+                                + (0.120431228628006 * Math.pow(per_x,2))
+                                + (0.227287085911332 * per_x)
+                                + (53.4555698252754));
+               
+                int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+                
+                WalkingEnemy newEnemy = new WalkingEnemy("Basic", 100, x, y);
+               
+                enemyList.add(newEnemy);
+                //enemyList.add(new StickDude("Basic", 100, x, y));
+                bg.addActor(newEnemy.getShadow());
+                bg.addActor(newEnemy.getImage());
+                
+                newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
+                
+        }
+}
 
 	/*********************************
 	 * Coinage Generation & Management

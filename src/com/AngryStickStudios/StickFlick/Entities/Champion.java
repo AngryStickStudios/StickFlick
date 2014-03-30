@@ -154,6 +154,7 @@ public class Champion extends Entity {
 		}
 		Vector2 normVec = compVec.nor();
 		Vector2 walkVec = normVec.scl(150 * delta);
+		//Vector2 walkVec = normVec.scl(600 * delta);
 			
 		scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
 		enemy.setScale(scale / 2);
