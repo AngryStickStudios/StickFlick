@@ -74,7 +74,7 @@ public class Game implements Screen, GestureListener {
     
 	StickFlick game;
 	SpriteBatch batch;
-	Texture gameBackground, castleOnly;
+	Texture gameBackground, castleOnly, serfTex;
 	Stage stage, pauseStage, deathStage;
 	Group bg, fg;
 	Skin skin;
@@ -577,6 +577,17 @@ public class Game implements Screen, GestureListener {
 				System.out.println("up");
 				//serf = Gdx.audio.newSound(Gdx.files.internal("data/serf.wav"));
 				//serf.play();
+				// Place the serf on the castle
+				// Put a number below the serf to indicate serfs currently in play
+				//
+				Image serfImage;
+				serfTex = new Texture("data/serf.png");
+				serfImage = new Image(serfTex);
+				serfImage.setX(Gdx.graphics.getWidth() * 0.85f); 
+				serfImage.setY(Gdx.graphics.getHeight() * 0.04f);
+				serfImage.setScale(0.5f);
+				fg.addActor(serfImage);
+				// Reset this number to zero during next game?
 				float newHealth = player.getHealthCurrent() + healthRegen;
 				
 				if(newHealth > player.getHealthMax()) {
