@@ -95,6 +95,7 @@ public class Game implements Screen, GestureListener {
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
+	int numberOfSerfs;
 	
 	
 	public Game(StickFlick game){
@@ -300,6 +301,21 @@ public class Game implements Screen, GestureListener {
 				
 				// Increase coinage by 80 each second
 				increaseCoinage(8);
+				
+				// THIS INCREASES HEALTH OF CASTLE 0.1% (1/1000) every second IF THERE ARE SERFS IN PLAY
+				if (numberOfSerfs >= 1){
+					
+					float newHealth = player.getHealthCurrent() + 30;
+					
+					if(newHealth > player.getHealthMax()) {
+						player.setHealthCurrent(player.getHealthMax());
+					}
+					else {
+						player.increaseHealth((int)(player.getCastleMaxHealth() * ((0.1*numberOfSerfs) / 100)));
+						//player.setHealthCurrent(newHealth);
+					}	 
+				
+				}
 				
 				if (seconds >= 60) {
 					seconds = seconds - 60;
@@ -579,7 +595,7 @@ public class Game implements Screen, GestureListener {
 				//serf.play();
 				// Place the serf on the castle
 				// Put a number below the serf to indicate serfs currently in play
-				//
+				numberOfSerfs += 1;
 				Image serfImage;
 				serfTex = new Texture("data/serf.png");
 				serfImage = new Image(serfTex);
@@ -588,15 +604,7 @@ public class Game implements Screen, GestureListener {
 				serfImage.setScale(0.5f);
 				fg.addActor(serfImage);
 				// Reset this number to zero during next game?
-				float newHealth = player.getHealthCurrent() + healthRegen;
 				
-				if(newHealth > player.getHealthMax()) {
-					player.setHealthCurrent(player.getHealthMax());
-				}
-				
-				else {
-					player.setHealthCurrent(newHealth);
-				}	 
 			}
 		});
 		
