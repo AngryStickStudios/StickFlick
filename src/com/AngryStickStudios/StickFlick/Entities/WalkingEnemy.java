@@ -21,14 +21,21 @@ public class WalkingEnemy extends Entity {
 
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
-		scale = 0.5f;
 		lastPos = new Vector2(posX, posY);
 		
 		// Set enemy texture depending on type
-		if(name == "basic" || name == "Basic"){
+		if(name == "Basic"){
 			entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			scale = 0.2f;
+		} else if(name == "Demo"){
+			entTex = new Texture("data/enemyTexture/basicEnemy.png");
+			scale = 0.2f;
+		} else if(name == "BigDude"){
+			entTex = new Texture("data/enemyTexture/basicEnemy.png");
+			scale = 1.5f;
 		} else{
 			entTex = new Texture("data/enemyTextures/error.png");
+			scale = 1f;
 		}
 		
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
