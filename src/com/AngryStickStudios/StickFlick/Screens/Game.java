@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -38,8 +37,8 @@ import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
+import com.AngryStickStudios.StickFlick.Entities.Priest;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
-import com.AngryStickStudios.StickFlick.Entities.FlyingEnemy;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -51,32 +50,35 @@ public class Game implements Screen, GestureListener {
 
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
-	
+		
 	public static final int GAME_LOST = 2;
 	public static final int GAME_RUNNING = 1;
-    public static final int GAME_PAUSED = 0;
-    private int gameStatus = 1;
-    private float timeTrack = 0;
-    private int seconds = 0;
-    private int minutes = 0;
-    private String formattedTime = "0:00";
-    private boolean enemyGrabbed = false;
-    private int grabbedNumber = -1;
-    private long coinageTotal = prefs.getLong("currency", 0); 
-    private int freeze = 0;
-    private float freezeTime = 10;
-    private int healthRegen = 7500;
-    private boolean god = false;
-    private int godTime = 5;
-    private int score = 0;
-    private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
-    
+	public static final int GAME_PAUSED = 0;
+	private int gameStatus = 1;
+	private float timeTrack = 0;
+	private int seconds = 0;
+	private int minutes = 0;
+	private String formattedTime = "0:00";
+	private boolean enemyGrabbed = false;
+	private int grabbedNumber = -1;
+	private long coinageTotal = prefs.getLong("currency", 0); 
+	private int explodeCDTimer = 0;
+	private int healthCDTimer = 0;
+	private int freeze = 0;
+	private float freezeTime = 10;
+	private int freezeCDTimer = 0;
+	private int healthRegen = 7500;
+	private boolean god = false;
+	private int godTime = 5;
+	private int godCDTimer = 0;
+	private int score = 0;
+	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
     
 	StickFlick game;
 	SpriteBatch batch;
-	Texture gameBackground, castleOnly, serfTex;
+	Texture gameBackground, castleOnly, gameHills;
 	Stage stage, pauseStage, deathStage;
-	Group bg, fg;
+	Group bg, hg, fg;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
@@ -84,60 +86,60 @@ public class Game implements Screen, GestureListener {
 	InputMultiplexer im;
 	TextButton pauseButton, resumeButton, mainMenuButton, mainMenuButton2;
 	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath, labelStyleScore; 
-	Label timer, coinageDisplay, deathMessage, finalScore;             
+	Label timer, coinageDisplay, deathMessage, finalScore;
 	Vector<Entity> enemyList;
 	Champion curChamp;
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow, serfPow;
-	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer;
+	Button freezePow, explodePow, healthPow, godPow, freezeCD, godCD, healthCD, explodeCD;
+	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false;
-	int numberOfSerfs;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
 		
-		spawnTimerOuter.schedule(new Task() {
-			@Override
-			public void run() {
-				if(timeSpawn == 0) {
-					timeEquation = 2.625 - 0.009375*timeSpawn;
-					
-					spawnTimerInner.schedule(new Task() {
-						@Override
-						public void run() {
-							spawn();
-						}
-					}, (float)(timeEquation), 0, 0);
-				}
-				else if(timeSetSpawn >= timeEquation) {
-					timeSetSpawn = 0;
-					timeEquation = 2.625 - 0.009375*timeSpawn;
-					
-					spawnTimerInner.schedule(new Task() {
-						@Override
-						public void run() {
-							spawn();
-						}
-					}, (float)(timeEquation), 0, 0);
-				}
-				else if(timeSpawn > 240) {
-					spawnTimerInner.schedule(new Task() {
-						@Override
-						public void run() {
-							spawn();
-						}
-					}, 0, 0, 0);
-				}
-				
-				timeSpawn += .25;
-				timeSetSpawn += .25;
-			}
-		}, 0, .25f);
+		 spawnTimerOuter.schedule(new Task() {
+             @Override
+             public void run() {
+                     if(timeSpawn == 0) {
+                             timeEquation = 2.625 - 0.009375*timeSpawn;
+                            
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, (float)(timeEquation), 0, 0);
+                     }
+                     else if(timeSetSpawn >= timeEquation) {
+                             timeSetSpawn = 0;
+                             timeEquation = 2.625 - 0.009375*timeSpawn;
+                            
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, (float)(timeEquation), 0, 0);
+                     }
+                     else if(timeSpawn > 240) {
+                             spawnTimerInner.schedule(new Task() {
+                                     @Override
+                                     public void run() {
+                                             spawn();
+                                     }
+                             }, 0, 0, 0);
+                     }
+                    
+                     timeSpawn += .25;
+                     timeSetSpawn += .25;
+             }
+     }, 0, .25f);
+
 		
 		freezeTimer.schedule(new Task() {
 			@Override
@@ -153,6 +155,13 @@ public class Game implements Screen, GestureListener {
 			}
 		}, 0, 1);
 		
+		coolDownTimer.schedule(new Task() {
+			@Override
+			public void run() {
+				coolDownCheck();
+			}
+		}, 0, 1);
+		
 		player = new Player("testPlayer", 30000);
 		curChamp = null;
 		enemyList = new Vector<Entity>();
@@ -162,9 +171,6 @@ public class Game implements Screen, GestureListener {
 	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.update();
 	    sp = new ShapeRenderer(); 
-	    
-	    // Reset Powerups
-	    numberOfSerfs = 0;
     
 	}
 	
@@ -208,39 +214,57 @@ public class Game implements Screen, GestureListener {
 			stage.act(Gdx.graphics.getDeltaTime());
 			for(int i = 0; i < enemyList.size(); i++) {
 				if(enemyList.get(i).getIsAlive())
-					enemyList.get(i).Update(delta*.4f);
-				else{
-					bg.removeActor(enemyList.get(i).getImage());
-					bg.removeActor(enemyList.get(i).getShadow());
-					enemyList.remove(i);
-				}
-				
-				if(curChamp != null)
 				{
-					if(curChamp.getIsAlive())
+					enemyList.get(i).Update(delta);
+					if(enemyList.get(i).getName() == "priest")
 					{
-						curChamp.Update(delta);
-						
-						if(enemyList.size() > 0 && curChamp.getTarget() == null)
+						if(enemyList.size() > 1 && (enemyList.get(i).getTarget() == null || enemyList.get(i).getTarget().getIsAlive() == false))
 						{
-							curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
+							enemyList.get(i).setTarget(PriorityHeal(enemyList.get(i)));
 						}
 					}
-					else
-					{
-						bg.removeActor(curChamp.getImage());
-						bg.removeActor(curChamp.getShadow());
-						curChamp = null;
-					}
 				}
+				else
+				{
+					hg.removeActor(enemyList.get(i).getImage());
+					hg.removeActor(enemyList.get(i).getShadow());
+					enemyList.remove(i);
+				}	
 			}
 			
+			if(curChamp != null)
+			{
+				if(curChamp.getIsAlive())
+				{
+					curChamp.Update(delta);
+
+					if(enemyList.size() > 0 && (curChamp.getTarget() == null || curChamp.getTarget().getIsAlive() == false))
+					{
+						//curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
+						curChamp.setTarget(PriorityTarget());
+					}
+				}
+				else
+				{
+					hg.removeActor(curChamp.getImage());
+					hg.removeActor(curChamp.getShadow());
+					curChamp = null;
+				}
+			}
 		
 			if(Gdx.input.isKeyPressed(Keys.C) && curChamp == null)
 			{
 				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-				bg.addActor(curChamp.getImage());
-				bg.addActor(curChamp.getShadow());
+				hg.addActor(curChamp.getImage());
+				hg.addActor(curChamp.getShadow());
+			}
+			
+			if(Gdx.input.isKeyPressed(Keys.P))
+			{
+				Entity newPriest = new Priest("priest", 100, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				enemyList.add(newPriest);
+				hg.addActor(newPriest.getImage());
+				hg.addActor(newPriest.getShadow());
 			}
 		
 			
@@ -248,9 +272,12 @@ public class Game implements Screen, GestureListener {
 			
 			for(int i = 0; i < enemyList.size(); i++){
 				
-				if((enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f) && !(enemyList.get(i).getName()).equals("HeavyFlier") && !(enemyList.get(i).getName()).equals("Flier")){
-					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer")){
+				if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.11f){
+					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
 						enemiesAtWall++;
+					}
+					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
+						enemiesAtWall += 2;
 					}
 					else if((enemyList.get(i).getName()).equals("BigDude")){
 						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
@@ -260,23 +287,31 @@ public class Game implements Screen, GestureListener {
 						player.decreaseHealth((int)(player.getCastleMaxHealth() * (1.2 / 100)));
 					}
 				}
-				else if(enemyList.get(i).getImage().getY() < Gdx.graphics.getHeight() * 0.25f){ // USED TO BE 0.11f
-					if((enemyList.get(i).getName()).equals("Flier")){
-						enemiesAtWall++;
-					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
-					}
-				}
-			
 			}
 			
 			player.setEnAtWall(enemiesAtWall);
 			
 			player.Update();
+			for(int i = 0; i < enemyList.size(); i++) {
+				if(enemyList.get(i).getIsAlive() && enemyList.get(i).getPeak() <= 0)
+				{
+					if(enemyList.get(i).getChanged() == false)
+					{
+						bg.removeActor(enemyList.get(i).getImage());
+						bg.removeActor(enemyList.get(i).getShadow());
+						hg.addActor(enemyList.get(i).getImage());
+						hg.addActor(enemyList.get(i).getShadow());
+						enemyList.get(i).setChanged(true);
+					}
+				}
+			}
 			
 			batch.begin();
-			stage.draw();	
+			if(curChamp != null)
+			{
+				curChamp.Anim(delta);
+			}
+			stage.draw();
 			
 			/* Drawing health bar and decreasing health when needed */
 			batch.end();
@@ -304,21 +339,6 @@ public class Game implements Screen, GestureListener {
 				
 				// Increase coinage by 80 each second
 				increaseCoinage(8);
-				
-				// THIS INCREASES HEALTH OF CASTLE 0.1% (1/1000) every second IF THERE ARE SERFS IN PLAY
-				if (numberOfSerfs >= 1){
-					
-					float newHealth = player.getHealthCurrent() + 30;
-					
-					if(newHealth > player.getHealthMax()) {
-						player.setHealthCurrent(player.getHealthMax());
-					}
-					else {
-						player.increaseHealth((int)(player.getCastleMaxHealth() * ((0.1*numberOfSerfs) / 100)));
-						//player.setHealthCurrent(newHealth);
-					}	 
-				
-				}
 				
 				if (seconds >= 60) {
 					seconds = seconds - 60;
@@ -353,6 +373,86 @@ public class Game implements Screen, GestureListener {
 		}
 	}
 	
+	public Entity PriorityTarget()
+	{
+		int priority;
+		int lPriority = -1;
+		Entity lEnt = null;
+		
+		for(int i = 0; i < enemyList.size(); i++) {
+			if(enemyList.get(i).getIsAlive()) {
+				if(!enemyList.get(i).onGround())
+				{
+					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curChamp.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curChamp.getGroundPosition().y));
+					priority += enemyList.get(i).getLastPos().y;
+				}
+				else
+				{
+					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curChamp.getGroundPosition().x) + sqr(enemyList.get(i).getGroundPosition().y - curChamp.getGroundPosition().y));
+					priority += enemyList.get(i).getGroundPosition().y;
+				}
+				
+				if(lPriority == -1)
+				{
+					lPriority = priority;
+					lEnt = enemyList.get(i);
+				}
+				else
+				{
+					if(priority < lPriority)
+					{
+						lPriority = priority;
+						lEnt = enemyList.get(i);
+					}
+				}
+			}
+		}
+		
+		return lEnt;
+	}
+	
+	public Entity PriorityHeal(Entity curPriest)
+	{
+		int priority;
+		int lPriority = -1;
+		Entity lEnt = null;
+		
+		for(int i = 0; i < enemyList.size(); i++) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i) != curPriest && enemyList.get(i).getHealthCurrent() < enemyList.get(i).getHealthMax()) {
+				if(!enemyList.get(i).onGround())
+				{
+					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curPriest.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curPriest.getGroundPosition().y));
+					priority += (enemyList.get(i).getHealthCurrent() * 4);
+				}
+				else
+				{
+					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curPriest.getGroundPosition().x) + sqr(enemyList.get(i).getGroundPosition().y - curPriest.getGroundPosition().y));
+					priority += (enemyList.get(i).getHealthCurrent() * 4);
+				}
+				
+				if(lPriority == -1)
+				{
+					lPriority = priority;
+					lEnt = enemyList.get(i);
+				}
+				else
+				{
+					if(priority < lPriority)
+					{
+						lPriority = priority;
+						lEnt = enemyList.get(i);
+					}
+				}
+			}
+		}
+		
+		return lEnt;
+	}
+	
+	public float sqr(float num)
+	{
+		return num*num;
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -366,6 +466,7 @@ public class Game implements Screen, GestureListener {
 		deathStage.clear();
 		
 		bg = new Group();
+		hg = new Group();
 		fg = new Group();
 		
 		if(gameStatus == GAME_RUNNING) {
@@ -380,6 +481,7 @@ public class Game implements Screen, GestureListener {
 		}
 		
 		stage.addActor(bg);
+		stage.addActor(hg);
 		stage.addActor(fg);
 		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
@@ -393,6 +495,13 @@ public class Game implements Screen, GestureListener {
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		bg.addActor(backgroundImage);
+		
+		gameHills = new Texture("data/gameHills.png");
+		Image hillsImage = new Image(gameHills);
+		hillsImage.setZIndex(100000);
+		hillsImage.setWidth(Gdx.graphics.getWidth());
+		hillsImage.setHeight(Gdx.graphics.getHeight());
+		hg.addActor(hillsImage);
 		
 		castleOnly = new Texture("data/castleOnly.png");
 		Image castleImage = new Image(castleOnly);
@@ -415,6 +524,16 @@ public class Game implements Screen, GestureListener {
 		explodePow.setY(Gdx.graphics.getHeight() * 0.8f);
 		fg.addActor(explodePow);
 		
+		//Explosion button cool down
+		explodeCD = new Button(skin.getDrawable("ExplosionPowerupButtonDark"));
+		explodeCD.setWidth(Gdx.graphics.getWidth() / 16);
+		explodeCD.setHeight(Gdx.graphics.getWidth() / 16);
+		explodeCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		explodeCD.setY(Gdx.graphics.getHeight() * 0.8f);
+		if (explodeCDTimer != 0) {
+			fg.addActor(explodeCD);
+		}
+		
 		//Freeze powerup button
 		freezePow = new Button(skin.getDrawable("IcePowerupButtonLight"), skin.getDrawable("IcePowerupButtonDark"));
 		freezePow.setWidth(Gdx.graphics.getWidth() / 16);
@@ -422,6 +541,16 @@ public class Game implements Screen, GestureListener {
 		freezePow.setX(Gdx.graphics.getWidth() * 0.005f);
 		freezePow.setY(Gdx.graphics.getHeight() * 0.65f);
 		fg.addActor(freezePow);
+		
+		//Freeze powerup cooldown button
+		freezeCD = new Button(skin.getDrawable("IcePowerupButtonDark"));
+		freezeCD.setWidth(Gdx.graphics.getWidth() / 16);
+		freezeCD.setHeight(Gdx.graphics.getWidth() / 16);
+		freezeCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		freezeCD.setY(Gdx.graphics.getHeight() * 0.65f);
+		if (freezeCDTimer != 0) {
+			fg.addActor(freezeCD);
+		}
 		
 		//Health button, restores certain percent of castle health
 		healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
@@ -431,6 +560,16 @@ public class Game implements Screen, GestureListener {
 		healthPow.setY(Gdx.graphics.getHeight() * 0.50f);
 		fg.addActor(healthPow);
 		
+		//Health cool down button
+		healthCD = new Button(skin.getDrawable("HealPowerupButtonDark"));
+		healthCD.setWidth(Gdx.graphics.getWidth() / 16);
+		healthCD.setHeight(Gdx.graphics.getWidth() / 16);
+		healthCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		healthCD.setY(Gdx.graphics.getHeight() * 0.50f);
+		if (healthCDTimer != 0) {
+			fg.addActor(healthCD);
+		}
+		
 		//Finger of God button, tap to kill!
 		godPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
 		godPow.setWidth(Gdx.graphics.getWidth() / 16);
@@ -439,14 +578,16 @@ public class Game implements Screen, GestureListener {
 		godPow.setY(Gdx.graphics.getHeight() * 0.35f);
 		fg.addActor(godPow);
 		
-		// Serf "Powerup": Gradually heals (increases castle health) in the style of Health Button
-		serfPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
-		serfPow.setWidth(Gdx.graphics.getWidth() / 16);
-		serfPow.setHeight(Gdx.graphics.getWidth() / 16);
-		serfPow.setX(Gdx.graphics.getWidth() * 0.005f);
-		serfPow.setY(Gdx.graphics.getHeight() * 0.20f);
-		fg.addActor(serfPow);
-		
+		//Finger of God cooldown button
+		godCD = new Button(skin.getDrawable("HealPowerupButtonDark"));
+		godCD.setWidth(Gdx.graphics.getWidth() / 16);
+		godCD.setHeight(Gdx.graphics.getWidth() / 16);
+		godCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		godCD.setY(Gdx.graphics.getHeight() * 0.35f);
+		if (godCDTimer != 0) {
+			fg.addActor(godCD);
+		}
+			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
@@ -500,8 +641,16 @@ public class Game implements Screen, GestureListener {
 		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
-			bg.addActor(enemyList.get(i).getShadow());
-			bg.addActor(enemyList.get(i).getImage());
+			if(enemyList.get(i).getPeak() > 0)
+			{
+				bg.addActor(enemyList.get(i).getShadow());
+				bg.addActor(enemyList.get(i).getImage());
+			}
+			else
+			{
+				hg.addActor(enemyList.get(i).getShadow());
+				hg.addActor(enemyList.get(i).getImage());
+			}
 		}
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -531,10 +680,14 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				for(int i = 0; i < enemyList.size(); i++){
-					enemyList.get(i).freeze();
+				if (freezeCDTimer == 0) {
+					freezeCDTimer = 15;
+					fg.addActor(freezeCD);
+					for(int i = 0; i < enemyList.size(); i++){
+						enemyList.get(i).freeze();
+					}
+					freeze = 1;
 				}
-				freeze = 1;
 			}
 		});
 		
@@ -545,12 +698,16 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
-				for(int i = 0; i < enemyList.size(); i++){
-					Random generator = new Random();
-					int test = generator.nextInt(10) - 5;
-					Vector2 explode = new Vector2(test, 20);
-					enemyList.get(i).pickedUp();
-					enemyList.get(i).Released(explode);
+				if (explodeCDTimer == 0) {
+					explodeCDTimer = 30;
+					fg.addActor(explodeCD);
+					for(int i = 0; i < enemyList.size(); i++){
+						Random generator = new Random();
+						int test = generator.nextInt(10) - 5;
+						Vector2 explode = new Vector2(test, 20);
+						enemyList.get(i).pickedUp();
+						enemyList.get(i).Released(explode);
+					}
 				}
 			}
 		});
@@ -562,15 +719,17 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up");
+				if (healthCDTimer == 0) {
+					healthCDTimer = 20;
+					fg.addActor(healthCD);
+					float newHealth = player.getHealthCurrent() + healthRegen;
 				
-				float newHealth = player.getHealthCurrent() + healthRegen;
-				
-				if(newHealth > player.getHealthMax()) {
-					player.setHealthCurrent(player.getHealthMax());
-				}
-				
-				else {
-					player.setHealthCurrent(newHealth);
+					if(newHealth > player.getHealthMax()) {
+						player.setHealthCurrent(player.getHealthMax());
+					}
+					else {
+						player.setHealthCurrent(newHealth);
+					}	
 				}	 
 			}
 		});
@@ -582,32 +741,11 @@ public class Game implements Screen, GestureListener {
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up"); 
-				god = true;	
-			}
-		});
-		
-		serfPow.addListener(new InputListener(){ 
-			
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
-				return true;
-			}
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
-				//serf = Gdx.audio.newSound(Gdx.files.internal("data/serf.wav"));
-				//serf.play();
-				// Place the serf on the castle
-				// Put a number below the serf to indicate serfs currently in play
-				numberOfSerfs += 1;
-				Image serfImage;
-				serfTex = new Texture("data/serf.png");
-				serfImage = new Image(serfTex);
-				serfImage.setX(Gdx.graphics.getWidth() * 0.85f); 
-				serfImage.setY(Gdx.graphics.getHeight() * 0.04f);
-				serfImage.setScale(0.5f);
-				fg.addActor(serfImage);
-				// Reset this number to zero during next game?
-				
+				if (godCDTimer == 0) {
+					godCDTimer = 20;
+					fg.addActor(godCD);
+					god = true;	
+				}
 			}
 		});
 		
@@ -625,8 +763,6 @@ public class Game implements Screen, GestureListener {
 						resumeGame();
 					}
 				})));
-				
-				freeze = 0;
 			}
 		});
 		
@@ -689,15 +825,11 @@ public class Game implements Screen, GestureListener {
 	
 	public void pauseGame() {
 		gameStatus = GAME_PAUSED;
-		spawnTimerInner.instance().stop();
-		spawnTimerOuter.instance().stop();
 		Gdx.input.setInputProcessor(pauseStage);
 	}
 	
 	public void resumeGame() {
 		gameStatus = GAME_RUNNING;
-		spawnTimerInner.instance().start();
-		spawnTimerOuter.instance().start();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
@@ -715,6 +847,10 @@ public class Game implements Screen, GestureListener {
 		pauseStage.dispose();
 		skin.dispose();	
 	}
+
+	/*******************
+	 * Spawning
+	 *******************/
 
 	//If the freeze powerup is enabled, spawn will not be called
 	public void freezeCheck() {
@@ -742,46 +878,70 @@ public class Game implements Screen, GestureListener {
 			god = false;
 		}
 	}
-
-	/*******************
-	 * Spawning
-	 *******************/
 	
-	public void spawn() {
-		if(freeze == 0){
-			Random generator = new Random();
-			
-			int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-			int x2 = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5)) + (int)(Gdx.graphics.getWidth()/10);
-			
-			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
-			
-			double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10)) 
-					+ (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9)) 
-					+ (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8)) 
-					+ (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7)) 
-					+ (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6)) 
-					+ (-0.0000381433485700688 * Math.pow(per_x,5)) 
-					+ (0.00112983288812486 * Math.pow(per_x,4)) 
-					+ (-0.0179778462008673 * Math.pow(per_x,3)) 
-					+ (0.120431228628006 * Math.pow(per_x,2)) 
-					+ (0.227287085911332 * per_x) 
-					+ (53.4555698252754));
-			
-			int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
-			
-			System.out.println("y = " + y);
-			
-			//enemyList.add(new WalkingEnemy("Basic", 100, x, (int) (Gdx.graphics.getHeight() / 1.75)));
-			//enemyList.add(new WalkingEnemy("Basic", 100, x, y));
-			//Testing the spawning of flying units (we can balance this and make it happen only in later rounds in Sprint 3)
-			enemyList.add(new FlyingEnemy("Flier", 100, x2, y));
-			bg.addActor(enemyList.get((enemyList.size())-1).getShadow());
-			bg.addActor(enemyList.get((enemyList.size())-1).getImage());
-			//bg.addActor(enemyList.get((enemyList.size())-2).getShadow());
-			//bg.addActor(enemyList.get((enemyList.size())-2).getImage());
+	public void coolDownCheck() {
+		if (freezeCDTimer != 0) {
+			freezeCDTimer--;
+			if (freezeCDTimer == 0) {
+				fg.removeActor(freezeCD);
+			}
 		}
-	}	
+		
+		if (godCDTimer != 0) {
+			godCDTimer--;
+			if (godCDTimer == 0) {
+				fg.removeActor(godCD);
+			}
+		}
+		
+		if (explodeCDTimer != 0) {
+			explodeCDTimer--;
+			if (explodeCDTimer == 0) {
+				fg.removeActor(explodeCD);
+			}
+		}
+		
+		if (healthCDTimer != 0) {
+			healthCDTimer--;
+			if (healthCDTimer == 0) {
+				fg.removeActor(healthCD);
+			}
+		}
+	}
+
+	public void spawn() {
+        if(freeze == 0){
+                Random generator = new Random();
+               
+                int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
+               
+                double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+               
+                double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
+                                + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
+                                + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
+                                + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
+                                + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
+                                + (-0.0000381433485700688 * Math.pow(per_x,5))
+                                + (0.00112983288812486 * Math.pow(per_x,4))
+                                + (-0.0179778462008673 * Math.pow(per_x,3))
+                                + (0.120431228628006 * Math.pow(per_x,2))
+                                + (0.227287085911332 * per_x)
+                                + (53.4555698252754));
+               
+                int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+                
+                WalkingEnemy newEnemy = new WalkingEnemy("Basic", 100, x, y);
+               
+                enemyList.add(newEnemy);
+                //enemyList.add(new StickDude("Basic", 100, x, y));
+                bg.addActor(newEnemy.getShadow());
+                bg.addActor(newEnemy.getImage());
+                
+                newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
+                
+        }
+}
 
 	/*********************************
 	 * Coinage Generation & Management

@@ -13,6 +13,8 @@ public class WalkingEnemy extends Entity {
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
+	float peakamt =  .05f * Gdx.graphics.getHeight();
+	private boolean changedLayer;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -42,6 +44,8 @@ public class WalkingEnemy extends Entity {
 		shadow.setY(posY);
 		shadow.setScale(scale);
 		
+		changedLayer = false;
+		
 		held = false;
 		floating = false;
 		frozen = false;
@@ -65,6 +69,18 @@ public class WalkingEnemy extends Entity {
 		return shadow;
 	}
 	
+	public Vector2 getLastPos(){
+		return lastPos;
+	}
+	
+	public boolean onGround(){
+		if(held || floating)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public void setPosition(float x, float y){
 		enemy.setX(x - ((enemy.getWidth() / 2) * scale));
 		enemy.setY(y - ((enemy.getHeight() / 2) * scale));
@@ -75,8 +91,17 @@ public class WalkingEnemy extends Entity {
 		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY() + ((enemy.getHeight() / 2) * scale));
 	}
 	
+	public Vector2 getGroundPosition()
+	{
+		return new Vector2(enemy.getX() + ((enemy.getWidth() / 2) * scale), enemy.getY());
+	}
+	
 	public Vector2 getSize(){
 		return new Vector2(enemy.getWidth() * scale, enemy.getHeight() * scale);
+	}
+	
+	public float getPeak(){
+		return peakamt;
 	}
 	
 	public void FindDestOnWall() {
@@ -172,11 +197,25 @@ public class WalkingEnemy extends Entity {
 			return;
 		}
 		
+		//walk up... and shit
+		if(peakamt > 0)
+		{
+			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
+			enemy.setScale(scale);
+			shadow.setScale(scale);
+			
+			setPosition(getPosition().x, getPosition().y + (20 * delta));
+			peakamt -= (20*delta);
+			shadow.setX(enemy.getX());
+			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+			return;
+		}
+		
 		//walk and shit
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(20 * delta);
+			Vector2 walkVec = normVec.scl(8 * delta);
 			
 			scale = (Gdx.graphics.getHeight() - getPosition().y) / 1000;
 			enemy.setScale(scale);
