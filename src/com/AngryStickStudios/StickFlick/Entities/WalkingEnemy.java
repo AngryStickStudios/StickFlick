@@ -13,7 +13,8 @@ public class WalkingEnemy extends Entity {
 	private boolean held, floating, frozen/*, landed*/;
 	private Vector2 lastPos, destination, flySpeed;
 	private int moveBackSpeed, maxHeight = 2;
-	private float peakamt =  .05f * Gdx.graphics.getHeight();
+	float peakamt =  .05f * Gdx.graphics.getHeight();
+	private boolean changedLayer;
 	
 	private Texture entTex, shadowTex;
 	Image enemy, shadow;
@@ -42,6 +43,8 @@ public class WalkingEnemy extends Entity {
 		shadow.setX(posX);
 		shadow.setY(posY);
 		shadow.setScale(scale);
+		
+		changedLayer = false;
 		
 		held = false;
 		floating = false;
@@ -95,6 +98,10 @@ public class WalkingEnemy extends Entity {
 	
 	public Vector2 getSize(){
 		return new Vector2(enemy.getWidth() * scale, enemy.getHeight() * scale);
+	}
+	
+	public float getPeak(){
+		return peakamt;
 	}
 	
 	public void FindDestOnWall() {

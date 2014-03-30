@@ -8,6 +8,8 @@ public abstract class Entity {
 	private float healthMax;
 	private float healthCurrent;
 	private boolean isAlive;
+	private float peakamt = 1;
+	private boolean changedLayer;
 	
 	private int castleMaxHealth;
 
@@ -17,6 +19,22 @@ public abstract class Entity {
 		this.healthCurrent = healthMax;
 		this.isAlive = true;
 				
+	}
+	
+	public boolean getChanged()
+	{
+		return changedLayer;
+	}
+	
+	public void setChanged(boolean change)
+	{
+		changedLayer = change;
+		return;
+	}
+	
+	public float getPeak()
+	{
+		return peakamt;
 	}
 	
 	public void Released(Vector2 speed) {

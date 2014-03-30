@@ -74,9 +74,9 @@ public class Game implements Screen, GestureListener {
     
 	StickFlick game;
 	SpriteBatch batch;
-	Texture gameBackground, castleOnly;
+	Texture gameBackground, castleOnly, gameHills;
 	Stage stage, pauseStage, deathStage;
-	Group bg, fg;
+	Group bg, hg, fg;
 	Skin skin;
 	BitmapFont white;
 	GestureDetector gd;
@@ -217,8 +217,8 @@ public class Game implements Screen, GestureListener {
 				}
 				else
 				{
-					bg.removeActor(enemyList.get(i).getImage());
-					bg.removeActor(enemyList.get(i).getShadow());
+					hg.removeActor(enemyList.get(i).getImage());
+					hg.removeActor(enemyList.get(i).getShadow());
 					enemyList.remove(i);
 				}	
 			}
@@ -237,8 +237,8 @@ public class Game implements Screen, GestureListener {
 				}
 				else
 				{
-					bg.removeActor(curChamp.getImage());
-					bg.removeActor(curChamp.getShadow());
+					hg.removeActor(curChamp.getImage());
+					hg.removeActor(curChamp.getShadow());
 					curChamp = null;
 				}
 			}
@@ -246,16 +246,16 @@ public class Game implements Screen, GestureListener {
 			if(Gdx.input.isKeyPressed(Keys.C) && curChamp == null)
 			{
 				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-				bg.addActor(curChamp.getImage());
-				bg.addActor(curChamp.getShadow());
+				hg.addActor(curChamp.getImage());
+				hg.addActor(curChamp.getShadow());
 			}
 			
 			if(Gdx.input.isKeyPressed(Keys.P))
 			{
 				Entity newPriest = new Priest("priest", 100, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				enemyList.add(newPriest);
-				bg.addActor(newPriest.getImage());
-				bg.addActor(newPriest.getShadow());
+				hg.addActor(newPriest.getImage());
+				hg.addActor(newPriest.getShadow());
 			}
 		
 			
@@ -283,6 +283,19 @@ public class Game implements Screen, GestureListener {
 			player.setEnAtWall(enemiesAtWall);
 			
 			player.Update();
+			for(int i = 0; i < enemyList.size(); i++) {
+				if(enemyList.get(i).getIsAlive() && enemyList.get(i).getPeak() <= 0)
+				{
+					if(enemyList.get(i).getChanged() == false)
+					{
+						bg.removeActor(enemyList.get(i).getImage());
+						bg.removeActor(enemyList.get(i).getShadow());
+						hg.addActor(enemyList.get(i).getImage());
+						hg.addActor(enemyList.get(i).getShadow());
+						enemyList.get(i).setChanged(true);
+					}
+				}
+			}
 			
 			batch.begin();
 			if(curChamp != null)
@@ -444,6 +457,7 @@ public class Game implements Screen, GestureListener {
 		deathStage.clear();
 		
 		bg = new Group();
+		hg = new Group();
 		fg = new Group();
 		
 		if(gameStatus == GAME_RUNNING) {
@@ -458,6 +472,7 @@ public class Game implements Screen, GestureListener {
 		}
 		
 		stage.addActor(bg);
+		stage.addActor(hg);
 		stage.addActor(fg);
 		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
@@ -471,6 +486,13 @@ public class Game implements Screen, GestureListener {
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		bg.addActor(backgroundImage);
+		
+		gameHills = new Texture("data/gameHills.png");
+		Image hillsImage = new Image(gameHills);
+		hillsImage.setZIndex(100000);
+		hillsImage.setWidth(Gdx.graphics.getWidth());
+		hillsImage.setHeight(Gdx.graphics.getHeight());
+		hg.addActor(hillsImage);
 		
 		castleOnly = new Texture("data/castleOnly.png");
 		Image castleImage = new Image(castleOnly);
@@ -570,8 +592,16 @@ public class Game implements Screen, GestureListener {
 		deathStage.addActor(mainMenuButton2);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
-			bg.addActor(enemyList.get(i).getShadow());
-			bg.addActor(enemyList.get(i).getImage());
+			if(enemyList.get(i).getPeak() > 0)
+			{
+				bg.addActor(enemyList.get(i).getShadow());
+				bg.addActor(enemyList.get(i).getImage());
+			}
+			else
+			{
+				hg.addActor(enemyList.get(i).getShadow());
+				hg.addActor(enemyList.get(i).getImage());
+			}
 		}
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
