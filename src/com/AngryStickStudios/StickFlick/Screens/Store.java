@@ -125,7 +125,7 @@ public class Store implements Screen{
 		
 		Gdx.input.setInputProcessor(stage);
 		
-		storeBackground = new Texture("data/newBackground.png");
+		storeBackground = new Texture("data/menuBackground.png");
 		Image backgroundImage = new Image(storeBackground);
 		backgroundImage.setZIndex(100000);
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
