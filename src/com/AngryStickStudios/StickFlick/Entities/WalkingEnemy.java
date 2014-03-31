@@ -3,48 +3,65 @@ package com.AngryStickStudios.StickFlick.Entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
 
 public class WalkingEnemy extends Entity {
 	float scale, scaleMultiplier;
-	private boolean held, floating, frozen/*, landed*/;
+	private boolean held, floating, frozen;
 	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed, maxHeight = 2;
+	private int moveBackSpeed;
+	private int splatting;
 	float peakamt =  .05f * Gdx.graphics.getHeight();
-	private boolean changedLayer;
 	
-	private Texture entTex, shadowTex;
-	Image enemy, shadow;
+	private Texture shadowTex;
+    private Animation currentanim, walk_d, splat;
+    private TextureRegion currentframe;
+    private TextureRegionDrawable enemyDrawable;
+    float animationStateTime;
+	
+    Image enemy, shadow;
 
 	public WalkingEnemy(String name, int health, int posX, int posY){
 		super(name, health);
 		lastPos = new Vector2(posX, posY);
 		scale = 0.5f;
 		
+        splat = setupAnim("data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
+		
 		// Set enemy texture depending on type
 		if(name == "Basic"){
-			entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			scaleMultiplier = 1f;
+			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.04);
+			scaleMultiplier = 0.5f;
 		} else if(name == "Demo"){
-			entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			scaleMultiplier = 0.4f;
+			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			walk_d = setupAnim("data/enemyTextures/demo_run.png", 6, 5, (float) 0.025);
+			scaleMultiplier = 0.5f;
 		} else if(name == "BigDude"){
-			entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			scaleMultiplier = 3f;
+			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
+			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.06);
+			scaleMultiplier = 1.5f;
 			setHealthMax(health * 10);
 			setHealthCurrent(getHealthMax());
 		} else{
-			entTex = new Texture("data/enemyTextures/error.png");
-			scaleMultiplier = 10f;
+			//entTex = new Texture("data/enemyTextures/error.png");
+			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.5);
+			scaleMultiplier = 5f;
 		}
 		
+		currentanim = walk_d;
+        currentframe = walk_d.getKeyFrame(animationStateTime, true);
+        enemyDrawable = new TextureRegionDrawable(currentframe);
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
 		// Create enemy Image/Actor
-		enemy = new Image(entTex);
+		enemy = new Image(enemyDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
 		enemy.setScale(scale);
@@ -53,8 +70,6 @@ public class WalkingEnemy extends Entity {
 		shadow.setX(posX);
 		shadow.setY(posY);
 		shadow.setScale(scale);
-		
-		changedLayer = false;
 		
 		held = false;
 		floating = false;
@@ -66,6 +81,21 @@ public class WalkingEnemy extends Entity {
 	public void freeze(){
 		frozen = true;
 	}
+	
+    public void setSplatting(int val)
+    {
+            splatting = val;
+    }
+   
+    public void setState(float sta)
+    {
+            animationStateTime = sta;
+    }
+   
+    public int getSplatting()
+    {
+            return splatting;
+    }
 	
 	public void unfreeze(){
 		frozen = false;
@@ -151,6 +181,8 @@ public class WalkingEnemy extends Entity {
 	}
 	
 	public void Update(float delta){
+		if(getIsAlive() == false) return;
+		
 		if(held)
 		{
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
@@ -208,16 +240,17 @@ public class WalkingEnemy extends Entity {
 		}
 		
 		//walk up... and shit
-		if(peakamt > 0)
+		if(peakamt > 0 && frozen == false)
 		{
 			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);
+			shadow.setWidth(enemy.getWidth());
 			shadow.setScale(scale);
 			
 			setPosition(getPosition().x, getPosition().y + (20 * delta));
 			peakamt -= (20*delta);
 			shadow.setX(enemy.getX());
-			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+			shadow.setY(getPosition().y + (Gdx.graphics.getHeight() / 100) - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			return;
 		}
 		
@@ -234,7 +267,7 @@ public class WalkingEnemy extends Entity {
 			setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
 
 			shadow.setX(enemy.getX());
-			shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+			shadow.setY(getPosition().y + (Gdx.graphics.getHeight() / 100) - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		}
 	}
 
@@ -245,7 +278,32 @@ public class WalkingEnemy extends Entity {
 		System.out.println("Falling Velocity: " + fallingVelocity);
 		System.out.println("Damage Amount: " + dmgAmt);
 		System.out.println("Stickman Health: " + getHealthCurrent());
-		if(getIsAlive() != true)
+		if(getIsAlive() != true){
 			System.out.println("An enemy reached zero heath! Victory dance!");
+			splatting = 1;
+			animationStateTime = 0;
+		}
+	}
+
+	public void Anim(float delta)
+	{
+		if(splatting == 0)
+		{
+			currentframe = currentanim.getKeyFrame(animationStateTime += delta, true);
+			enemyDrawable.setRegion(currentframe);
+			enemy.setDrawable(enemyDrawable);
+		}
+		else
+		{
+			currentframe = splat.getKeyFrame(animationStateTime += delta, false);
+			enemyDrawable.setRegion(currentframe);
+			enemy.setDrawable(enemyDrawable);
+
+			if(animationStateTime >= 1)
+			{
+				splatting = 2;
+			}
+		}
+
 	}
 }

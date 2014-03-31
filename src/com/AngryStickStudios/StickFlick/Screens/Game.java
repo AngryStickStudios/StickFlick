@@ -93,11 +93,11 @@ public class Game implements Screen, GestureListener {
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow, freezeCD, godCD, healthCD, explodeCD;
+	Button freezePow, explodePow, healthPow, godPow, championPow, freezeCD, godCD, healthCD, explodeCD, championCD;
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
-	boolean justUnfrozen = false;
+	boolean justUnfrozen = false, priestButtonDown = false;
 	
 	
 	public Game(StickFlick game){
@@ -218,7 +218,7 @@ public class Game implements Screen, GestureListener {
 				if(enemyList.get(i).getIsAlive())
 				{
 					enemyList.get(i).Update(delta);
-					if(enemyList.get(i).getName() == "priest")
+					if(enemyList.get(i).getName() == "Priest")
 					{
 						if(enemyList.size() > 1 && (enemyList.get(i).getTarget() == null || enemyList.get(i).getTarget().getIsAlive() == false))
 						{
@@ -228,9 +228,12 @@ public class Game implements Screen, GestureListener {
 				}
 				else
 				{
-					hg.removeActor(enemyList.get(i).getImage());
 					hg.removeActor(enemyList.get(i).getShadow());
-					enemyList.remove(i);
+                    if(enemyList.get(i).getSplatting() != 1)
+                    {
+                            hg.removeActor(enemyList.get(i).getImage());
+                            enemyList.remove(i);
+                    }
 				}	
 			}
 			
@@ -242,7 +245,6 @@ public class Game implements Screen, GestureListener {
 
 					if(enemyList.size() > 0 && (curChamp.getTarget() == null || curChamp.getTarget().getIsAlive() == false))
 					{
-						//curChamp.setTarget(enemyList.get((int) Math.round(((Math.random() * (enemyList.size()-1))))));
 						curChamp.setTarget(PriorityTarget());
 					}
 				}
@@ -261,15 +263,23 @@ public class Game implements Screen, GestureListener {
 				hg.addActor(curChamp.getShadow());
 			}
 			
-			if(Gdx.input.isKeyPressed(Keys.P))
+			/*
+			if(Gdx.input.isKeyPressed(Keys.P) && priestButtonDown == false)
 			{
 				Entity newPriest = new Priest("priest", 100, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				enemyList.add(newPriest);
 				hg.addActor(newPriest.getImage());
 				hg.addActor(newPriest.getShadow());
+				newPriest.setChanged(true);
+				newPriest.setPeak(0);
+				priestButtonDown = true;
 			}
-		
-			
+			else
+			{
+				priestButtonDown = false;
+			}
+			*/
+
 			int enemiesAtWall = 0;
 			
 			for(int i = 0; i < enemyList.size(); i++){
@@ -307,6 +317,7 @@ public class Game implements Screen, GestureListener {
 						enemyList.get(i).setChanged(true);
 					}
 				}
+				enemyList.get(i).Anim(delta);
 			}
 			
 			batch.begin();
@@ -364,6 +375,7 @@ public class Game implements Screen, GestureListener {
 			if (freezeCDTimer != 0) fg.addActor(freezeCD); else fg.removeActor(freezeCD);
 			if (healthCDTimer != 0) fg.addActor(healthCD); else fg.removeActor(healthCD);
 			if (godCDTimer != 0) fg.addActor(godCD); else fg.removeActor(godCD);
+			if (curChamp != null) fg.addActor(championCD); else fg.removeActor(championCD);
 			
 			batch.end();
 		} else if(gameStatus == GAME_PAUSED) {
@@ -391,9 +403,10 @@ public class Game implements Screen, GestureListener {
 		int priority;
 		int lPriority = -1;
 		Entity lEnt = null;
-		
+		boolean BIGDUDE = false;
+
 		for(int i = 0; i < enemyList.size(); i++) {
-			if(enemyList.get(i).getIsAlive()) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged()) {
 				if(!enemyList.get(i).onGround())
 				{
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curChamp.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curChamp.getGroundPosition().y));
@@ -404,7 +417,7 @@ public class Game implements Screen, GestureListener {
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curChamp.getGroundPosition().x) + sqr(enemyList.get(i).getGroundPosition().y - curChamp.getGroundPosition().y));
 					priority += enemyList.get(i).getGroundPosition().y;
 				}
-				
+
 				if(lPriority == -1)
 				{
 					lPriority = priority;
@@ -412,15 +425,35 @@ public class Game implements Screen, GestureListener {
 				}
 				else
 				{
-					if(priority < lPriority)
+					if(enemyList.get(i).getName() != "BigDude")
 					{
-						lPriority = priority;
-						lEnt = enemyList.get(i);
+						if(priority < lPriority && BIGDUDE == false)
+						{
+							lPriority = priority;
+							lEnt = enemyList.get(i);
+						}
+					}
+					else
+					{
+						if(BIGDUDE == false)
+						{
+							lPriority = priority;
+							lEnt = enemyList.get(i);
+							BIGDUDE = true;
+						}
+						else
+						{
+							if(priority < lPriority)
+							{
+								lPriority = priority;
+								lEnt = enemyList.get(i);
+							}
+						}
 					}
 				}
 			}
 		}
-		
+
 		return lEnt;
 	}
 	
@@ -429,9 +462,9 @@ public class Game implements Screen, GestureListener {
 		int priority;
 		int lPriority = -1;
 		Entity lEnt = null;
-		
+
 		for(int i = 0; i < enemyList.size(); i++) {
-			if(enemyList.get(i).getIsAlive() && enemyList.get(i) != curPriest && enemyList.get(i).getHealthCurrent() < enemyList.get(i).getHealthMax()) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i) != curPriest && enemyList.get(i).getHealthCurrent() < enemyList.get(i).getHealthMax() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged()) {
 				if(!enemyList.get(i).onGround())
 				{
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curPriest.getGroundPosition().x) + sqr(enemyList.get(i).getLastPos().y - curPriest.getGroundPosition().y));
@@ -442,7 +475,7 @@ public class Game implements Screen, GestureListener {
 					priority = (int) Math.sqrt(sqr(enemyList.get(i).getGroundPosition().x - curPriest.getGroundPosition().x) + sqr(enemyList.get(i).getGroundPosition().y - curPriest.getGroundPosition().y));
 					priority += (enemyList.get(i).getHealthCurrent() * 4);
 				}
-				
+
 				if(lPriority == -1)
 				{
 					lPriority = priority;
@@ -458,7 +491,7 @@ public class Game implements Screen, GestureListener {
 				}
 			}
 		}
-		
+
 		return lEnt;
 	}
 	
@@ -600,6 +633,21 @@ public class Game implements Screen, GestureListener {
 		godCD.setHeight(Gdx.graphics.getWidth() / 16);
 		godCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		godCD.setY(Gdx.graphics.getHeight() * 0.35f);
+		
+		//Horn of Champion Powerup
+		championPow = new Button(skin.getDrawable("HornPowerupButtonLight"), skin.getDrawable("HornPowerupButtonDark"));
+		championPow.setWidth(Gdx.graphics.getWidth() / 6);
+		championPow.setHeight(Gdx.graphics.getWidth() / 6);
+		championPow.setX((Gdx.graphics.getWidth() * 0.5f) - (godPow.getWidth() / 2));
+		championPow.setY((Gdx.graphics.getHeight() * 0.25f) - (godPow.getHeight() / 2));
+		powerupStage.addActor(championPow);
+		
+		//Horn of Champion cooldown button
+		championCD = new Button(skin.getDrawable("HornPowerupButtonCD"));
+		championCD.setWidth(Gdx.graphics.getWidth() / 16);
+		championCD.setHeight(Gdx.graphics.getWidth() / 16);
+		championCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		championCD.setY(Gdx.graphics.getHeight() * 0.2f);
 			
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
@@ -664,6 +712,12 @@ public class Game implements Screen, GestureListener {
 				hg.addActor(enemyList.get(i).getShadow());
 				hg.addActor(enemyList.get(i).getImage());
 			}
+		}
+		
+		if(curChamp != null)
+		{
+			hg.addActor(curChamp.getImage());
+			hg.addActor(curChamp.getShadow());
 		}
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
@@ -734,11 +788,14 @@ public class Game implements Screen, GestureListener {
 					explodeCDTimer = 30;
 					fg.addActor(explodeCD);
 					for(int i = 0; i < enemyList.size(); i++){
-						Random generator = new Random();
-						int test = generator.nextInt(10) - 5;
-						Vector2 explode = new Vector2(test, 20);
-						enemyList.get(i).pickedUp();
-						enemyList.get(i).Released(explode);
+						if(enemyList.get(i).getChanged() == true && enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0)
+						{
+							Random generator = new Random();
+							int test = generator.nextInt(10) - 5;
+							Vector2 explode = new Vector2(test, 20);
+							enemyList.get(i).pickedUp();
+							enemyList.get(i).Released(explode);
+						}
 					}
 				}
 			}
@@ -780,6 +837,20 @@ public class Game implements Screen, GestureListener {
 					fg.addActor(godCD);
 					god = true;	
 				}
+			}
+		});
+		
+		championPow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up"); 
+				resumeGame();
+				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				hg.addActor(curChamp.getImage());
+				hg.addActor(curChamp.getShadow());
 			}
 		});
 		
@@ -1028,15 +1099,18 @@ public class Game implements Screen, GestureListener {
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		y = Gdx.graphics.getHeight() - y;
 		if(enemyGrabbed == false){
-			for(int i = 0; i < enemyList.size(); i++)	// Searches through enemy list
+			for(int i = 0; i < enemyList.size(); i++)       // Searches through enemy list
 			{
 				Vector2 size = enemyList.get(i).getSize();
 				Vector2 pos = enemyList.get(i).getPosition();
 				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
-					grabbedNumber = i;
-					enemyGrabbed = true;
-					enemyList.get(grabbedNumber).pickedUp();
-					break;
+					if(enemyList.get(i).getChanged() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getIsAlive())
+					{
+						grabbedNumber = i;
+						enemyGrabbed = true;
+						enemyList.get(grabbedNumber).pickedUp();
+						break;
+					}
 				}
 			}
 		}
@@ -1045,14 +1119,24 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-	
+
 		//tap to kill
 		if(enemyGrabbed == true && god)
 		{
 			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).setIsAlive(false);
+			enemyList.get(grabbedNumber).decreaseHealth(100);
+			
+			if(enemyList.get(grabbedNumber).getIsAlive() == false)
+			{
+				enemyList.get(grabbedNumber).setState(0);
+				enemyList.get(grabbedNumber).setSplatting(1);
+			}
+			else
+			{
+				enemyList.get(grabbedNumber).Released(new Vector2(0, 0));
+			}
 		}
-		
+
 		return false;
 	}
 
