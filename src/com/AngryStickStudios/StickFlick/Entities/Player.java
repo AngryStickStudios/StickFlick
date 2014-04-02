@@ -6,12 +6,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 
 public class Player extends Entity {
 	private int numEnAtWall;
 	
-	public Player(String name, int health){
-		super(name,health);
+	public Player(String name, int health, AnimationLoader anims){
+		super(name,health, anims);
 		super.setCastleMaxHealth(health);
 		numEnAtWall = 0;
 	}

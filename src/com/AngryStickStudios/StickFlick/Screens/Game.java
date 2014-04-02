@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
@@ -98,10 +99,12 @@ public class Game implements Screen, GestureListener {
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false, priestButtonDown = false;
+	AnimationLoader anims;
 	
 	
 	public Game(StickFlick game){
 		this.game = game;
+		anims = new AnimationLoader();
 		
 		 spawnTimerOuter.schedule(new Task() {
              @Override
@@ -163,7 +166,7 @@ public class Game implements Screen, GestureListener {
 			}
 		}, 0, 1);
 		
-		player = new Player("testPlayer", 30000);
+		player = new Player("testPlayer", 30000, anims);
 		curChamp = null;
 		enemyList = new Vector<Entity>();
 	
@@ -258,7 +261,7 @@ public class Game implements Screen, GestureListener {
 		
 			if(Gdx.input.isKeyPressed(Keys.C) && curChamp == null)
 			{
-				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				hg.addActor(curChamp.getImage());
 				hg.addActor(curChamp.getShadow());
 			}
@@ -848,7 +851,7 @@ public class Game implements Screen, GestureListener {
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up"); 
 				resumeGame();
-				curChamp = new Champion("champ", 45, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				hg.addActor(curChamp.getImage());
 				hg.addActor(curChamp.getShadow());
 			}
@@ -1045,13 +1048,13 @@ public class Game implements Screen, GestureListener {
                 
                 int yourFate = generator.nextInt(100) + 1;
                 if(yourFate > 0 && yourFate < 6){
-                	newEnemy = new WalkingEnemy("BigDude", 100, x, y);
+                	newEnemy = new WalkingEnemy("BigDude", 100, anims, x, y);
                 } else if(yourFate > 5 && yourFate < 11){
-                	newEnemy = new Priest("Priest", 100, x, y);
+                	newEnemy = new Priest("Priest", 100, anims, x, y);
                 } else if(yourFate > 10 && yourFate < 21){
-                	newEnemy = new WalkingEnemy("Demo", 100, x, y);
+                	newEnemy = new WalkingEnemy("Demo", 100, anims, x, y);
                 } else{
-                	newEnemy = new WalkingEnemy("Basic", 100, x, y);
+                	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
                 }
                
                 enemyList.add(newEnemy);

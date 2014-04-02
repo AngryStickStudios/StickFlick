@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 
 public class WalkingEnemy extends Entity {
 	float scale, scaleMultiplier;
@@ -20,43 +21,42 @@ public class WalkingEnemy extends Entity {
 	float peakamt =  .05f * Gdx.graphics.getHeight();
 	
 	private Texture shadowTex;
-    private Animation currentanim, walk_d, splat;
+    private Animation currentanim;
+    private String walkName;
     private TextureRegion currentframe;
     private TextureRegionDrawable enemyDrawable;
     float animationStateTime;
 	
     Image enemy, shadow;
 
-	public WalkingEnemy(String name, int health, int posX, int posY){
-		super(name, health);
+	public WalkingEnemy(String name, int health, AnimationLoader anims, int posX, int posY){
+		super(name, health, anims);
 		lastPos = new Vector2(posX, posY);
 		scale = 0.5f;
-		
-        splat = setupAnim("data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
 		
 		// Set enemy texture depending on type
 		if(name == "Basic"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.04);
+			walkName = "dude_walk";
 			scaleMultiplier = 0.5f;
 		} else if(name == "Demo"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walk_d = setupAnim("data/enemyTextures/demo_run.png", 6, 5, (float) 0.025);
+			walkName = "demo_walk";
 			scaleMultiplier = 0.5f;
 		} else if(name == "BigDude"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.06);
+			walkName = "bigdude_walk";
 			scaleMultiplier = 1.5f;
 			setHealthMax(health * 10);
 			setHealthCurrent(getHealthMax());
 		} else{
 			//entTex = new Texture("data/enemyTextures/error.png");
-			walk_d = setupAnim("data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.5);
+			walkName = "dude_walk";
 			scaleMultiplier = 5f;
 		}
 		
-		currentanim = walk_d;
-        currentframe = walk_d.getKeyFrame(animationStateTime, true);
+		currentanim = anims.getAnim(walkName);
+        currentframe = currentanim.getKeyFrame(animationStateTime, true);
         enemyDrawable = new TextureRegionDrawable(currentframe);
 		shadowTex = new Texture("data/enemyTextures/shadow.png");
 		
@@ -295,7 +295,7 @@ public class WalkingEnemy extends Entity {
 		}
 		else
 		{
-			currentframe = splat.getKeyFrame(animationStateTime += delta, false);
+			currentframe = anims.getAnim("splat").getKeyFrame(animationStateTime += delta, false);
 			enemyDrawable.setRegion(currentframe);
 			enemy.setDrawable(enemyDrawable);
 

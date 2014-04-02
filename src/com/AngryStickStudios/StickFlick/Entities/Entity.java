@@ -1,5 +1,6 @@
 package com.AngryStickStudios.StickFlick.Entities;
  
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -15,30 +16,17 @@ public abstract class Entity {
         private float peakamt = 1;
         private boolean changedLayer = false;
         private int splatting = 0;
+        AnimationLoader anims;
        
         private int castleMaxHealth;
  
-        public Entity(String name, int healthMax){
+        public Entity(String name, int healthMax, AnimationLoader ganims){
                 this.name = name;
                 this.healthMax = healthMax;
                 this.healthCurrent = healthMax;
                 this.isAlive = true;
+                this.anims = ganims;
                                
-        }
-       
-        public Animation setupAnim(String file, int cols, int rows, float speed)
-        {
-                Texture sheet = new Texture(Gdx.files.internal(file)); // #9
-            TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth()/cols, sheet.getHeight()/rows);
-            TextureRegion[] frames = new TextureRegion[cols * rows];
-            int index = 0;
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                        frames[index++] = tmp[i][j];
-                }
-            }
-           
-            return new Animation(speed, frames);
         }
        
         public int getSplatting()

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
  
 public class Champion extends Entity {
         float scale, mscale;
@@ -18,30 +19,22 @@ public class Champion extends Entity {
         float life, attackdelay, attackdelay2;
        
         private Texture shadowTex;
-        private Animation currentanim, walk_d, walk_u, walk_l, walk_r, attack_r, attack_l, attack_u, attack_d;
+        private Animation currentanim;
         private TextureRegion currentframe;
         private TextureRegionDrawable enemyDrawable;
         float animationStateTime;
        
         Image enemy, shadow;
  
-        public Champion(String name, int health, int posX, int posY){
-                super(name, health);
+        public Champion(String name, int health, AnimationLoader anims, int posX, int posY){
+                super(name, health, anims);
                 scale = 0.1f;
                 mscale = 1f;
                 shadowTex = new Texture("data/enemyTextures/shadow.png");
                
                 animationStateTime = 0;
-                walk_d = setupAnim("data/enemyTextures/hotc_walkf.png", 6, 5, (float) 0.025);
-                walk_u = setupAnim("data/enemyTextures/hotc_walkb.png", 6, 5, (float) 0.025);
-                walk_l = setupAnim("data/enemyTextures/hotc_walkl.png", 6, 5, (float) 0.025);
-                walk_r = setupAnim("data/enemyTextures/hotc_walkr.png", 6, 5, (float) 0.025);
-                attack_d = setupAnim("data/enemyTextures/hotc_attackf.png", 10, 5, (float) 0.025);
-                attack_u = setupAnim("data/enemyTextures/hotc_attackb.png", 10, 5, (float) 0.025);
-                attack_l = setupAnim("data/enemyTextures/hotc_attackl.png", 10, 5, (float) 0.025);
-                attack_r = setupAnim("data/enemyTextures/hotc_attackr.png", 10, 5, (float) 0.025);
-                currentanim = walk_d;
-                currentframe = walk_d.getKeyFrame(animationStateTime, true);
+                currentanim = anims.getAnim("champ_walk_f");
+                currentframe = currentanim.getKeyFrame(animationStateTime, true);
                 enemyDrawable = new TextureRegionDrawable(currentframe);
                
                 // Create enemy Image/Actor
@@ -146,16 +139,16 @@ public class Champion extends Entity {
                                 if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
                                 {
                                         if(walkVec.x < 0)
-                                                currentanim = attack_l;
+                                                currentanim = anims.getAnim("champ_attack_l");
                                         else
-                                                currentanim = attack_r;
+                                        	currentanim = anims.getAnim("champ_attack_r");
                                 }
                                 else
                                 {
                                         if(walkVec.y < 0)
-                                                currentanim = attack_d;
+                                        	currentanim = anims.getAnim("champ_attack_f");
                                         else
-                                                currentanim = attack_u;
+                                        	currentanim = anims.getAnim("champ_attack_b");
                                 }
                                
                                 attackdelay = 0.5f;
@@ -188,16 +181,16 @@ public class Champion extends Entity {
                 if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
                 {
                         if(walkVec.x < 0)
-                                currentanim = walk_l;
+                        	currentanim = anims.getAnim("champ_walk_l");
                         else
-                                currentanim = walk_r;
+                        	currentanim = anims.getAnim("champ_walk_r");
                 }
                 else
                 {
                         if(walkVec.y < 0)
-                                currentanim = walk_d;
+                        	currentanim = anims.getAnim("champ_walk_f");
                         else
-                                currentanim = walk_u;
+                        	currentanim = anims.getAnim("champ_walk_b");
                 }
                        
                 scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
  
 public class Priest extends Entity {
         float scale, mscale;
@@ -23,28 +24,23 @@ public class Priest extends Entity {
         float peakamt =  .05f * Gdx.graphics.getHeight();
        
         private Texture shadowTex;
-        private Animation currentanim, walk_d, walk_u, walk_l, walk_r, splat;
+        private Animation currentanim;
         private TextureRegion currentframe;
         private TextureRegionDrawable enemyDrawable;
         float animationStateTime;
        
         Image enemy, shadow;
  
-        public Priest(String name, int health, int posX, int posY){
-                super(name, health);
+        public Priest(String name, int health, AnimationLoader anims, int posX, int posY){
+                super(name, health, anims);
                 scale = 0.5f;
                 mscale = 0.5f;
                
                 lastPos = new Vector2(posX, posY);
                
                 animationStateTime = 0;
-                walk_d = setupAnim("data/enemyTextures/priest_front.png", 6, 5, (float) 0.025);
-                walk_u = setupAnim("data/enemyTextures/priest_back.png", 6, 5, (float) 0.025);
-                walk_l = setupAnim("data/enemyTextures/priest_left.png", 6, 5, (float) 0.025);
-                walk_r = setupAnim("data/enemyTextures/priest_right.png", 6, 5, (float) 0.025);
-                splat = setupAnim("data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
-                currentanim = walk_d;
-                currentframe = walk_d.getKeyFrame(animationStateTime, true);
+                currentanim = anims.getAnim("priest_walk_f");
+                currentframe = currentanim.getKeyFrame(animationStateTime, true);
                 enemyDrawable = new TextureRegionDrawable(currentframe);
                    
                 splatting = 0;
@@ -175,7 +171,7 @@ public class Priest extends Entity {
                 if(getIsAlive() == false) return;
                 if(held)
                 {
-                        currentanim = walk_d;
+                        currentanim = anims.getAnim("priest_walk_f");
                         setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
                         shadow.setX(enemy.getX());
                         shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
@@ -189,7 +185,7 @@ public class Priest extends Entity {
  
                 if(floating)
                 {
-                        currentanim = walk_d;
+                		currentanim = anims.getAnim("priest_walk_f");
                         Vector2 newPos = new Vector2(0,0);
                         newPos.x = getPosition().x + flySpeed.x;
                        
@@ -233,7 +229,7 @@ public class Priest extends Entity {
                 //walk up... and shit
                                 if(peakamt > 0 && frozen == false)
                                 {
-                                        currentanim = walk_d;
+                                        currentanim = anims.getAnim("priest_walk_f");
                                         scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
                                         enemy.setScale(scale);
                                         shadow.setScale(scale / mscale);
@@ -275,16 +271,16 @@ public class Priest extends Entity {
                         if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
                         {
                                 if(walkVec.x < 0)
-                                        currentanim = walk_l;
+                                	currentanim = anims.getAnim("priest_walk_l");
                                 else
-                                        currentanim = walk_r;
+                                	currentanim = anims.getAnim("priest_walk_r");
                         }
                         else
                         {
                                 if(walkVec.y < 0)
-                                        currentanim = walk_d;
+                                	currentanim = anims.getAnim("priest_walk_f");
                                 else
-                                        currentanim = walk_u;
+                                	currentanim = anims.getAnim("priest_walk_b");
                         }
                                
                         scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
@@ -332,16 +328,16 @@ public class Priest extends Entity {
                 if(Math.abs(walkVec.x) >= Math.abs(walkVec.y))
                 {
                         if(walkVec.x < 0)
-                                currentanim = walk_l;
+                        	currentanim = anims.getAnim("priest_walk_l");
                         else
-                                currentanim = walk_r;
+                        	currentanim = anims.getAnim("priest_walk_r");
                 }
                 else
                 {
                         if(walkVec.y < 0)
-                                currentanim = walk_d;
+                        	currentanim = anims.getAnim("priest_walk_f");
                         else
-                                currentanim = walk_u;
+                        	currentanim = anims.getAnim("priest_walk_b");
                 }
                        
                 scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
@@ -380,7 +376,7 @@ public class Priest extends Entity {
                 }
                 else
                 {
-                        currentframe = splat.getKeyFrame(animationStateTime += delta, false);
+                        currentframe = anims.getAnim("splat").getKeyFrame(animationStateTime += delta, false);
                         enemyDrawable.setRegion(currentframe);
                         enemy.setDrawable(enemyDrawable);
                        
