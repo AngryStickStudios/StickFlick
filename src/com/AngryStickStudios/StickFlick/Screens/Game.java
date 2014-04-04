@@ -1,5 +1,6 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -75,6 +76,7 @@ public class Game implements Screen, GestureListener {
 	private int godCDTimer = 0;
 	private int score = 0;
 	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
+	private Hashtable<Integer, Integer> spawnLocation = new Hashtable<Integer, Integer>();
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -105,6 +107,8 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		anims = new AnimationLoader();
+		
+		generateSpawnLocations();
 		
 		 spawnTimerOuter.schedule(new Task() {
              @Override
@@ -961,10 +965,6 @@ public class Game implements Screen, GestureListener {
 		skin.dispose();	
 	}
 
-	/*******************
-	 * Spawning
-	 *******************/
-
 	//If the freeze powerup is enabled, spawn will not be called
 	public void freezeCheck() {
 
@@ -1021,51 +1021,86 @@ public class Game implements Screen, GestureListener {
 			}
 		}
 	}
+	
+	private void generateSpawnLocations() {
+		for(int x = 0; x <= Gdx.graphics.getWidth(); x++) {
+			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+			
+			/*double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
+                     + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
+                     + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
+                     + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
+                     + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
+                     + (-0.0000381433485700688 * Math.pow(per_x,5))
+                     + (0.00112983288812486 * Math.pow(per_x,4))
+                     + (-0.0179778462008673 * Math.pow(per_x,3))
+                     + (0.120431228628006 * Math.pow(per_x,2))
+                     + (0.227287085911332 * per_x)
+                     + (53.4555698252754));*/
+			
+			/*double per_y = 55.47
+				+ 1.797*Math.sin(per_x*0.05479)
+				+ 2.761*Math.sin(per_x*0.05479)
+				+ -2.627*Math.cos(2*per_x*0.05479)
+				+ -0.9409*Math.sin(2*per_x*0.05479)
+				+ -0.1784*Math.cos(3*per_x*0.05479)
+				+ 0.346*Math.sin(3*per_x*0.05479)
+				+ -0.9533*Math.cos(4*per_x*0.05479)
+				+ 0.418*Math.sin(4*per_x*0.05479)
+				+ -0.04349*Math.cos(5*per_x*0.05479)
+				+ 0.1953*Math.sin(5*per_x*0.05479)
+				+ -0.1909*Math.cos(6*per_x*0.05479)
+				+ 0.4365*Math.sin(6*per_x*0.05479)
+				+ 0.02743*Math.cos(7*per_x*0.05479)
+				+ 0.05735*Math.sin(7*per_x*0.05479)
+				+ 0.05609*Math.cos(8*per_x*0.05479)
+				+ 0.2545*Math.sin(8*per_x*0.05479);*/
+			
+			double per_y = 22.07*Math.exp(-Math.pow(((per_x-28.38)/13.46), 2))
+					+ 57.74*Math.exp(-Math.pow(((per_x-107.2)/82.91), 2))
+					+ 2.657*Math.exp(-Math.pow(((per_x-15.37)/7.31), 2))
+					+ 42.57*Math.exp(-Math.pow(((per_x-2.339)/22.12), 2))
+					+ 4.368*Math.exp(-Math.pow(((per_x-48.16)/5.225), 2))
+					+ 8.194*Math.exp(-Math.pow(((per_x-51.9)/21.79), 2))
+					+ 9.983*Math.exp(-Math.pow(((per_x-41.27)/8.756), 2))
+					+ 1.574*Math.exp(-Math.pow(((per_x-57.25)/5.172), 2));
+    
+			 int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+			 
+			 spawnLocation.put(x, y);
+		}
+		
+	}
 
 	public void spawn() {
-        if(freeze == 0){
-                Random generator = new Random();
-               
-                int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
-               
-                double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
-               
-                double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
-                                + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
-                                + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
-                                + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
-                                + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
-                                + (-0.0000381433485700688 * Math.pow(per_x,5))
-                                + (0.00112983288812486 * Math.pow(per_x,4))
-                                + (-0.0179778462008673 * Math.pow(per_x,3))
-                                + (0.120431228628006 * Math.pow(per_x,2))
-                                + (0.227287085911332 * per_x)
-                                + (53.4555698252754));
-               
-                int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
-                
-                Entity newEnemy = null;
-                
-                int yourFate = generator.nextInt(100) + 1;
-                if(yourFate > 0 && yourFate < 6){
-                	newEnemy = new WalkingEnemy("BigDude", 100, anims, x, y);
-                } else if(yourFate > 5 && yourFate < 11){
-                	newEnemy = new Priest("Priest", 100, anims, x, y);
-                } else if(yourFate > 10 && yourFate < 21){
-                	newEnemy = new WalkingEnemy("Demo", 100, anims, x, y);
-                } else{
-                	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
-                }
-               
-                enemyList.add(newEnemy);
-                //enemyList.add(new StickDude("Basic", 100, x, y));
-                bg.addActor(newEnemy.getShadow());
-                bg.addActor(newEnemy.getImage());
-                
-                newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
+        if(freeze == 0) {
+        	Random generator = new Random();
+	           
+        	int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
+        	int y = spawnLocation.get(x);
+	            
+	        Entity newEnemy = null;
+	            
+	        int yourFate = generator.nextInt(100) + 1;
+	        if(yourFate > 0 && yourFate < 6) {
+	        	newEnemy = new WalkingEnemy("BigDude", 100, anims, x, y);
+	        } else if(yourFate > 5 && yourFate < 11) {
+	        	newEnemy = new Priest("Priest", 100, anims, x, y);
+	        } else if(yourFate > 10 && yourFate < 21) {
+	        	newEnemy = new WalkingEnemy("Demo", 100, anims, x, y);
+	        } else {
+	        	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
+	        }
+	           
+	        enemyList.add(newEnemy);
+	            //enemyList.add(new StickDude("Basic", 100, x, y));
+            bg.addActor(newEnemy.getShadow());
+            bg.addActor(newEnemy.getImage());
+            
+            newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
                 
         }
-}
+	}
 
 	/*********************************
 	 * Coinage Generation & Management
