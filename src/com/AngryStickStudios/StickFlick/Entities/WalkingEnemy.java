@@ -63,12 +63,10 @@ public class WalkingEnemy extends Entity {
 		enemy = new Image(enemyDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
-		enemy.setScale(scale);
 		
 		shadow = new Image(shadowTex);
 		shadow.setX(posX);
 		shadow.setY(posY);
-		shadow.setScale(scale);
 		
 		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 		enemy.setScale(scale);
