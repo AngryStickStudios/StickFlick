@@ -32,13 +32,12 @@ public class WalkingEnemy extends Entity {
 	public WalkingEnemy(String name, int health, AnimationLoader anims, int posX, int posY){
 		super(name, health, anims);
 		lastPos = new Vector2(posX, posY);
-		scale = 0.5f;
 		
 		// Set enemy texture depending on type
 		if(name == "Basic"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
 			walkName = "dude_walk";
-			scaleMultiplier = 0.5f;
+			scaleMultiplier = 1f;
 		} else if(name == "Demo"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
 			walkName = "demo_walk";
@@ -46,7 +45,7 @@ public class WalkingEnemy extends Entity {
 		} else if(name == "BigDude"){
 			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
 			walkName = "bigdude_walk";
-			scaleMultiplier = 1.5f;
+			scaleMultiplier = 2.5f;
 			setHealthMax(health * 10);
 			setHealthCurrent(getHealthMax());
 		} else{
@@ -71,6 +70,10 @@ public class WalkingEnemy extends Entity {
 		shadow.setY(posY);
 		shadow.setScale(scale);
 		
+		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
+		enemy.setScale(scale);
+		shadow.setScale(scale);
+			
 		held = false;
 		floating = false;
 		frozen = false;

@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-public class Game implements Screen, GestureListener {
+public class Game implements Screen{
 
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
@@ -85,7 +85,7 @@ public class Game implements Screen, GestureListener {
 	Group bg, hg, fg;
 	Skin skin;
 	BitmapFont white;
-	GestureDetector gd;
+	GestureDetection gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, powerupButton, resumeButton, mainMenuButton, mainMenuButton2;
@@ -509,6 +509,8 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void resize(int width, int height) {
+		gd = new GestureDetection(this);
+		
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
@@ -526,7 +528,7 @@ public class Game implements Screen, GestureListener {
 		fg = new Group();
 		
 		if(gameStatus == GAME_RUNNING) {
-			im = new InputMultiplexer(new GestureDetector(this), stage);
+			im = new InputMultiplexer(new GestureDetector(gd) , stage);
 			Gdx.input.setInputProcessor(im);
 		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
@@ -1091,21 +1093,20 @@ public class Game implements Screen, GestureListener {
 	        } else {
 	        	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
 	        }
-	           
-	        enemyList.add(newEnemy);
+	       
 	            //enemyList.add(new StickDude("Basic", 100, x, y));
             bg.addActor(newEnemy.getShadow());
             bg.addActor(newEnemy.getImage());
             
             newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
-                
+	        enemyList.add(newEnemy);
+            newEnemy = null;
         }
 	}
 
 	/*********************************
 	 * Coinage Generation & Management
 	 *********************************/
-
 	// Public methods for getting and setting private long coinageTotal
 	public void setCoinage(long coinageTotal) {
 		this.coinageTotal = coinageTotal;
@@ -1129,93 +1130,29 @@ public class Game implements Screen, GestureListener {
 		//prefs.putLong("currency", getCoinage());
 		//prefs.flush();
 	}
-
-	/*******************
-	 * Gesture Detection
-	 *******************/
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button) {
-		y = Gdx.graphics.getHeight() - y;
-		if(enemyGrabbed == false){
-			for(int i = 0; i < enemyList.size(); i++)       // Searches through enemy list
-			{
-				Vector2 size = enemyList.get(i).getSize();
-				Vector2 pos = enemyList.get(i).getPosition();
-				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
-					if(enemyList.get(i).getChanged() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getIsAlive())
-					{
-						grabbedNumber = i;
-						enemyGrabbed = true;
-						enemyList.get(grabbedNumber).pickedUp();
-						break;
-					}
-				}
-			}
-		}
-		return false;
+	
+	public boolean getGrabbed(){
+		return enemyGrabbed;
+	}
+	
+	public void setGrabbed(Boolean grabbed){
+		enemyGrabbed = grabbed;
+	}
+	
+	public int getGrabbedNumber(){
+		return grabbedNumber;
 	}
 
-	@Override
-	public boolean tap(float x, float y, int count, int button) {
-
-		//tap to kill
-		if(enemyGrabbed == true && god)
-		{
-			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).decreaseHealth(100);
-			
-			if(enemyList.get(grabbedNumber).getIsAlive() == false)
-			{
-				enemyList.get(grabbedNumber).setState(0);
-				enemyList.get(grabbedNumber).setSplatting(1);
-			}
-			else
-			{
-				enemyList.get(grabbedNumber).Released(new Vector2(0, 0));
-			}
-		}
-
-		return false;
+	public void setGrabbedNumber(int grabbedNumber){
+		this.grabbedNumber = grabbedNumber;
 	}
-
-	@Override
-	public boolean longPress(float x, float y) {
-		// UNUSED
-		return false;
+	
+	public Vector<Entity> getEnemyList(){
+		return enemyList;
 	}
-
-	@Override
-	public boolean fling(float velocityX, float velocityY, int button) {
-		if(enemyGrabbed == true)
-		{
-			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).Released(new Vector2(velocityX / 1000, velocityY / -1000));
-		}
-		return false;
-	}
-
-	@Override
-	public boolean pan(float x, float y, float deltaX, float deltaY) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean panStop(float x, float y, int pointer, int button) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean zoom(float initialDistance, float distance) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-			// UNUSED
-		return false;
+	
+	public Boolean getGodStatus(){
+		return god;
 	}
 
 }
