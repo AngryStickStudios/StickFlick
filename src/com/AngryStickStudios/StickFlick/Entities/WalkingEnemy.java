@@ -133,7 +133,6 @@ public class WalkingEnemy extends Entity {
 		straightDown.y = Gdx.graphics.getHeight() * 0.04f;
 
 		int adjAmt = (int) Math.round(((Math.random() * (Gdx.graphics.getWidth() / 5)) - (Gdx.graphics.getWidth() / 10)));
-		System.out.println("Adjust Amount: " + adjAmt);
 		straightDown.x += adjAmt;
 		
 		int tempWidth = Gdx.graphics.getWidth();
@@ -160,7 +159,6 @@ public class WalkingEnemy extends Entity {
 		floating = true;
 		flySpeed = new Vector2(speed);
 		moveBackSpeed = Math.round(flySpeed.y / 10);
-		System.out.println("MoveBackSpeed: " + moveBackSpeed);
 	}
 	
 	public void Update(float delta){
@@ -258,11 +256,7 @@ public class WalkingEnemy extends Entity {
 		//can change the dmgAmt ratio to whatever
 		int dmgAmt = (int)fallingVelocity * 4;
 		decreaseHealth(dmgAmt);
-		System.out.println("Falling Velocity: " + fallingVelocity);
-		System.out.println("Damage Amount: " + dmgAmt);
-		System.out.println("Stickman Health: " + getHealthCurrent());
 		if(getIsAlive() != true){
-			System.out.println("An enemy reached zero heath! Victory dance!");
 			splatting = 1;
 			animationStateTime = 0;
 		}

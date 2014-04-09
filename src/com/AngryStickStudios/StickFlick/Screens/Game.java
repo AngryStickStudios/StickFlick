@@ -34,10 +34,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
+import com.AngryStickStudios.StickFlick.Entities.BigDude;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
+import com.AngryStickStudios.StickFlick.Entities.DemoDude;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.Priest;
+import com.AngryStickStudios.StickFlick.Entities.StickDude;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 import java.util.Random;
@@ -731,11 +734,9 @@ public class Game implements Screen{
 		
 		pauseButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -748,11 +749,9 @@ public class Game implements Screen{
 		
 		powerupButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -765,11 +764,9 @@ public class Game implements Screen{
 		
 		freezePow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (freezeCDTimer == 0) {
 					freezeCDTimer = 15;
@@ -784,11 +781,9 @@ public class Game implements Screen{
 		
 		explodePow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (explodeCDTimer == 0) {
 					explodeCDTimer = 30;
@@ -809,11 +804,9 @@ public class Game implements Screen{
 		
 		healthPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (healthCDTimer == 0) {
 					healthCDTimer = 20;
@@ -832,11 +825,9 @@ public class Game implements Screen{
 		
 		godPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up"); 
 				resumeGame();
 				if (godCDTimer == 0) {
 					godCDTimer = 20;
@@ -848,11 +839,9 @@ public class Game implements Screen{
 		
 		championPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up"); 
 				resumeGame();
 				curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				hg.addActor(curChamp.getImage());
@@ -862,11 +851,9 @@ public class Game implements Screen{
 		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -879,11 +866,9 @@ public class Game implements Screen{
 		
 		mainMenuButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -896,11 +881,9 @@ public class Game implements Screen{
 		
 		mainMenuButton2.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				deathStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -970,7 +953,6 @@ public class Game implements Screen{
 		if (freeze == 0) {
 			
 		} else if ((freeze == 1) && (freezeTime != 0) ) {
-			System.out.println(freezeTime);
 			freezeTime--;
 		} else {
 			freezeTime = 10;
@@ -1024,37 +1006,6 @@ public class Game implements Screen{
 	private void generateSpawnLocations() {
 		for(int x = 0; x <= 100; x++) {
 			
-			
-			/*double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
-                     + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
-                     + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
-                     + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
-                     + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
-                     + (-0.0000381433485700688 * Math.pow(per_x,5))
-                     + (0.00112983288812486 * Math.pow(per_x,4))
-                     + (-0.0179778462008673 * Math.pow(per_x,3))
-                     + (0.120431228628006 * Math.pow(per_x,2))
-                     + (0.227287085911332 * per_x)
-                     + (53.4555698252754));*/
-			
-			/*double per_y = 55.47
-				+ 1.797*Math.sin(per_x*0.05479)
-				+ 2.761*Math.sin(per_x*0.05479)
-				+ -2.627*Math.cos(2*per_x*0.05479)
-				+ -0.9409*Math.sin(2*per_x*0.05479)
-				+ -0.1784*Math.cos(3*per_x*0.05479)
-				+ 0.346*Math.sin(3*per_x*0.05479)
-				+ -0.9533*Math.cos(4*per_x*0.05479)
-				+ 0.418*Math.sin(4*per_x*0.05479)
-				+ -0.04349*Math.cos(5*per_x*0.05479)
-				+ 0.1953*Math.sin(5*per_x*0.05479)
-				+ -0.1909*Math.cos(6*per_x*0.05479)
-				+ 0.4365*Math.sin(6*per_x*0.05479)
-				+ 0.02743*Math.cos(7*per_x*0.05479)
-				+ 0.05735*Math.sin(7*per_x*0.05479)
-				+ 0.05609*Math.cos(8*per_x*0.05479)
-				+ 0.2545*Math.sin(8*per_x*0.05479);*/
-			
 			double per_y = 22.07*Math.exp(-Math.pow(((x-28.38)/13.46), 2))
 					+ 57.74*Math.exp(-Math.pow(((x-107.2)/82.91), 2))
 					+ 2.657*Math.exp(-Math.pow(((x-15.37)/7.31), 2))
@@ -1080,16 +1031,15 @@ public class Game implements Screen{
 	            
 	        int yourFate = generator.nextInt(100) + 1;
 	        if(yourFate > 0 && yourFate < 6) {
-	        	newEnemy = new WalkingEnemy("BigDude", 100, anims, x, y);
+	        	newEnemy = new BigDude("BigDude", 600, anims, x, y);
 	        } else if(yourFate > 5 && yourFate < 11) {
 	        	newEnemy = new Priest("Priest", 100, anims, x, y);
 	        } else if(yourFate > 10 && yourFate < 21) {
-	        	newEnemy = new WalkingEnemy("Demo", 100, anims, x, y);
+	        	newEnemy = new DemoDude("Demo", 100, anims, x, y);
 	        } else {
-	        	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
+	        	newEnemy = new StickDude("Basic", 100, anims, x, y);
 	        }
 	       
-	            //enemyList.add(new StickDude("Basic", 100, x, y));
             bg.addActor(newEnemy.getShadow());
             bg.addActor(newEnemy.getImage());
             
