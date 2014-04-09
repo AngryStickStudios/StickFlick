@@ -1085,12 +1085,12 @@ public class Game implements Screen{
 		enemyGrabbed = grabbed;
 	}
 	
-	public int getGrabbedNumber(){
-		return grabbedNumber;
+	public Entity getGrabbedEnt(){
+		return grabbed;
 	}
 
-	public void setGrabbedNumber(int grabbedNumber){
-		this.grabbedNumber = grabbedNumber;
+	public void setGrabbedEnt(Entity gotGrabbed){
+		this.grabbed = gotGrabbed;
 	}
 	
 	public Vector<Entity> getEnemyList(){

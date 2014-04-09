@@ -23,9 +23,9 @@ public class GestureDetection implements GestureListener{
 				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
 					if(game.getEnemyList().get(i).getChanged() && game.getEnemyList().get(i).getSplatting() == 0 && game.getEnemyList().get(i).getIsAlive())
 					{
-						game.setGrabbedNumber(i);
+						game.setGrabbedEnt(game.getEnemyList().get(i));
 						game.setGrabbed(true);
-						game.getEnemyList().get(game.getGrabbedNumber()).pickedUp();
+						game.getGrabbedEnt().pickedUp();
 						break;
 					}
 				}
@@ -41,16 +41,16 @@ public class GestureDetection implements GestureListener{
 		if(game.getGrabbed() == true && game.getGodStatus())
 		{
 			game.setGrabbed(false);
-			game.getEnemyList().get(game.getGrabbedNumber()).decreaseHealth(100);
+			game.getGrabbedEnt().decreaseHealth(100);
 			
-			if(game.getEnemyList().get(game.getGrabbedNumber()).getIsAlive() == false)
+			if(game.getGrabbedEnt().getIsAlive() == false)
 			{
-				game.getEnemyList().get(game.getGrabbedNumber()).setState(0);
-				game.getEnemyList().get(game.getGrabbedNumber()).setSplatting(1);
+				game.getGrabbedEnt().setState(0);
+				game.getGrabbedEnt().setSplatting(1);
 			}
 			else
 			{
-				game.getEnemyList().get(game.getGrabbedNumber()).Released(new Vector2(0, 0));
+				game.getGrabbedEnt().Released(new Vector2(0, 0));
 			}
 		}
 
@@ -68,7 +68,7 @@ public class GestureDetection implements GestureListener{
 		if(game.getGrabbed() == true)
 		{
 			game.setGrabbed(false);
-			game.getEnemyList().get(game.getGrabbedNumber()).Released(new Vector2(velocityX / 1000, velocityY / -1000));
+			game.getGrabbedEnt().Released(new Vector2(velocityX / 1000, velocityY / -1000));
 		}
 		return false;
 	}
