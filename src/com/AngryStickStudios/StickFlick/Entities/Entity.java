@@ -131,7 +131,6 @@ public abstract class Entity {
                 return healthMax;
         }
  
- 
         public void setHealthMax(float healthMax) {
                 this.healthMax = healthMax;
         }
@@ -140,12 +139,10 @@ public abstract class Entity {
                 return healthCurrent;
         }
  
- 
         public void setHealthCurrent(float healthCurrent) {
                 this.healthCurrent = healthCurrent;
         }
-       
-       
+             
         public boolean getIsAlive(){
                 return isAlive;
         }

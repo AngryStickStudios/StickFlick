@@ -14,45 +14,27 @@ import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 
 public class WalkingEnemy extends Entity {
 	float scale, scaleMultiplier;
-	private boolean held, floating, frozen;
-	private Vector2 lastPos, destination, flySpeed;
-	private int moveBackSpeed;
-	private int splatting;
+	protected boolean held, floating, frozen;
+	protected Vector2 lastPos, destination, flySpeed;
+	protected int moveBackSpeed;
+	protected int splatting;
 	float peakamt =  .05f * Gdx.graphics.getHeight();
 	
-	private Texture shadowTex;
-    private Animation currentanim;
-    private String walkName;
-    private TextureRegion currentframe;
-    private TextureRegionDrawable enemyDrawable;
+	protected Texture shadowTex;
+    protected Animation currentanim;
+    protected String walkName;
+    protected TextureRegion currentframe;
+    protected TextureRegionDrawable enemyDrawable;
     float animationStateTime;
 	
     Image enemy, shadow;
 
-	public WalkingEnemy(String name, int health, AnimationLoader anims, int posX, int posY){
+	public WalkingEnemy(String name, int health, AnimationLoader anims, int posX, int posY, String walkName, float scaleMultiplier){
 		super(name, health, anims);
 		lastPos = new Vector2(posX, posY);
 		
-		// Set enemy texture depending on type
-		if(name == "Basic"){
-			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walkName = "dude_walk";
-			scaleMultiplier = 1f;
-		} else if(name == "Demo"){
-			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walkName = "demo_walk";
-			scaleMultiplier = 0.5f;
-		} else if(name == "BigDude"){
-			//entTex = new Texture("data/enemyTextures/basicEnemy.png");
-			walkName = "bigdude_walk";
-			scaleMultiplier = 2.5f;
-			setHealthMax(health * 10);
-			setHealthCurrent(getHealthMax());
-		} else{
-			//entTex = new Texture("data/enemyTextures/error.png");
-			walkName = "dude_walk";
-			scaleMultiplier = 5f;
-		}
+		this.walkName = walkName;
+		this.scaleMultiplier = scaleMultiplier;
 		
 		currentanim = anims.getAnim(walkName);
         currentframe = currentanim.getKeyFrame(animationStateTime, true);
@@ -67,11 +49,11 @@ public class WalkingEnemy extends Entity {
 		shadow = new Image(shadowTex);
 		shadow.setX(posX);
 		shadow.setY(posY);
-		
+
 		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 		enemy.setScale(scale);
 		shadow.setScale(scale);
-			
+		
 		held = false;
 		floating = false;
 		frozen = false;
