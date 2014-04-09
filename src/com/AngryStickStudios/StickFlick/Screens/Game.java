@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -32,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
@@ -43,7 +41,6 @@ import com.AngryStickStudios.StickFlick.Entities.Priest;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -76,7 +73,7 @@ public class Game implements Screen{
 	private int godCDTimer = 0;
 	private int score = 0;
 	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
-	private Hashtable<Integer, Integer> spawnLocation = new Hashtable<Integer, Integer>();
+	private double[] spawnLocation = new double[101];
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -1025,8 +1022,8 @@ public class Game implements Screen{
 	}
 	
 	private void generateSpawnLocations() {
-		for(int x = 0; x <= Gdx.graphics.getWidth(); x++) {
-			double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
+		for(int x = 0; x <= 100; x++) {
+			
 			
 			/*double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
                      + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
@@ -1058,18 +1055,16 @@ public class Game implements Screen{
 				+ 0.05609*Math.cos(8*per_x*0.05479)
 				+ 0.2545*Math.sin(8*per_x*0.05479);*/
 			
-			double per_y = 22.07*Math.exp(-Math.pow(((per_x-28.38)/13.46), 2))
-					+ 57.74*Math.exp(-Math.pow(((per_x-107.2)/82.91), 2))
-					+ 2.657*Math.exp(-Math.pow(((per_x-15.37)/7.31), 2))
-					+ 42.57*Math.exp(-Math.pow(((per_x-2.339)/22.12), 2))
-					+ 4.368*Math.exp(-Math.pow(((per_x-48.16)/5.225), 2))
-					+ 8.194*Math.exp(-Math.pow(((per_x-51.9)/21.79), 2))
-					+ 9.983*Math.exp(-Math.pow(((per_x-41.27)/8.756), 2))
-					+ 1.574*Math.exp(-Math.pow(((per_x-57.25)/5.172), 2));
-    
-			 int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
+			double per_y = 22.07*Math.exp(-Math.pow(((x-28.38)/13.46), 2))
+					+ 57.74*Math.exp(-Math.pow(((x-107.2)/82.91), 2))
+					+ 2.657*Math.exp(-Math.pow(((x-15.37)/7.31), 2))
+					+ 42.57*Math.exp(-Math.pow(((x-2.339)/22.12), 2))
+					+ 4.368*Math.exp(-Math.pow(((x-48.16)/5.225), 2))
+					+ 8.194*Math.exp(-Math.pow(((x-51.9)/21.79), 2))
+					+ 9.983*Math.exp(-Math.pow(((x-41.27)/8.756), 2))
+					+ 1.574*Math.exp(-Math.pow(((x-57.25)/5.172), 2));
 			 
-			 spawnLocation.put(x, y);
+			 spawnLocation[x] = per_y;
 		}
 		
 	}
@@ -1079,7 +1074,7 @@ public class Game implements Screen{
         	Random generator = new Random();
 	           
         	int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
-        	int y = spawnLocation.get(x);
+        	int y = (int)((spawnLocation[(int)(((float)x / (float)Gdx.graphics.getWidth()) * 100)] / 100) * Gdx.graphics.getHeight());
 	            
 	        Entity newEnemy = null;
 	            
