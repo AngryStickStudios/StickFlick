@@ -45,7 +45,7 @@ public class Priest extends Entity {
                    
                 splatting = 0;
                
-                shadowTex = new Texture("data/enemyTextures/shadow.png");
+                shadowTex = anims.getTex("shadow");
                
                 // Create enemy Image/Actor
                 enemy = new Image(enemyDrawable);

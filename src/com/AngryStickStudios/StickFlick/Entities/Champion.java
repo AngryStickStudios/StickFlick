@@ -30,7 +30,7 @@ public class Champion extends Entity {
                 super(name, health, anims);
                 scale = 0.1f;
                 mscale = 1f;
-                shadowTex = new Texture("data/enemyTextures/shadow.png");
+                shadowTex = anims.getTex("shadow");
                
                 animationStateTime = 0;
                 currentanim = anims.getAnim("champ_walk_f");

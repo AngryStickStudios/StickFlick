@@ -9,16 +9,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoaderClass;
+import com.AngryStickStudios.StickFlick.Controller.TextureLoaderClass;
  
 public class AnimationLoader {
 	
-		Vector<AnimationLoaderClass> list;
+		Vector<AnimationLoaderClass> Animlist;
+		Vector<TextureLoaderClass> Texlist;
  
         public AnimationLoader(){
-        	list = new Vector<AnimationLoaderClass>();
+        	Animlist = new Vector<AnimationLoaderClass>();
+        	Texlist = new Vector<TextureLoaderClass>();
+        	
+        	//game
+        	setupTex("gameBG", "data/gameBackground.png");
+        	setupTex("gameHills", "data/gameHills.png");
+        	setupTex("gameCastle", "data/castleOnly.png");
         	
         	//all
         	setupAnim("splat", "data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
+        	setupTex("shadow", "data/enemyTextures/shadow.png");
         	
         	//champion
         	setupAnim("champ_walk_f", "data/enemyTextures/hotc_walkf.png", 6, 5, (float) 0.025);
@@ -60,16 +69,36 @@ public class AnimationLoader {
             	
             	Animation anim = new Animation(speed, frames);
             	
-            	list.add(new AnimationLoaderClass(name, anim));
+            	Animlist.add(new AnimationLoaderClass(name, anim));
+        }
+        
+        public void setupTex(String name, String file)
+        {
+        	Texture tex = new Texture(file);
+        	
+        	Texlist.add(new TextureLoaderClass(name, tex));
         }
         
         public Animation getAnim(String name)
         {
-        	for(int i = 0; i < list.size(); i++)
+        	for(int i = 0; i < Animlist.size(); i++)
         	{
-        		if(list.get(i).getName() == name)
+        		if(Animlist.get(i).getName() == name)
         		{
-        			return list.get(i).getAnim();
+        			return Animlist.get(i).getAnim();
+        		}
+        	}
+        	
+        	return null;
+        }
+        
+        public Texture getTex(String name)
+        {
+        	for(int i = 0; i < Texlist.size(); i++)
+        	{
+        		if(Texlist.get(i).getName() == name)
+        		{
+        			return Texlist.get(i).getAnim();
         		}
         	}
         	

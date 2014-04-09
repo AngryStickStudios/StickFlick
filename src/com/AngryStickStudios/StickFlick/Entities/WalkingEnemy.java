@@ -58,7 +58,7 @@ public class WalkingEnemy extends Entity {
 		currentanim = anims.getAnim(walkName);
         currentframe = currentanim.getKeyFrame(animationStateTime, true);
         enemyDrawable = new TextureRegionDrawable(currentframe);
-		shadowTex = new Texture("data/enemyTextures/shadow.png");
+        shadowTex = anims.getTex("shadow");
 		
 		// Create enemy Image/Actor
 		enemy = new Image(enemyDrawable);

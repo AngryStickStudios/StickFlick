@@ -62,7 +62,7 @@ public class Game implements Screen, GestureListener {
 	private int minutes = 0;
 	private String formattedTime = "0:00";
 	private boolean enemyGrabbed = false;
-	private int grabbedNumber = -1;
+	private Entity grabbed;
 	private long coinageTotal = prefs.getLong("currency", 0); 
 	private int explodeCDTimer = 0;
 	private int healthCDTimer = 0;
@@ -105,6 +105,7 @@ public class Game implements Screen, GestureListener {
 	public Game(StickFlick game){
 		this.game = game;
 		anims = new AnimationLoader();
+		atlas = new TextureAtlas("data/Textures.atlas");
 		
 		 spawnTimerOuter.schedule(new Task() {
              @Override
@@ -345,7 +346,7 @@ public class Game implements Screen, GestureListener {
 			if(enemyGrabbed && !Gdx.input.isTouched())
 			{
 				enemyGrabbed = false;
-				enemyList.get(grabbedNumber).Released(new Vector2(0,0));
+				grabbed.Released(new Vector2(0,0));
 			}
 			
 			timeTrack += Gdx.graphics.getDeltaTime();
@@ -543,21 +544,21 @@ public class Game implements Screen, GestureListener {
 		buttonStyle.down = skin.getDrawable("DarkButton");
 		buttonStyle.font = white;
 		
-		gameBackground = new Texture("data/gameBackground.png");
+		gameBackground = anims.getTex("gameBG");
 		Image backgroundImage = new Image(gameBackground);
 		backgroundImage.setZIndex(100000);
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		bg.addActor(backgroundImage);
 		
-		gameHills = new Texture("data/gameHills.png");
+		gameHills = anims.getTex("gameHills");
 		Image hillsImage = new Image(gameHills);
 		hillsImage.setZIndex(100000);
 		hillsImage.setWidth(Gdx.graphics.getWidth());
 		hillsImage.setHeight(Gdx.graphics.getHeight());
 		hg.addActor(hillsImage);
 		
-		castleOnly = new Texture("data/castleOnly.png");
+		castleOnly = anims.getTex("gameCastle");
 		Image castleImage = new Image(castleOnly);
 		castleImage.setWidth(Gdx.graphics.getWidth());
 		castleImage.setHeight(Gdx.graphics.getHeight());
@@ -914,7 +915,7 @@ public class Game implements Screen, GestureListener {
 		
 		batch = new SpriteBatch();
 		
-		atlas = new TextureAtlas("data/Textures.atlas");
+		//atlas = new TextureAtlas("data/Textures.atlas");
 		skin = new Skin();
 		skin.addRegions(atlas);
 		
@@ -1109,9 +1110,9 @@ public class Game implements Screen, GestureListener {
 				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
 					if(enemyList.get(i).getChanged() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getIsAlive())
 					{
-						grabbedNumber = i;
+						grabbed = enemyList.get(i);
 						enemyGrabbed = true;
-						enemyList.get(grabbedNumber).pickedUp();
+						grabbed.pickedUp();
 						break;
 					}
 				}
@@ -1127,16 +1128,16 @@ public class Game implements Screen, GestureListener {
 		if(enemyGrabbed == true && god)
 		{
 			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).decreaseHealth(100);
+			grabbed.decreaseHealth(100);
 			
-			if(enemyList.get(grabbedNumber).getIsAlive() == false)
+			if(grabbed.getIsAlive() == false)
 			{
-				enemyList.get(grabbedNumber).setState(0);
-				enemyList.get(grabbedNumber).setSplatting(1);
+				grabbed.setState(0);
+				grabbed.setSplatting(1);
 			}
 			else
 			{
-				enemyList.get(grabbedNumber).Released(new Vector2(0, 0));
+				grabbed.Released(new Vector2(0, 0));
 			}
 		}
 
@@ -1154,7 +1155,7 @@ public class Game implements Screen, GestureListener {
 		if(enemyGrabbed == true)
 		{
 			enemyGrabbed = false;
-			enemyList.get(grabbedNumber).Released(new Vector2(velocityX / 1000, velocityY / -1000));
+			grabbed.Released(new Vector2(velocityX / 1000, velocityY / -1000));
 		}
 		return false;
 	}
