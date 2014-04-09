@@ -108,6 +108,20 @@ public class Options implements Screen {
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		
+		creditsButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						((StickFlick) Gdx.app.getApplicationListener()).setScreen(new Credits(game));
+					}
+				})));
+			}
+		});
+		
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
