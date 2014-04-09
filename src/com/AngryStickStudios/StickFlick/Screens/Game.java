@@ -1,5 +1,6 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,23 +31,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
+import com.AngryStickStudios.StickFlick.Entities.BigDude;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
+import com.AngryStickStudios.StickFlick.Entities.DemoDude;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.Priest;
+import com.AngryStickStudios.StickFlick.Entities.StickDude;
 import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-public class Game implements Screen, GestureListener {
+public class Game implements Screen{
 
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
@@ -75,6 +76,7 @@ public class Game implements Screen, GestureListener {
 	private int godCDTimer = 0;
 	private int score = 0;
 	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
+	private double[] spawnLocation = new double[101];
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -83,7 +85,7 @@ public class Game implements Screen, GestureListener {
 	Group bg, hg, fg;
 	Skin skin;
 	BitmapFont white;
-	GestureDetector gd;
+	GestureDetection gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
 	TextButton pauseButton, powerupButton, resumeButton, mainMenuButton, mainMenuButton2;
@@ -106,6 +108,8 @@ public class Game implements Screen, GestureListener {
 		this.game = game;
 		anims = new AnimationLoader();
 		atlas = new TextureAtlas("data/Textures.atlas");
+		
+		generateSpawnLocations();
 		
 		 spawnTimerOuter.schedule(new Task() {
              @Override
@@ -506,6 +510,8 @@ public class Game implements Screen, GestureListener {
 
 	@Override
 	public void resize(int width, int height) {
+		gd = new GestureDetection(this);
+		
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
@@ -523,7 +529,7 @@ public class Game implements Screen, GestureListener {
 		fg = new Group();
 		
 		if(gameStatus == GAME_RUNNING) {
-			im = new InputMultiplexer(new GestureDetector(this), stage);
+			im = new InputMultiplexer(new GestureDetector(gd) , stage);
 			Gdx.input.setInputProcessor(im);
 		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
@@ -729,11 +735,9 @@ public class Game implements Screen, GestureListener {
 		
 		pauseButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -746,11 +750,9 @@ public class Game implements Screen, GestureListener {
 		
 		powerupButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -763,11 +765,9 @@ public class Game implements Screen, GestureListener {
 		
 		freezePow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (freezeCDTimer == 0) {
 					freezeCDTimer = 15;
@@ -782,11 +782,9 @@ public class Game implements Screen, GestureListener {
 		
 		explodePow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (explodeCDTimer == 0) {
 					explodeCDTimer = 30;
@@ -807,11 +805,9 @@ public class Game implements Screen, GestureListener {
 		
 		healthPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				resumeGame();
 				if (healthCDTimer == 0) {
 					healthCDTimer = 20;
@@ -830,11 +826,9 @@ public class Game implements Screen, GestureListener {
 		
 		godPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up"); 
 				resumeGame();
 				if (godCDTimer == 0) {
 					godCDTimer = 20;
@@ -846,11 +840,9 @@ public class Game implements Screen, GestureListener {
 		
 		championPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up"); 
 				resumeGame();
 				curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				hg.addActor(curChamp.getImage());
@@ -860,11 +852,9 @@ public class Game implements Screen, GestureListener {
 		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -877,11 +867,9 @@ public class Game implements Screen, GestureListener {
 		
 		mainMenuButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -894,11 +882,9 @@ public class Game implements Screen, GestureListener {
 		
 		mainMenuButton2.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 				
 				deathStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -962,17 +948,12 @@ public class Game implements Screen, GestureListener {
 		skin.dispose();	
 	}
 
-	/*******************
-	 * Spawning
-	 *******************/
-
 	//If the freeze powerup is enabled, spawn will not be called
 	public void freezeCheck() {
 
 		if (freeze == 0) {
 			
 		} else if ((freeze == 1) && (freezeTime != 0) ) {
-			System.out.println(freezeTime);
 			freezeTime--;
 		} else {
 			freezeTime = 10;
@@ -1022,56 +1003,56 @@ public class Game implements Screen, GestureListener {
 			}
 		}
 	}
+	
+	private void generateSpawnLocations() {
+		for(int x = 0; x <= 100; x++) {
+			
+			double per_y = 22.07*Math.exp(-Math.pow(((x-28.38)/13.46), 2))
+					+ 57.74*Math.exp(-Math.pow(((x-107.2)/82.91), 2))
+					+ 2.657*Math.exp(-Math.pow(((x-15.37)/7.31), 2))
+					+ 42.57*Math.exp(-Math.pow(((x-2.339)/22.12), 2))
+					+ 4.368*Math.exp(-Math.pow(((x-48.16)/5.225), 2))
+					+ 8.194*Math.exp(-Math.pow(((x-51.9)/21.79), 2))
+					+ 9.983*Math.exp(-Math.pow(((x-41.27)/8.756), 2))
+					+ 1.574*Math.exp(-Math.pow(((x-57.25)/5.172), 2));
+			 
+			 spawnLocation[x] = per_y;
+		}
+		
+	}
 
 	public void spawn() {
-        if(freeze == 0){
-                Random generator = new Random();
-               
-                int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
-               
-                double per_x = ((float)x / (float)Gdx.graphics.getWidth()) * 100;
-               
-                double per_y = (int)((2.58167567540614 * Math.pow(10, -16) * Math.pow(per_x,10))
-                                + (-1.95342140280605 * Math.pow(10, -13) * Math.pow(per_x,9))
-                                + (5.67913824173503 * Math.pow(10, -11) * Math.pow(per_x,8))
-                                + (-8.57596416430226 * Math.pow(10, -9) * Math.pow(per_x,7))
-                                + (7.44412734903002 * Math.pow(10, -7) * Math.pow(per_x,6))
-                                + (-0.0000381433485700688 * Math.pow(per_x,5))
-                                + (0.00112983288812486 * Math.pow(per_x,4))
-                                + (-0.0179778462008673 * Math.pow(per_x,3))
-                                + (0.120431228628006 * Math.pow(per_x,2))
-                                + (0.227287085911332 * per_x)
-                                + (53.4555698252754));
-               
-                int y = (int)((per_y / 100) * Gdx.graphics.getHeight());
-                
-                Entity newEnemy = null;
-                
-                int yourFate = generator.nextInt(100) + 1;
-                if(yourFate > 0 && yourFate < 6){
-                	newEnemy = new WalkingEnemy("BigDude", 100, anims, x, y);
-                } else if(yourFate > 5 && yourFate < 11){
-                	newEnemy = new Priest("Priest", 100, anims, x, y);
-                } else if(yourFate > 10 && yourFate < 21){
-                	newEnemy = new WalkingEnemy("Demo", 100, anims, x, y);
-                } else{
-                	newEnemy = new WalkingEnemy("Basic", 100, anims, x, y);
-                }
-               
-                enemyList.add(newEnemy);
-                //enemyList.add(new StickDude("Basic", 100, x, y));
-                bg.addActor(newEnemy.getShadow());
-                bg.addActor(newEnemy.getImage());
-                
-                newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
-                
+        if(freeze == 0) {
+        	Random generator = new Random();
+	           
+        	int x = generator.nextInt((int)(Gdx.graphics.getWidth()*4/5) + 1) + (int)(Gdx.graphics.getWidth()/10);
+        	int y = (int)((spawnLocation[(int)(((float)x / (float)Gdx.graphics.getWidth()) * 100)] / 100) * Gdx.graphics.getHeight());
+	            
+	        Entity newEnemy = null;
+	            
+	        int yourFate = generator.nextInt(100) + 1;
+	        if(yourFate > 0 && yourFate < 6) {
+	        	newEnemy = new BigDude("BigDude", 600, anims, x, y);
+	        } else if(yourFate > 5 && yourFate < 11) {
+	        	newEnemy = new Priest("Priest", 100, anims, x, y);
+	        } else if(yourFate > 10 && yourFate < 21) {
+	        	newEnemy = new DemoDude("Demo", 100, anims, x, y);
+	        } else {
+	        	newEnemy = new StickDude("Basic", 100, anims, x, y);
+	        }
+	       
+            bg.addActor(newEnemy.getShadow());
+            bg.addActor(newEnemy.getImage());
+            
+            newEnemy.setPosition(newEnemy.getPosition().x, Math.round(newEnemy.getPosition().y - (.05 * Gdx.graphics.getHeight())));
+	        enemyList.add(newEnemy);
+            newEnemy = null;
         }
-}
+	}
 
 	/*********************************
 	 * Coinage Generation & Management
 	 *********************************/
-
 	// Public methods for getting and setting private long coinageTotal
 	public void setCoinage(long coinageTotal) {
 		this.coinageTotal = coinageTotal;
@@ -1096,92 +1077,28 @@ public class Game implements Screen, GestureListener {
 		//prefs.flush();
 	}
 
-	/*******************
-	 * Gesture Detection
-	 *******************/
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button) {
-		y = Gdx.graphics.getHeight() - y;
-		if(enemyGrabbed == false){
-			for(int i = 0; i < enemyList.size(); i++)       // Searches through enemy list
-			{
-				Vector2 size = enemyList.get(i).getSize();
-				Vector2 pos = enemyList.get(i).getPosition();
-				if((pos.x - size.x <= x && x <= pos.x + size.x) && (pos.y - size.y<= y && y < pos.y + size.y)){
-					if(enemyList.get(i).getChanged() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getIsAlive())
-					{
-						grabbed = enemyList.get(i);
-						enemyGrabbed = true;
-						grabbed.pickedUp();
-						break;
-					}
-				}
-			}
-		}
-		return false;
+	public boolean getGrabbed(){
+		return enemyGrabbed;
+	}
+	
+	public void setGrabbed(Boolean grabbed){
+		enemyGrabbed = grabbed;
+	}
+	
+	public int getGrabbedNumber(){
+		return grabbedNumber;
 	}
 
-	@Override
-	public boolean tap(float x, float y, int count, int button) {
-
-		//tap to kill
-		if(enemyGrabbed == true && god)
-		{
-			enemyGrabbed = false;
-			grabbed.decreaseHealth(100);
-			
-			if(grabbed.getIsAlive() == false)
-			{
-				grabbed.setState(0);
-				grabbed.setSplatting(1);
-			}
-			else
-			{
-				grabbed.Released(new Vector2(0, 0));
-			}
-		}
-
-		return false;
+	public void setGrabbedNumber(int grabbedNumber){
+		this.grabbedNumber = grabbedNumber;
 	}
-
-	@Override
-	public boolean longPress(float x, float y) {
-		// UNUSED
-		return false;
+	
+	public Vector<Entity> getEnemyList(){
+		return enemyList;
 	}
-
-	@Override
-	public boolean fling(float velocityX, float velocityY, int button) {
-		if(enemyGrabbed == true)
-		{
-			enemyGrabbed = false;
-			grabbed.Released(new Vector2(velocityX / 1000, velocityY / -1000));
-		}
-		return false;
-	}
-
-	@Override
-	public boolean pan(float x, float y, float deltaX, float deltaY) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean panStop(float x, float y, int pointer, int button) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean zoom(float initialDistance, float distance) {
-			// UNUSED
-		return false;
-	}
-
-	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-			// UNUSED
-		return false;
+	
+	public Boolean getGodStatus(){
+		return god;
 	}
 
 }

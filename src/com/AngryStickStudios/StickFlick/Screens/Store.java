@@ -271,11 +271,9 @@ public class Store implements Screen{
 		
 		buyButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Buy Button Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Buy Button Pressed up");
 				
 				buyPowerUps();
 			}
@@ -283,11 +281,9 @@ public class Store implements Screen{
 		
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Back Button Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Back Button Pressed up");
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
 					public void run() {
@@ -299,17 +295,9 @@ public class Store implements Screen{
 		
 		blizzardButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Blizzard Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Blizzard up");
-				/*
-				if(blizzard2 == 1)
-					blizzard2 = 2;
-				else if(blizzard2 == 2)
-					blizzard2 = 1;
-				*/
 				blizzardSelected = true;
 				title = "Blizzard";
 				description = "Freezes the stick dudes\nby creating a snow blizzard\ngiving you 10 seconds\nto kill as many as you can.";
@@ -319,17 +307,9 @@ public class Store implements Screen{
 		
 		serfsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Serfs Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Serfs up");
-				/*
-				if(serfs2 == 1)
-					serfs2 = 2;
-				else if(serfs2 == 2)
-					serfs2 = 1;
-				*/
 				serfsSelected = true;
 				title = "Serfs";
 				description = "Brings little dudes\nto help retore the health\nof your castle.";
@@ -339,17 +319,9 @@ public class Store implements Screen{
 		
 		bombCatapultButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Bomb Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Bomb up");
-				/*
-				if(bombCatapult2 == 1)
-					bombCatapult2 = 2;
-				else if(bombCatapult2 == 2)
-					bombCatapult2 = 1;
-				*/
 				bombCatapultSelected = true;
 				title = "Bomb Catapult";
 				description = "Throws bombs that kills\nall the enemy dudes on the\nscreen.";
@@ -359,17 +331,9 @@ public class Store implements Screen{
 		
 		fingerOfGodButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("FingerOfGod Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("FingerOfGod up");
-				/*
-				if(fingerOfGod2 == 1)
-					fingerOfGod2 = 2;
-				else if(fingerOfGod2 == 2)
-					fingerOfGod2 = 1;
-				*/
 				fingerOfGodSelected = true;
 				title = "Finger Of God";
 				description = "Gives you the ability to\ntap the dudes in order to\nkill them.";
@@ -379,18 +343,9 @@ public class Store implements Screen{
 		
 		hornOfChampButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Horn Of Champ Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Horn Of Champ up");
-				/*
-				if(hornOfChamp2 == 1)
-					hornOfChamp2 = 2;
-				else if(hornOfChamp2 == 2)
-					hornOfChamp2 = 1;
-				*/
-				
 				hornOfChampSelected = true;
 				title = "Horn Of The Champ";
 				description = "Specifically targets Big\nDudes if any exist during\nthe game. (Last 10secs)";
@@ -401,11 +356,9 @@ public class Store implements Screen{
 		/*
 		magesButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Mages Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Mages up");
 			
 				if(mages2 == 1)
 					mages2 = 2;
@@ -422,11 +375,9 @@ public class Store implements Screen{
 		
 		archersButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("FingerOfGod Pressed down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("FingerOfGod up");
 				
 				if(archers2 == 1)
 					archers2 = 2;

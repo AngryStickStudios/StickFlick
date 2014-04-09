@@ -115,11 +115,9 @@ public class MainMenu implements Screen{
 		// Play the game
 		playButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -133,11 +131,9 @@ public class MainMenu implements Screen{
 		
 		storeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -152,11 +148,9 @@ public class MainMenu implements Screen{
 		// Go to options menu
 		optionsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
@@ -170,11 +164,9 @@ public class MainMenu implements Screen{
 		
 		scoreButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
 
 				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
 					@Override
