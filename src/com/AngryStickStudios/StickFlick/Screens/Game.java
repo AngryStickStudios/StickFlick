@@ -769,6 +769,7 @@ public class Game implements Screen{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				resumeGame();
+				
 				if (freezeCDTimer == 0) {
 					freezeCDTimer = 15;
 					fg.addActor(freezeCD);
@@ -1050,6 +1051,22 @@ public class Game implements Screen{
         }
 	}
 
+	/*********************************
+	 * BOILING OIL
+	 *********************************/
+	
+	public void boilingOilPU(){
+		for(int i = 0; i<enemyList.size(); i++){
+			if(enemyList.get(i).getPosition().y <= Gdx.graphics.getHeight() * 0.35f){
+				//System.out.println("Enemy at wall TRUE");
+				hg.removeActor(enemyList.get(i).getImage());
+				hg.removeActor(enemyList.get(i).getShadow());
+				enemyList.remove(i);
+			}
+			//System.out.println("Not at wall");
+		}
+	}
+	
 	/*********************************
 	 * Coinage Generation & Management
 	 *********************************/
