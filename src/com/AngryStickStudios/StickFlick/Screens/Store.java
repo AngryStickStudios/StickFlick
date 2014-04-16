@@ -43,13 +43,13 @@ public class Store implements Screen{
 	private boolean fingerOfGodSelected;
 	private boolean hornOfChampSelected;
 	
-	private int bombCatapult2;
-	private int mages2;
-	private int archers2;
-	private int blizzard2;
-	private int serfs2;
-	private int fingerOfGod2;
-	private int hornOfChamp2;
+	private boolean bombCatapultBought = false;
+	private boolean magesBought = false;
+	private boolean archersBought = false;
+	private boolean blizzardBought = false;
+	private boolean serfsBought = false;
+	private boolean fingerOfGodBought = false;
+	private boolean hornOfChampBought = false;
 	
 	Label coinLabel;
 	Label desTextLabel;
@@ -86,14 +86,6 @@ public class Store implements Screen{
 		hornOfChampSelected = false;
 		blizzardSelected = false;
 		bombCatapultSelected = false;
-		
-		bombCatapult2 = 1;
-		mages2 = 1;
-		archers2 = 1;
-		blizzard2 = 1;
-		serfs2 = 1;
-		fingerOfGod2 = 1;
-		hornOfChamp2 = 1;
 		
 		description = "";
 		price = "";
@@ -151,12 +143,15 @@ public class Store implements Screen{
 		LabelStyle titleStyle = new LabelStyle(titleFont, Color.BLACK);
 		Label powerUpLabel = new Label("Power Ups", titleStyle);
 		powerUpLabel.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/8);
+		powerUpLabel.setFontScale(Gdx.graphics.getWidth()*0.0015f,Gdx.graphics.getHeight()*0.003f);
 		stage.addActor(powerUpLabel);
 		
 		descriptionFont.setScale(1.3f);
 		LabelStyle desTitleStyle = new LabelStyle(descriptionFont, Color.BLACK);
 		desTitleLabel = new Label(title, desTitleStyle);
-		desTitleLabel.setPosition(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/8);
+		desTitleLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
+		desTitleLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/8);
+		desTitleLabel.setFontScale(Gdx.graphics.getWidth()*0.0009f,Gdx.graphics.getHeight()*0.0025f);
 		stage.addActor(desTitleLabel);
 		
 		textFont.setScale(1.3f);
@@ -164,18 +159,21 @@ public class Store implements Screen{
 		coinLabel = new Label("Spendable Coins: " + prefs.getLong("currency", 0), textStyle);
 		coinLabel.setX(Gdx.graphics.getWidth()/20);
 		coinLabel.setY(Gdx.graphics.getHeight()/20);
+		coinLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(coinLabel);
 		
 		desTextFont.setScale(0.95f);
 		LabelStyle desTextStyle = new LabelStyle(desTextFont, Color.BLACK);
 		desTextLabel = new Label(description, desTextStyle);
 		desTextLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
-		desTextLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/4);
+		desTextLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/3f);
+		desTextLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(desTextLabel);
 
 		priceLabel = new Label(price, desTextStyle);
 		priceLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
 		priceLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/2);
+		priceLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(priceLabel);
 		
 		
@@ -204,43 +202,19 @@ public class Store implements Screen{
 		blizzardButton.setHeight(Gdx.graphics.getWidth() / 16);
 		blizzardButton.setPosition(Gdx.graphics.getWidth()/4 - 2*blizzardButton.getWidth(),Gdx.graphics.getHeight()/2 + blizzardButton.getHeight()/2);
 		stage.addActor(blizzardButton);
-		/*
-		if(serfs2 == 2){
-			powerUpSelection = new Button(skin.getDrawable("Powerup Selection"));
-			powerUpSelection.setWidth(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setHeight(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setPosition(Gdx.graphics.getWidth()/2 - 3*powerUpSelection.getWidth(), Gdx.graphics.getHeight()/2 + powerUpSelection.getHeight()/2);
-			stage.addActor(powerUpSelection);
-		}*/
 		
 		serfsButton = new Button(skin.getDrawable("HealPowerupButtonLight"),skin.getDrawable("HealPowerupButtonDark"));
 		serfsButton.setWidth(Gdx.graphics.getWidth() / 16);
 		serfsButton.setHeight(Gdx.graphics.getWidth() / 16);
 		serfsButton.setPosition(Gdx.graphics.getWidth()/2 - 3*serfsButton.getWidth(), Gdx.graphics.getHeight()/2 + serfsButton.getHeight()/2);
 		stage.addActor(serfsButton);
-		/*
-		if(bombCatapult2 == 2){
-			powerUpSelection = new Button(skin.getDrawable("Powerup Selection"));
-			powerUpSelection.setWidth(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setHeight(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setPosition(Gdx.graphics.getWidth()/2 ,Gdx.graphics.getHeight()/2 + powerUpSelection.getHeight()/2);
-			stage.addActor(powerUpSelection);
-		}
-		*/
+		
 		bombCatapultButton = new Button(skin.getDrawable("ExplosionPowerupButtonLight"),skin.getDrawable("ExplosionPowerupButtonDark"));
 		bombCatapultButton.setWidth(Gdx.graphics.getWidth() / 16);
 		bombCatapultButton.setHeight(Gdx.graphics.getWidth() / 16);
 		bombCatapultButton.setPosition(Gdx.graphics.getWidth()/2 ,Gdx.graphics.getHeight()/2 + bombCatapultButton.getHeight()/2);
 		stage.addActor(bombCatapultButton);
-		/*
-		if(fingerOfGod2 == 2){
-			powerUpSelection = new Button(skin.getDrawable("Powerup Selection"));
-			powerUpSelection.setWidth(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setHeight(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setPosition(Gdx.graphics.getWidth()/4 - 2*powerUpSelection.getWidth(),Gdx.graphics.getHeight()/2 - p.getHeight());
-			stage.addActor(powerUpSelection);
-		}
-		*/
+		
 		fingerOfGodButton = new Button(skin.getDrawable("GodPowerupButtonLight"),skin.getDrawable("GodPowerupButtonDark"));
 		fingerOfGodButton.setWidth(Gdx.graphics.getWidth() / 16);
 		fingerOfGodButton.setHeight(Gdx.graphics.getWidth() / 16);
@@ -253,19 +227,18 @@ public class Store implements Screen{
 		hornOfChampButton.setPosition(Gdx.graphics.getWidth()/2 - 3*hornOfChampButton.getWidth(),Gdx.graphics.getHeight()/2 - hornOfChampButton.getHeight());
 		stage.addActor(hornOfChampButton);
 		
-		/*
-		magesButton = new Button(skin.getDrawable("HealPowerupButtonLight"),skin.getDrawable("PowerupSelection"));
+		magesButton = new Button(skin.getDrawable("ExplosionPowerupButtonLight"),skin.getDrawable("ExplosionPowerupButtonDark"));
 		magesButton.setWidth(Gdx.graphics.getWidth() / 16);
 		magesButton.setHeight(Gdx.graphics.getWidth() / 16);
-		magesButton.setPosition(Gdx.graphics.getWidth()/2 - magesButton.getWidth()/2,Gdx.graphics.getHeight()/2 + magesButton.getHeight()/2);
+		magesButton.setPosition(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2 - magesButton.getHeight());
 		stage.addActor(magesButton);
 		
-		archersButton = new Button(skin.getDrawable("HealPowerupButtonLight"),skin.getDrawable("PowerupSelection"));
+		archersButton = new Button(skin.getDrawable("IcePowerupButtonLight"),skin.getDrawable("IcePowerupButtonDark"));
 		archersButton.setWidth(Gdx.graphics.getWidth() / 16);
 		archersButton.setHeight(Gdx.graphics.getWidth() / 16);
-		archersButton.setPosition(Gdx.graphics.getWidth()/2 - archersButton.getWidth()/2,Gdx.graphics.getHeight()/2 + archersButton.getHeight()/2);
+		archersButton.setPosition(Gdx.graphics.getWidth()/2 - 3*archersButton.getWidth(),Gdx.graphics.getHeight()/2 - 5*archersButton.getHeight()/2);
 		stage.addActor(archersButton);
-		*/
+		
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
 		
@@ -300,7 +273,7 @@ public class Store implements Screen{
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				blizzardSelected = true;
 				title = "Blizzard";
-				description = "Freezes the stick dudes\nby creating a snow blizzard\ngiving you 10 seconds\nto kill as many as you can.";
+				description = "Freezes the stick dudes\ngiving you 10 seconds\nto kill as many as you can.";
 				price = "Price:  7,000";
 			}
 		});
@@ -353,21 +326,15 @@ public class Store implements Screen{
 			}
 		});
 		
-		/*
+		
 		magesButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
 			}
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-			
-				if(mages2 == 1)
-					mages2 = 2;
-				else if(mages2 == 2)
-					mages2 = 1;
-					
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {	
 				magesSelected = true;
 				title = "Mages";
-				description = "Reduces all ability cooldowns by 5%.";
+				description = "Reduces all ability\ncooldowns by 5%.";
 				price = "Price:  2,000";
 			}
 		});
@@ -378,19 +345,13 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
-				if(archers2 == 1)
-					archers2 = 2;
-				else if(archers2 == 2)
-					archers2 = 1;
-					
 				archersSelected = true;
 				title = "Archers";
-				description = "Raw damage per second increase (don't know exactly what this fu*#%ing shit does.";	
+				description = "Raw damage per\nsecond increase.";	
 				price = "Price:  2,000";
 			}
 		});
-		*/
+		
 	}
 	
 
@@ -413,62 +374,112 @@ public class Store implements Screen{
 	public void buyPowerUps(){
 		
 		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected){
-			
+			magesSelected = false;
+			magesBought = true;
 			long temp = prefs.getLong("currency", 0) - magesPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected){
-			
+			archersSelected = false;
+			archersBought = true;
 			long temp = prefs.getLong("currency", 0) - archersPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(bombCatapultPrice <= prefs.getLong("currency", 0) && bombCatapultSelected){
-			
+			bombCatapultSelected = false;
+			bombCatapultBought = true;
 			long temp = prefs.getLong("currency", 0) - bombCatapultPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(blizzardPrice <= prefs.getLong("currency", 0) && blizzardSelected){
-			
+			blizzardSelected = false;
+			blizzardBought = true;
 			long temp = prefs.getLong("currency", 0) - blizzardPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(fingerOfGodPrice <= prefs.getLong("currency", 0) && fingerOfGodSelected){
-			
+			fingerOfGodSelected = false;
+			fingerOfGodBought = true;
 			long temp = prefs.getLong("currency", 0) - fingerOfGodPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(hornOfChampPrice <= prefs.getLong("currency", 0) && hornOfChampSelected){
-			
+			hornOfChampSelected = false;
+			hornOfChampBought = true;
 			long temp = prefs.getLong("currency", 0) - hornOfChampPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
 		}
 		
 		if(serfsPrice <= prefs.getLong("currency", 0) && serfsSelected){
-			
+			serfsSelected = false;
+			serfsBought = true;
 			long temp = prefs.getLong("currency", 0) - serfsPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+		}	
+	}
+	
+	public boolean blizzardPuBought(){
+		return blizzardBought;
+	}
+	
+	public boolean archersPuBought(){
+		return archersBought;
+	}
+	
+	public boolean bombCatapultPuBought(){
+		return bombCatapultBought;
+	}
+	
+	public boolean magesPuBought(){
+		return magesBought;
+	}
+	
+	public boolean hornOfChampPuBought(){
+		return hornOfChampBought;
+	}
+	
+	public boolean fingerOfGodPuBought(){
+		return fingerOfGodBought;
+	}
+	
+	public boolean serfsPuBought(){
+		return serfsBought;
+	}
+	
+	public void powerUpUsed(String powerUp){
+		if(powerUp.equals("blizzard")){
+			blizzardBought = false;
 		}
-		
-		archersSelected = false;
-		magesSelected = false;
-		serfsSelected = false;
-		fingerOfGodSelected = false;
-		hornOfChampSelected = false;
-		blizzardSelected = false;
-		bombCatapultSelected = false;
-		
+		else if(powerUp.equals("mages")){
+			magesBought = false;
+		}
+		else if(powerUp.equals("archers")){
+			archersBought = false;
+		}
+		else if(powerUp.equals("fingerOfGod")){
+			fingerOfGodBought = false;
+		}
+		else if(powerUp.equals("hornOfChamp")){
+			hornOfChampBought = false;
+		}
+		else if(powerUp.equals("bombCatapult")){
+			bombCatapultBought = false;
+		}
+		else{
+			serfsBought = false;
+		}
 	}
 	
 	@Override
