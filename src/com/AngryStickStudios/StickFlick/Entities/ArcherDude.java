@@ -5,10 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public class ArcherDude extends WalkingEnemy{
-
+	private boolean midField;
+	
 	public ArcherDude(String name, int health, AnimationLoader anims, int posX, int posY){
 		super(name, health,anims,posX,posY,"archer_walk", 0.5f);
-		
+		midField = false;
 	}
 	
 	public void Update(float delta){
@@ -16,6 +17,7 @@ public class ArcherDude extends WalkingEnemy{
 		
 		if(held)
 		{
+			currentanim = anims.getAnim("archer_walk");
 			setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			shadow.setX(enemy.getX());
 			shadow.setY(lastPos.y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
@@ -29,6 +31,7 @@ public class ArcherDude extends WalkingEnemy{
 
 		if(floating)
 		{
+			currentanim = anims.getAnim("archer_walk");
 			Vector2 newPos = new Vector2(0,0);
 			newPos.x = getPosition().x + flySpeed.x;
 			
@@ -73,6 +76,7 @@ public class ArcherDude extends WalkingEnemy{
 		//walk up... and shit
 		if(peakamt > 0 && frozen == false)
 		{
+			currentanim = anims.getAnim("archer_walk");
 			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);
 			shadow.setWidth(enemy.getWidth());
@@ -85,8 +89,8 @@ public class ArcherDude extends WalkingEnemy{
 			return;
 		}
 		
-		//walk and shit
-		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
+		//ArcherDude will stop once it reached mid field
+		if(getPosition().y > Gdx.graphics.getHeight()/2 && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
 			Vector2 walkVec = normVec.scl(8 * delta);
@@ -100,6 +104,19 @@ public class ArcherDude extends WalkingEnemy{
 			shadow.setX(enemy.getX());
 			shadow.setY(getPosition().y + (Gdx.graphics.getHeight() / 100) - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 		}
+		
+		if(getPosition().y <= Gdx.graphics.getHeight()/2 && getPosition().x <= Gdx.graphics.getWidth()/2){
+			midField = true;
+			currentanim = anims.getAnim("archer_shoot_r");
+		}
+		
+		if(getPosition().y <= Gdx.graphics.getHeight()/2 && getPosition().x > Gdx.graphics.getWidth()/2){
+			midField = true;
+			currentanim = anims.getAnim("archer_shoot_l");
+		}
 	}
-
+	
+	public boolean atMidField(){
+		return midField;
+	}
 }
