@@ -34,7 +34,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
+import com.AngryStickStudios.StickFlick.Entities.ArcherDude;
 import com.AngryStickStudios.StickFlick.Entities.BigDude;
+import com.AngryStickStudios.StickFlick.Entities.BoilingOil;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.DemoDude;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
@@ -93,10 +95,12 @@ public class Game implements Screen{
 	Label timer, coinageDisplay, deathMessage, finalScore;
 	Vector<Entity> enemyList;
 	Champion curChamp;
+	BoilingOil boilingOil1, boilingOil2, boilingOil3;
 	Player player;
+	Store store;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow, championPow, freezeCD, godCD, healthCD, explodeCD, championCD;
+	Button freezePow, explodePow, healthPow, godPow, championPow, freezeCD, godCD, healthCD, explodeCD, championCD, boilingOilPow;
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
@@ -174,6 +178,7 @@ public class Game implements Screen{
 		player = new Player("testPlayer", 30000, anims);
 		curChamp = null;
 		enemyList = new Vector<Entity>();
+		store = new Store(game);
 	
 		/* Health initialization */
 		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -585,28 +590,33 @@ public class Game implements Screen{
 		fg.addActor(powerupButton);
 		
 		//Explosion button, kills everyone!
+		//if(store.bombCatapultPuBought()){
 		explodePow = new Button(skin.getDrawable("ExplosionPowerupButtonLight"), skin.getDrawable("ExplosionPowerupButtonDark"));
 		explodePow.setWidth(Gdx.graphics.getWidth() / 6);
 		explodePow.setHeight(Gdx.graphics.getWidth() / 6);
 		explodePow.setX((Gdx.graphics.getWidth() * 0.2f) - (explodePow.getWidth() / 2));
 		explodePow.setY((Gdx.graphics.getHeight() * 0.5f) - (explodePow.getHeight() / 2));
 		powerupStage.addActor(explodePow);
-		
+		//store.powerUpUsed("bombCatapult");
+		//}
 		//Explosion button cool down
 		explodeCD = new Button(skin.getDrawable("ExplosionPowerupButtonCD"));
 		explodeCD.setWidth(Gdx.graphics.getWidth() / 16);
 		explodeCD.setHeight(Gdx.graphics.getWidth() / 16);
 		explodeCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		explodeCD.setY(Gdx.graphics.getHeight() * 0.8f);
-			
+		
+		
 		//Freeze powerup button
+		//if(store.blizzardPuBought()){
 		freezePow = new Button(skin.getDrawable("IcePowerupButtonLight"), skin.getDrawable("IcePowerupButtonDark"));
 		freezePow.setWidth(Gdx.graphics.getWidth() / 6);
 		freezePow.setHeight(Gdx.graphics.getWidth() / 6);
 		freezePow.setX((Gdx.graphics.getWidth() * 0.4f) - (freezePow.getWidth() / 2));
 		freezePow.setY((Gdx.graphics.getHeight() * 0.5f) - (freezePow.getHeight() / 2));
 		powerupStage.addActor(freezePow);
-		
+		//store.powerUpUsed("blizzard");
+		//}
 		//Freeze powerup cooldown button
 		freezeCD = new Button(skin.getDrawable("IcePowerupButtonCD"));
 		freezeCD.setWidth(Gdx.graphics.getWidth() / 16);
@@ -614,14 +624,17 @@ public class Game implements Screen{
 		freezeCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		freezeCD.setY(Gdx.graphics.getHeight() * 0.65f);
 		
+		
 		//Health button, restores certain percent of castle health
+		//if(store.magesPuBought()){
 		healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
 		healthPow.setWidth(Gdx.graphics.getWidth() / 6);
 		healthPow.setHeight(Gdx.graphics.getWidth() / 6);
 		healthPow.setX((Gdx.graphics.getWidth() * 0.6f) - (healthPow.getWidth() / 2));
 		healthPow.setY((Gdx.graphics.getHeight() * 0.5f) - (healthPow.getHeight() / 2));
 		powerupStage.addActor(healthPow);
-		
+		//store.powerUpUsed("mages");
+		//}
 		//Health cool down button
 		healthCD = new Button(skin.getDrawable("HealPowerupButtonCD"));
 		healthCD.setWidth(Gdx.graphics.getWidth() / 16);
@@ -629,14 +642,17 @@ public class Game implements Screen{
 		healthCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		healthCD.setY(Gdx.graphics.getHeight() * 0.50f);
 		
+		
 		//Finger of God button, tap to kill!
+		//if(store.fingerOfGodPuBought()){
 		godPow = new Button(skin.getDrawable("GodPowerupButtonLight"), skin.getDrawable("GodPowerupButtonDark"));
 		godPow.setWidth(Gdx.graphics.getWidth() / 6);
 		godPow.setHeight(Gdx.graphics.getWidth() / 6);
 		godPow.setX((Gdx.graphics.getWidth() * 0.8f) - (godPow.getWidth() / 2));
 		godPow.setY((Gdx.graphics.getHeight() * 0.5f) - (godPow.getHeight() / 2));
 		powerupStage.addActor(godPow);
-		
+		//store.powerUpUsed("fingerOfGod");
+		//}
 		//Finger of God cooldown button
 		godCD = new Button(skin.getDrawable("GodPowerupButtonCD"));
 		godCD.setWidth(Gdx.graphics.getWidth() / 16);
@@ -644,21 +660,31 @@ public class Game implements Screen{
 		godCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		godCD.setY(Gdx.graphics.getHeight() * 0.35f);
 		
+		
 		//Horn of Champion Powerup
+		//if(store.hornOfChampPuBought()){
 		championPow = new Button(skin.getDrawable("HornPowerupButtonLight"), skin.getDrawable("HornPowerupButtonDark"));
 		championPow.setWidth(Gdx.graphics.getWidth() / 6);
 		championPow.setHeight(Gdx.graphics.getWidth() / 6);
 		championPow.setX((Gdx.graphics.getWidth() * 0.5f) - (godPow.getWidth() / 2));
 		championPow.setY((Gdx.graphics.getHeight() * 0.25f) - (godPow.getHeight() / 2));
 		powerupStage.addActor(championPow);
-		
+		//store.powerUpUsed("hornOfChamp");
+		//}
 		//Horn of Champion cooldown button
 		championCD = new Button(skin.getDrawable("HornPowerupButtonCD"));
 		championCD.setWidth(Gdx.graphics.getWidth() / 16);
 		championCD.setHeight(Gdx.graphics.getWidth() / 16);
 		championCD.setX(Gdx.graphics.getWidth() * 0.005f);
 		championCD.setY(Gdx.graphics.getHeight() * 0.2f);
-			
+		
+		boilingOilPow = new Button(skin.getDrawable("ExplosionPowerupButtonDark"), skin.getDrawable("ExplosionPowerupButtonLight"));
+		boilingOilPow.setWidth(Gdx.graphics.getWidth() / 6);
+		boilingOilPow.setHeight(Gdx.graphics.getWidth() / 6);
+		boilingOilPow.setX((Gdx.graphics.getWidth() * 0.5f) + (boilingOilPow.getWidth() / 2));
+		boilingOilPow.setY((Gdx.graphics.getHeight() * 0.25f) - (boilingOilPow.getHeight() / 2));
+		powerupStage.addActor(championPow);
+		
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
@@ -836,6 +862,23 @@ public class Game implements Screen{
 					fg.addActor(godCD);
 					god = true;	
 				}
+				
+			}
+		});
+		
+		boilingOilPow.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
+				return true;
+			}
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+				resumeGame();
+				boilingOilPU();
+				boilingOil1 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.02f);
+				boilingOil2 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.45f, Gdx.graphics.getHeight()*0.02f);
+				boilingOil3 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.85f, Gdx.graphics.getHeight()*0.02f);
+				fg.addActor(boilingOil1.getImage());
+				fg.addActor(boilingOil2.getImage());
+				fg.addActor(boilingOil3.getImage());
 			}
 		});
 		
@@ -1038,7 +1081,10 @@ public class Game implements Screen{
 	        	newEnemy = new Priest("Priest", 100, anims, x, y);
 	        } else if(yourFate > 10 && yourFate < 21) {
 	        	newEnemy = new DemoDude("Demo", 100, anims, x, y);
-	        } else {
+	        } else if(yourFate > 20 && yourFate < 36){
+	        	newEnemy = new ArcherDude("Archer",100, anims, x, y);
+	        }
+	        else {
 	        	newEnemy = new StickDude("Basic", 100, anims, x, y);
 	        }
 	       
@@ -1056,15 +1102,18 @@ public class Game implements Screen{
 	 *********************************/
 	
 	public void boilingOilPU(){
+		int removeEnemyAtWall = 0;
 		for(int i = 0; i<enemyList.size(); i++){
-			if(enemyList.get(i).getPosition().y <= Gdx.graphics.getHeight() * 0.35f){
+			if(enemyList.get(i).getPosition().y <= Gdx.graphics.getHeight() * 0.37f){
 				//System.out.println("Enemy at wall TRUE");
 				hg.removeActor(enemyList.get(i).getImage());
 				hg.removeActor(enemyList.get(i).getShadow());
 				enemyList.remove(i);
+				removeEnemyAtWall++;
 			}
 			//System.out.println("Not at wall");
 		}
+		player.removeEnFromWall(removeEnemyAtWall);
 	}
 	
 	/*********************************
