@@ -53,6 +53,14 @@ public class AnimationLoader {
             
             //big dude
             setupAnim("bigdude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.06);
+            
+            //Archer dude
+            setupAnim("archer_walk", "data/enemyTextures/ArcherDudeRunning.png", 6, 5, (float) 0.025);
+            setupAnim("archer_shoot_r", "data/enemyTextures/ArcherDudeShooting_R.png", 6, 5, (float) 0.025);
+            setupAnim("archer_shoot_l", "data/enemyTextures/ArcherDudeShooting_L.png", 6, 5, (float) 0.025);
+            
+            //Boiling Oil PowerUp
+            setupAnim("boilingOil", "data/boiling_oil.png", 3, 4, (float)0.025);
         }
        
         public void setupAnim(String name, String file, int cols, int rows, float speed)
