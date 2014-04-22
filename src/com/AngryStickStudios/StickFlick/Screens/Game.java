@@ -196,25 +196,6 @@ public class Game implements Screen{
 	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.update();
 	    sp = new ShapeRenderer();
-	    
-	    if(store.archersPuBought())
-	    {
-	    	Archer a1 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .3), (int) Math.round(Gdx.graphics.getHeight() * .2));
-	    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .65), (int) Math.round(Gdx.graphics.getHeight() * .2));
-	    	
-	    	friendlylist.add(a1);
-	    	friendlylist.add(a2);
-	    }
-	    
-	    if(store.magesPuBought())
-	    {
-	    	Mage m1 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .2), (int) Math.round(Gdx.graphics.getHeight() * .2));
-	    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .75), (int) Math.round(Gdx.graphics.getHeight() * .2));
-	    	
-	    	friendlylist.add(m1);
-	    	friendlylist.add(m2);
-	    }
-    
 	}
 	
 	@Override
@@ -1022,7 +1003,14 @@ public class Game implements Screen{
 				resumeGame();
 				
 				if (freezeCDTimer == 0) {
-					freezeCDTimer = 15;
+					if(store.magesPuBought())
+					{
+						freezeCDTimer = 13;
+					}
+					else
+					{
+						freezeCDTimer = 15;
+					}
 					fg.addActor(freezeCD);
 					for(int i = 0; i < enemyList.size(); i++){
 						enemyList.get(i).freeze();
@@ -1040,7 +1028,14 @@ public class Game implements Screen{
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				resumeGame();
 				if (explodeCDTimer == 0) {
-					explodeCDTimer = 30;
+					if(store.magesPuBought())
+					{
+						explodeCDTimer = 27;
+					}
+					else
+					{
+						explodeCDTimer = 30;
+					}
 					fg.addActor(explodeCD);
 					for(int i = 0; i < enemyList.size(); i++){
 						if(enemyList.get(i).getChanged() == true && enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0)
@@ -1064,7 +1059,14 @@ public class Game implements Screen{
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				resumeGame();
 				if (healthCDTimer == 0) {
-					healthCDTimer = 20;
+					if(store.magesPuBought())
+					{
+						healthCDTimer = 18;
+					}
+					else
+					{
+						healthCDTimer = 20;
+					}
 					fg.addActor(healthCD);
 					float newHealth = player.getHealthCurrent() + healthRegen;
 				
@@ -1085,7 +1087,14 @@ public class Game implements Screen{
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				resumeGame();
 				if (godCDTimer == 0) {
-					godCDTimer = 20;
+					if(store.magesPuBought())
+					{
+						godCDTimer = 18;
+					}
+					else
+					{
+						godCDTimer = 20;
+					}
 					fg.addActor(godCD);
 					god = true;	
 				}
@@ -1116,6 +1125,11 @@ public class Game implements Screen{
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
 				resumeGame();
+				Mage m1 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .2), (int) Math.round(Gdx.graphics.getHeight() * .2));
+		    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .75), (int) Math.round(Gdx.graphics.getHeight() * .2));
+		    	
+		    	friendlylist.add(m1);
+		    	friendlylist.add(m2);
 				store.powerUpUsed("mages");
 			}
 		});
@@ -1138,6 +1152,11 @@ public class Game implements Screen{
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
 				resumeGame();
+				Archer a1 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .3), (int) Math.round(Gdx.graphics.getHeight() * .2));
+		    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .65), (int) Math.round(Gdx.graphics.getHeight() * .2));
+		    	
+		    	friendlylist.add(a1);
+		    	friendlylist.add(a2);
 				store.powerUpUsed("archers");
 			}
 		});
