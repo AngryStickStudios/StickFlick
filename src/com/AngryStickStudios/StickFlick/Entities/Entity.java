@@ -28,6 +28,11 @@ public abstract class Entity {
                 this.anims = ganims;
                                
         }
+        
+        public String getProjFired()
+        {
+        	return "null";
+        }
        
         public int getSplatting()
         {

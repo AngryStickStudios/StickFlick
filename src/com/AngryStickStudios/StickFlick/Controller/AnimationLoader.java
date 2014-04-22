@@ -61,6 +61,21 @@ public class AnimationLoader {
             
             //Boiling Oil PowerUp
             setupAnim("boilingOil", "data/boiling_oil.png", 3, 4, (float)0.025);
+            
+            //Archer Powerup
+            setupAnim("archerleft", "data/enemyTextures/Archer_Left.png", 6, 5, (float) 0.025);
+            setupAnim("archerright", "data/enemyTextures/Archer_Right.png", 6, 5, (float) 0.025);
+            
+            //Arrow
+            setupTex("arrowleft", "data/enemyTextures/Arrow_Left.png");
+            setupTex("arrowright", "data/enemyTextures/Arrow_Right.png");
+            
+            //Spell
+            setupAnim("spell", "data/enemyTextures/spell.png", 2, 2, (float) 0.025);
+            
+            //Mage Powerup
+            setupAnim("mageleft", "data/enemyTextures/Mage_Left.png", 5, 6, (float) 0.025);
+            setupAnim("mageright", "data/enemyTextures/Mage_Right.png", 5, 6, (float) 0.025);
         }
        
         public void setupAnim(String name, String file, int cols, int rows, float speed)

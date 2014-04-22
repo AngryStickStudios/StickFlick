@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,12 +35,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
+import com.AngryStickStudios.StickFlick.Entities.Archer;
 import com.AngryStickStudios.StickFlick.Entities.ArcherDude;
+import com.AngryStickStudios.StickFlick.Entities.Arrow;
 import com.AngryStickStudios.StickFlick.Entities.BigDude;
 import com.AngryStickStudios.StickFlick.Entities.BoilingOil;
 import com.AngryStickStudios.StickFlick.Entities.Champion;
 import com.AngryStickStudios.StickFlick.Entities.DemoDude;
 import com.AngryStickStudios.StickFlick.Entities.Entity;
+import com.AngryStickStudios.StickFlick.Entities.Mage;
+import com.AngryStickStudios.StickFlick.Entities.Missile;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.Priest;
 import com.AngryStickStudios.StickFlick.Entities.StickDude;
@@ -95,6 +100,8 @@ public class Game implements Screen{
 	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath, labelStyleScore; 
 	Label timer, coinageDisplay, deathMessage, finalScore;
 	Vector<Entity> enemyList;
+	Vector<Entity> projlist;
+	Vector<Entity> friendlylist;
 	Champion curChamp;
 	BoilingOil boilingOil1, boilingOil2, boilingOil3;
 	Player player;
@@ -180,13 +187,33 @@ public class Game implements Screen{
 		player = new Player("testPlayer", 30000, anims);
 		curChamp = null;
 		enemyList = new Vector<Entity>();
+		projlist = new Vector<Entity>();
+		friendlylist = new Vector<Entity>();
 		store = new Store(game);
 	
 		/* Health initialization */
 		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    camera.update();
-	    sp = new ShapeRenderer(); 
+	    sp = new ShapeRenderer();
+	    
+	    if(store.archersPuBought())
+	    {
+	    	Archer a1 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .3), (int) Math.round(Gdx.graphics.getHeight() * .2));
+	    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .65), (int) Math.round(Gdx.graphics.getHeight() * .2));
+	    	
+	    	friendlylist.add(a1);
+	    	friendlylist.add(a2);
+	    }
+	    
+	    if(store.magesPuBought())
+	    {
+	    	Mage m1 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .2), (int) Math.round(Gdx.graphics.getHeight() * .2));
+	    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .75), (int) Math.round(Gdx.graphics.getHeight() * .2));
+	    	
+	    	friendlylist.add(m1);
+	    	friendlylist.add(m2);
+	    }
     
 	}
 	
@@ -250,6 +277,53 @@ public class Game implements Screen{
                             enemyList.remove(i);
                     }
 				}	
+			}
+			
+			for(int i = 0; i < projlist.size(); i++) {
+				if(projlist.get(i).getIsAlive())
+				{
+					projlist.get(i).Update(delta);
+				}
+				else
+				{
+					hg.removeActor(projlist.get(i).getImage());
+					projlist.remove(i);
+				}
+			}
+			
+			for(int i = 0; i < friendlylist.size(); i++) {
+				if(friendlylist.get(i).getIsAlive())
+				{
+					friendlylist.get(i).Update(delta);
+					
+					if(enemyList.size() > 0 && (friendlylist.get(i).getTarget() == null || friendlylist.get(i).getTarget().getIsAlive() == false))
+					{
+						friendlylist.get(i).setTarget(PriorityTarget2(friendlylist.get(i)));
+					}
+					
+					String projFired = friendlylist.get(i).getProjFired();
+					if(projFired != "null")
+					{
+						if(projFired == "arrow")
+						{
+							Arrow arr = new Arrow("arrow", 100, anims, friendlylist.get(i).getPosition().x, friendlylist.get(i).getPosition().y, friendlylist.get(i).getTarget());
+							projlist.add(arr);
+							hg.addActor(arr.getImage());
+						}
+						
+						if(projFired == "spell")
+						{
+							Missile arr = new Missile("spell", 100, anims, friendlylist.get(i).getPosition().x, friendlylist.get(i).getPosition().y, friendlylist.get(i).getTarget());
+							projlist.add(arr);
+							hg.addActor(arr.getImage());
+						}
+					}
+				}
+				else
+				{
+					fg.removeActor(friendlylist.get(i).getImage());
+					friendlylist.remove(i);
+				}
 			}
 			
 			if(curChamp != null)
@@ -333,6 +407,14 @@ public class Game implements Screen{
 					}
 				}
 				enemyList.get(i).Anim(delta);
+			}
+			
+			for(int i = 0; i < projlist.size(); i++) {
+				projlist.get(i).Anim(delta);
+			}
+			
+			for(int i = 0; i < friendlylist.size(); i++) {
+				friendlylist.get(i).Anim(delta);
 			}
 			
 			batch.begin();
@@ -470,6 +552,65 @@ public class Game implements Screen{
 		}
 
 		return lEnt;
+	}
+	
+	public boolean Targeted(Entity enemy)
+	{
+		if(enemy.getName() == "BigDude")
+		{
+			return false;
+		}
+		
+		for(int i = 0; i < friendlylist.size(); i++)
+		{
+			if(friendlylist.get(i).getIsAlive())
+			{
+				if(friendlylist.get(i).getTarget() == enemy)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public Entity PriorityTarget2(Entity friend)
+	{
+		int priority;
+		int lPriority = -1;
+		Entity lEnt = null;
+
+		for(int i = 0; i < enemyList.size(); i++) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged() && !Targeted(enemyList.get(i))) {
+				
+				priority = (int) Math.sqrt(sqr(enemyList.get(i).getPosition().x - friend.getPosition().x) + sqr(enemyList.get(i).getPosition().y - friend.getPosition().y));
+				priority += enemyList.get(i).getGroundPosition().y;
+
+				if(lPriority == -1)
+				{
+					lPriority = priority;
+					lEnt = enemyList.get(i);
+				}
+				else
+				{
+					if(priority < lPriority)
+					{
+						lPriority = priority;
+						lEnt = enemyList.get(i);
+					}
+				}
+			}
+		}
+		
+		if(MathUtils.randomBoolean())
+		{
+			return lEnt;
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	public Entity PriorityHeal(Entity curPriest)
@@ -824,6 +965,14 @@ public class Game implements Screen{
 				hg.addActor(enemyList.get(i).getShadow());
 				hg.addActor(enemyList.get(i).getImage());
 			}
+		}
+		
+		for(int i = 0; i < projlist.size(); i++) {
+			hg.addActor(projlist.get(i).getImage());
+		}
+		
+		for(int i = 0; i < friendlylist.size(); i++) {
+			fg.addActor(friendlylist.get(i).getImage());
 		}
 		
 		if(curChamp != null)
