@@ -2,6 +2,7 @@ package com.AngryStickStudios.StickFlick.Screens;
 
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -21,14 +22,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class Options implements Screen {
+	
+	Preferences prefs = Gdx.app.getPreferences("Preferences");
+	
 	StickFlick game;
 	Stage stage;
 	BitmapFont white;
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton backButton, creditsButton;
-	
+	TextButton backButton, creditsButton, leftyButton;
 	
 	public Options(StickFlick game){
 		this.game = game;
@@ -88,21 +91,28 @@ public class Options implements Screen {
 		stage.addActor(SFXVolumeLabel);
 		stage.addActor(SFXVolume);
 		
-		
 		// BUTTON INITIATION
+		//Lefty Button
+		leftyButton = new TextButton("Lefty?", style);
+		leftyButton.setWidth(Gdx.graphics.getWidth() / 6);
+		leftyButton.setHeight(Gdx.graphics.getWidth() / 24);
+		leftyButton.setX(Gdx.graphics.getWidth() / 2 - leftyButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
+		leftyButton.setY(Gdx.graphics.getHeight() /2 - leftyButton.getHeight() / 2);
+		stage.addActor(leftyButton);
+
 		//Credits Button
 		creditsButton = new TextButton("Credits", style);
 		creditsButton.setWidth(Gdx.graphics.getWidth() / 6);
 		creditsButton.setHeight(Gdx.graphics.getWidth() / 24);
-		creditsButton.setX(Gdx.graphics.getWidth() / 2 - creditsButton.getWidth() / 2 - Gdx.graphics.getWidth() / 8);
+		creditsButton.setX(Gdx.graphics.getWidth() / 2 - creditsButton.getWidth() / 2);
 		creditsButton.setY(Gdx.graphics.getHeight() /2 - creditsButton.getHeight() / 2);
 		stage.addActor(creditsButton);
-
+		
 		//Back Button
 		backButton = new TextButton("Main Menu", style);
 		backButton.setWidth(Gdx.graphics.getWidth() / 6);
 		backButton.setHeight(Gdx.graphics.getWidth() / 24);
-		backButton.setX(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2 + Gdx.graphics.getWidth() / 8);
+		backButton.setX(Gdx.graphics.getWidth() / 2 - backButton.getWidth() / 2 + Gdx.graphics.getWidth() / 4);
 		backButton.setY(Gdx.graphics.getHeight() /2 - backButton.getHeight() / 2);
 		stage.addActor(backButton);
 		
@@ -135,6 +145,24 @@ public class Options implements Screen {
 				})));
 			}
 		});
+		
+		leftyButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (prefs.getBoolean("lefty", false) == false) {
+					prefs.putBoolean("lefty", true);
+					System.out.println(prefs.getBoolean("lefty", false));
+				}
+				else {
+					prefs.putBoolean("lefty", false);
+					System.out.println(prefs.getBoolean("lefty", false));
+				}
+				
+				prefs.flush();
+			}
+		});	
 	}
 
 	@Override

@@ -79,6 +79,7 @@ public class Game implements Screen{
 	private int score = 0;
 	private int[] scores = {prefs.getInteger("score1", 0), prefs.getInteger("score2", 0), prefs.getInteger("score3", 0)};
 	private double[] spawnLocation = new double[101];
+	private boolean lefty = prefs.getBoolean("lefty", false);
     
 	StickFlick game;
 	SpriteBatch batch;
@@ -576,18 +577,33 @@ public class Game implements Screen{
 		castleImage.setHeight(Gdx.graphics.getHeight());
 		fg.addActor(castleImage);
 		
+		float position;
+
+		if (!lefty) {
+			position = 0.80f;
+		}
+		else {
+			position = 0.01f;
+		}
 		pauseButton = new TextButton("Pause", buttonStyle);
 		pauseButton.setWidth(Gdx.graphics.getWidth() / 6);
 		pauseButton.setHeight(Gdx.graphics.getHeight() / 12);
-		pauseButton.setX(Gdx.graphics.getWidth() * 0.80f);
+		pauseButton.setX(Gdx.graphics.getWidth() * position);
 		pauseButton.setY(Gdx.graphics.getHeight() * 0.90f);
 		fg.addActor(pauseButton);
 		
+		
+		if (!lefty) {
+			position = 0.01f;
+		}
+		else {
+			position = 0.825f;
+		}
 		powerupButton = new TextButton("Powerups", buttonStyle);
 		powerupButton.setWidth(Gdx.graphics.getWidth() / 6);
 		powerupButton.setHeight(Gdx.graphics.getHeight() / 12);
-		powerupButton.setX(Gdx.graphics.getWidth() * 0.01f);
-		powerupButton.setY(Gdx.graphics.getHeight() * 0.8f);
+		powerupButton.setX(Gdx.graphics.getWidth() * position);
+		powerupButton.setY(Gdx.graphics.getHeight() * 0.0125f);
 		fg.addActor(powerupButton);
 		
 		//Explosion button, kills everyone!
@@ -733,18 +749,30 @@ public class Game implements Screen{
 		boilingOilCD.setY(Gdx.graphics.getHeight() * 0.2f);
 		
 		
+		if (!lefty) {
+			position = 0.025f;
+		}
+		else {
+			position = 0.95f;
+		}
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
 		timer.setHeight(Gdx.graphics.getHeight() / 24);
-		timer.setX(Gdx.graphics.getWidth() * 0.025f);
+		timer.setX(Gdx.graphics.getWidth() * position);
 		timer.setY(Gdx.graphics.getHeight() * 0.95f);
 		fg.addActor(timer);
 		
+		if (!lefty) {
+			position = 0.085f;
+		}
+		else {
+			position = 0.875f;
+		}
 		// Making Label for Coinage (for testing purposes) - Alex 
 	    labelStyleCoinage = new LabelStyle(white, Color.ORANGE);
 		coinageDisplay = new Label(String.valueOf(getCoinage()), labelStyleCoinage);
 		coinageDisplay.setHeight(Gdx.graphics.getHeight() / 24);
-		coinageDisplay.setX(Gdx.graphics.getWidth() * 0.085f);
+		coinageDisplay.setX(Gdx.graphics.getWidth() * position);
 		coinageDisplay.setY(Gdx.graphics.getHeight() * 0.95f);
 		stage.addActor(coinageDisplay);
 		
