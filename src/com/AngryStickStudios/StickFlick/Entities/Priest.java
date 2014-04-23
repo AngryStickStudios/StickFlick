@@ -34,7 +34,7 @@ public class Priest extends Entity {
         public Priest(String name, int health, AnimationLoader anims, int posX, int posY){
                 super(name, health, anims);
                 scale = 0.5f;
-                mscale = 0.5f;
+                mscale = 1f;
                
                 lastPos = new Vector2(posX, posY);
                

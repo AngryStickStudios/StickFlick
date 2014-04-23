@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 public class DemoDude extends WalkingEnemy{
 
 	public DemoDude(String name, int health, AnimationLoader anims, int posX, int posY){
-		super(name, health,anims,posX,posY,"demo_walk", 0.5f);
+		super(name, health,anims,posX,posY,"demo_walk", 1f);
 		
 	}
 	
