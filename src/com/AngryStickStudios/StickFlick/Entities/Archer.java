@@ -54,7 +54,6 @@ public class Archer extends Entity{
 	}
 	
 	public void Update(float delta){
-		System.out.println(getPosition().x + " " + getPosition().y);
 		if(getIsAlive() == false) return;
 		
 		if(target != null && target.getIsAlive())

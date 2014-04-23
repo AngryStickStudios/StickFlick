@@ -1130,6 +1130,8 @@ public class Game implements Screen{
 		    	
 		    	friendlylist.add(m1);
 		    	friendlylist.add(m2);
+		    	fg.addActor(m1.getImage());
+		    	fg.addActor(m2.getImage());
 				store.powerUpUsed("mages");
 			}
 		});
@@ -1157,6 +1159,8 @@ public class Game implements Screen{
 		    	
 		    	friendlylist.add(a1);
 		    	friendlylist.add(a2);
+		    	fg.addActor(a1.getImage());
+		    	fg.addActor(a2.getImage());
 				store.powerUpUsed("archers");
 			}
 		});
