@@ -27,7 +27,7 @@ public class Store implements Screen{
 
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
-	private final long bombCatapultPrice = 14000;
+	private final long bombCatapultPrice = 100;
 	private final long archersPrice = 2000;
 	private final long magesPrice = 2000;
 	private final long serfsPrice = 2000;
@@ -43,13 +43,13 @@ public class Store implements Screen{
 	private boolean fingerOfGodSelected;
 	private boolean hornOfChampSelected;
 	
-	private boolean bombCatapultBought = false;
-	private boolean magesBought = false;
-	private boolean archersBought = false;
-	private boolean blizzardBought = false;
-	private boolean serfsBought = false;
-	private boolean fingerOfGodBought = false;
-	private boolean hornOfChampBought = false;
+	private boolean bombCatapultBought = true;
+	private boolean magesBought = true;
+	private boolean archersBought = true;
+	private boolean blizzardBought = true;
+	private boolean serfsBought = true;
+	private boolean fingerOfGodBought = true;
+	private boolean hornOfChampBought = true;
 	
 	Label coinLabel;
 	Label desTextLabel;
@@ -78,14 +78,6 @@ public class Store implements Screen{
 	
 	public Store(StickFlick game){
 		app = game;
-		
-		archersSelected = false;
-		magesSelected = false;
-		serfsSelected = false;
-		fingerOfGodSelected = false;
-		hornOfChampSelected = false;
-		blizzardSelected = false;
-		bombCatapultSelected = false;
 		
 		description = "";
 		price = "";
@@ -390,11 +382,11 @@ public class Store implements Screen{
 		}
 		
 		if(bombCatapultPrice <= prefs.getLong("currency", 0) && bombCatapultSelected){
-			bombCatapultSelected = false;
-			bombCatapultBought = true;
 			long temp = prefs.getLong("currency", 0) - bombCatapultPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			bombCatapultBought = true;
+			bombCatapultSelected = false;
 		}
 		
 		if(blizzardPrice <= prefs.getLong("currency", 0) && blizzardSelected){

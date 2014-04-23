@@ -60,7 +60,7 @@ public class AnimationLoader {
             setupAnim("archer_shoot_l", "data/enemyTextures/ArcherDudeShooting_L.png", 6, 5, (float) 0.025);
             
             //Boiling Oil PowerUp
-            setupAnim("boilingOil", "data/boiling_oil.png", 3, 4, (float)0.025);
+            setupAnim("boilingOil", "data/Boiling Oil.png", 3, 4, (float)0.025);
             
             //Archer Powerup
             setupAnim("archerleft", "data/enemyTextures/Archer_Left.png", 6, 5, (float) 0.025);
