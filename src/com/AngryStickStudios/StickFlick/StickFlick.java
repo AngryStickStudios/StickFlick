@@ -6,13 +6,13 @@ import com.badlogic.gdx.Game;
 
 public class StickFlick extends Game {
 
-	public static final String version = "0.01 Alpha (First Playable and Losable Version)";
+	public static final String version = "0.04 Alpha (Archers & Mages Update)";
 	public static final String LOG = "StickFlick";
 	
 	@Override
 	public void create() {		
-		//setScreen(new SplashScreen(this));
-		setScreen(new MainMenu(this));
+		setScreen(new SplashScreen(this));
+		//setScreen(new MainMenu(this));
 	}
 
 	@Override

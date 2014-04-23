@@ -8,7 +8,7 @@ public class ArcherDude extends WalkingEnemy{
 	private boolean midField;
 	
 	public ArcherDude(String name, int health, AnimationLoader anims, int posX, int posY){
-		super(name, health,anims,posX,posY,"archer_walk", 1f);
+		super(name, health,anims,posX,posY,"archer_walk", 0.75f);
 		midField = false;
 	}
 	

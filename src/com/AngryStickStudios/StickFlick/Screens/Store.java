@@ -109,21 +109,21 @@ public class Store implements Screen{
 		
 		Gdx.input.setInputProcessor(stage);
 		
-		storeBackground = new Texture("data/menuBackground.png");
+		storeBackground = new Texture("data/menubackground.png");
 		Image backgroundImage = new Image(storeBackground);
 		backgroundImage.setZIndex(100000);
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());
 		stage.addActor(backgroundImage);
 		
-		transBackground = new Texture("data/Store Background.png");
+		transBackground = new Texture("data/store_background.png");
 		Image transImage = new Image(transBackground);
 		transImage.setZIndex(100000);
 		transImage.setWidth(Gdx.graphics.getWidth());
 		transImage.setHeight(Gdx.graphics.getHeight());
 		stage.addActor(transImage);
 		
-		desBackground = new Texture("data/Powerup Description.png");
+		desBackground = new Texture("data/powerup_description.png");
 		Image desImage = new Image(desBackground);
 		desImage.setZIndex(100000);
 		desImage.setWidth(Gdx.graphics.getWidth()/3);

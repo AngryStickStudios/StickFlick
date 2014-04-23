@@ -34,7 +34,7 @@ public class Priest extends Entity {
         public Priest(String name, int health, AnimationLoader anims, int posX, int posY){
                 super(name, health, anims);
                 scale = 0.5f;
-                mscale = 1f;
+                mscale = 0.75f;
                
                 lastPos = new Vector2(posX, posY);
                
@@ -232,7 +232,7 @@ public class Priest extends Entity {
                                         currentanim = anims.getAnim("priest_walk_f");
                                         scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
                                         enemy.setScale(scale);
-                                        shadow.setScale(scale / mscale);
+                                        shadow.setScale((float) ((scale / mscale) * 2.5));
                                        
                                         setPosition(getPosition().x, getPosition().y + (20 * delta));
                                         peakamt -= (20*delta);
@@ -285,7 +285,7 @@ public class Priest extends Entity {
                                
                         scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
                         enemy.setScale(scale);
-                        shadow.setScale(scale / mscale);
+                        shadow.setScale((float) ((scale / mscale) * 2.5));
  
                         setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
  
@@ -342,7 +342,7 @@ public class Priest extends Entity {
                        
                 scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
                 enemy.setScale(scale);
-                shadow.setScale(scale / mscale);
+                shadow.setScale((float) ((scale / mscale) * 2.5));
  
                 setPosition(getPosition().x + walkVec.x, getPosition().y + walkVec.y);
  

@@ -103,7 +103,7 @@ public class Game implements Screen{
 	Vector<Entity> projlist;
 	Vector<Entity> friendlylist;
 	Champion curChamp;
-	BoilingOil boilingOil1, boilingOil2, boilingOil3;
+	BoilingOil boilingOil;
 	Player player;
 	Store store;
 	OrthographicCamera camera;
@@ -1017,7 +1017,7 @@ public class Game implements Screen{
 					}
 					freeze = 1;
 				}
-				store.powerUpUsed("blizzard");
+				//store.powerUpUsed("blizzard");
 			}
 		});
 		
@@ -1048,7 +1048,7 @@ public class Game implements Screen{
 						}
 					}
 				}
-				store.powerUpUsed("bombCatapult");
+				//store.powerUpUsed("bombCatapult");
 			}
 		});
 		
@@ -1098,7 +1098,7 @@ public class Game implements Screen{
 					fg.addActor(godCD);
 					god = true;	
 				}
-				store.powerUpUsed("fingerOfGod");
+				//store.powerUpUsed("fingerOfGod");
 			}
 		});
 		
@@ -1109,12 +1109,8 @@ public class Game implements Screen{
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
 				resumeGame();
 				boilingOilPU();
-				boilingOil1 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.05f, Gdx.graphics.getHeight()*0.02f);
-				boilingOil2 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.45f, Gdx.graphics.getHeight()*0.02f);
-				boilingOil3 = new BoilingOil(anims, Gdx.graphics.getWidth()*0.85f, Gdx.graphics.getHeight()*0.02f);
-				fg.addActor(boilingOil1.getImage());
-				fg.addActor(boilingOil2.getImage());
-				fg.addActor(boilingOil3.getImage());
+				boilingOil = new BoilingOil(anims, Gdx.graphics.getWidth()*0.45f, Gdx.graphics.getHeight()*0.02f);
+				fg.addActor(boilingOil.getImage());
 			}
 		});
 		
@@ -1124,6 +1120,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+				store.powerUpUsed("mages");
 				resumeGame();
 				Mage m1 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .2), (int) Math.round(Gdx.graphics.getHeight() * .2));
 		    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .75), (int) Math.round(Gdx.graphics.getHeight() * .2));
@@ -1132,7 +1129,6 @@ public class Game implements Screen{
 		    	friendlylist.add(m2);
 		    	fg.addActor(m1.getImage());
 		    	fg.addActor(m2.getImage());
-				store.powerUpUsed("mages");
 			}
 		});
 		
@@ -1143,7 +1139,7 @@ public class Game implements Screen{
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
 				resumeGame();
-				store.powerUpUsed("serfs");
+				//store.powerUpUsed("serfs");
 			}
 		});
 		
@@ -1153,6 +1149,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+				store.powerUpUsed("archers");
 				resumeGame();
 				Archer a1 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .3), (int) Math.round(Gdx.graphics.getHeight() * .2));
 		    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .65), (int) Math.round(Gdx.graphics.getHeight() * .2));
@@ -1161,7 +1158,6 @@ public class Game implements Screen{
 		    	friendlylist.add(a2);
 		    	fg.addActor(a1.getImage());
 		    	fg.addActor(a2.getImage());
-				store.powerUpUsed("archers");
 			}
 		});
 		
@@ -1172,10 +1168,13 @@ public class Game implements Screen{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				resumeGame();
-				curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-				hg.addActor(curChamp.getImage());
-				hg.addActor(curChamp.getShadow());
-				store.powerUpUsed("hornOfChamp");
+				if(curChamp == null)
+				{
+					curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+					hg.addActor(curChamp.getImage());
+					hg.addActor(curChamp.getShadow());
+				    //store.powerUpUsed("hornOfChamp");
+				}
 			}
 		});
 		
@@ -1366,7 +1365,7 @@ public class Game implements Screen{
 	        	newEnemy = new Priest("Priest", 100, anims, x, y);
 	        } else if(yourFate > 10 && yourFate < 21) {
 	        	newEnemy = new DemoDude("Demo", 100, anims, x, y);
-	        } else if(yourFate > 20 && yourFate < 36){
+	        } else if(yourFate > 20 && yourFate < 26){
 	        	newEnemy = new ArcherDude("Archer",100, anims, x, y);
 	        }
 	        else {

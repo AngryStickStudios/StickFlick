@@ -62,7 +62,7 @@ public class MainMenu implements Screen{
 		buttonStyle.font = white;
 		
 		// Background Image
-		Texture backgroundTexture = new Texture("data/menuBackground.png");
+		Texture backgroundTexture = new Texture("data/menubackground.png");
 		Image backgroundImage = new Image(backgroundTexture);
 		backgroundImage.setWidth(Gdx.graphics.getWidth());
 		backgroundImage.setHeight(Gdx.graphics.getHeight());

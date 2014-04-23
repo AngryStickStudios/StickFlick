@@ -21,12 +21,12 @@ public class AnimationLoader {
         	Texlist = new Vector<TextureLoaderClass>();
         	
         	//game
-        	setupTex("gameBG", "data/gameBackground.png");
-        	setupTex("gameHills", "data/gameHills.png");
-        	setupTex("gameCastle", "data/castleOnly.png");
+        	setupTex("gameBG", "data/gamebackground.png");
+        	setupTex("gameHills", "data/gamehills.png");
+        	setupTex("gameCastle", "data/castleonly.png");
         	
         	//all
-        	setupAnim("splat", "data/enemyTextures/splatSheet.png", 4, 4, (float) 0.025);
+        	setupAnim("splat", "data/enemyTextures/splatsheet.png", 4, 4, (float) 0.025);
         	setupTex("shadow", "data/enemyTextures/shadow.png");
         	
         	//champion
@@ -55,27 +55,27 @@ public class AnimationLoader {
             setupAnim("bigdude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.06);
             
             //Archer dude
-            setupAnim("archer_walk", "data/enemyTextures/ArcherDudeRunning.png", 6, 5, (float) 0.025);
-            setupAnim("archer_shoot_r", "data/enemyTextures/ArcherDudeShooting_R.png", 6, 5, (float) 0.025);
-            setupAnim("archer_shoot_l", "data/enemyTextures/ArcherDudeShooting_L.png", 6, 5, (float) 0.025);
+            setupAnim("archer_walk", "data/enemyTextures/archerduderunning.png", 6, 5, (float) 0.025);
+            setupAnim("archer_shoot_r", "data/enemyTextures/archerdudeshooting_r.png", 6, 5, (float) 0.025);
+            setupAnim("archer_shoot_l", "data/enemyTextures/archerdudeshooting_l.png", 6, 5, (float) 0.025);
             
             //Boiling Oil PowerUp
-            setupAnim("boilingOil", "data/Boiling Oil.png", 3, 4, (float)0.025);
+            setupAnim("boilingOil", "data/boiling_oil.png", 3, 4, (float)0.025);
             
             //Archer Powerup
-            setupAnim("archerleft", "data/enemyTextures/Archer_Left.png", 6, 5, (float) 0.025);
-            setupAnim("archerright", "data/enemyTextures/Archer_Right.png", 6, 5, (float) 0.025);
+            setupAnim("archerleft", "data/enemyTextures/archer_left.png", 6, 5, (float) 0.025);
+            setupAnim("archerright", "data/enemyTextures/archer_right.png", 6, 5, (float) 0.025);
             
             //Arrow
-            setupTex("arrowleft", "data/enemyTextures/Arrow_Left.png");
-            setupTex("arrowright", "data/enemyTextures/Arrow_Right.png");
+            setupTex("arrowleft", "data/enemyTextures/arrow_left.png");
+            setupTex("arrowright", "data/enemyTextures/arrow_right.png");
             
             //Spell
             setupAnim("spell", "data/enemyTextures/spell.png", 2, 2, (float) 0.025);
             
             //Mage Powerup
-            setupAnim("mageleft", "data/enemyTextures/Mage_Left.png", 5, 6, (float) 0.025);
-            setupAnim("mageright", "data/enemyTextures/Mage_Right.png", 5, 6, (float) 0.025);
+            setupAnim("mageleft", "data/enemyTextures/mage_left.png", 5, 6, (float) 0.025);
+            setupAnim("mageright", "data/enemyTextures/mage_right.png", 5, 6, (float) 0.025);
         }
        
         public void setupAnim(String name, String file, int cols, int rows, float speed)

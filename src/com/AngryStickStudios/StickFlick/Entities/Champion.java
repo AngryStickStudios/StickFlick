@@ -29,7 +29,7 @@ public class Champion extends Entity {
         public Champion(String name, int health, AnimationLoader anims, int posX, int posY){
                 super(name, health, anims);
                 scale = 0.1f;
-                mscale = 1.5f;
+                mscale = 1f;
                 shadowTex = anims.getTex("shadow");
                
                 animationStateTime = 0;
