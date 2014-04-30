@@ -27,7 +27,7 @@ public class Store implements Screen{
 
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
-	private final long bombCatapultPrice = 100;
+	private final long bombCatapultPrice = 14000;
 	private final long archersPrice = 2000;
 	private final long magesPrice = 2000;
 	private final long serfsPrice = 2000;
@@ -42,14 +42,6 @@ public class Store implements Screen{
 	private boolean serfsSelected;
 	private boolean fingerOfGodSelected;
 	private boolean hornOfChampSelected;
-	
-	private boolean bombCatapultBought = true;
-	private boolean magesBought = true;
-	private boolean archersBought = true;
-	private boolean blizzardBought = true;
-	private boolean serfsBought = true;
-	private boolean fingerOfGodBought = true;
-	private boolean hornOfChampBought = true;
 	
 	Label coinLabel;
 	Label desTextLabel;
@@ -366,112 +358,67 @@ public class Store implements Screen{
 	public void buyPowerUps(){
 		
 		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected){
-			magesSelected = false;
-			magesBought = true;
+			prefs.putBoolean("mages", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - magesPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			magesSelected = false;
 		}
 		
 		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected){
-			archersSelected = false;
-			archersBought = true;
+			prefs.putBoolean("archers", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - archersPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			archersSelected = false;
 		}
 		
 		if(bombCatapultPrice <= prefs.getLong("currency", 0) && bombCatapultSelected){
+			prefs.putBoolean("bomb", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - bombCatapultPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
-			bombCatapultBought = true;
 			bombCatapultSelected = false;
 		}
 		
 		if(blizzardPrice <= prefs.getLong("currency", 0) && blizzardSelected){
-			blizzardSelected = false;
-			blizzardBought = true;
+			prefs.putBoolean("blizzard", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - blizzardPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			blizzardSelected = false;
 		}
 		
 		if(fingerOfGodPrice <= prefs.getLong("currency", 0) && fingerOfGodSelected){
-			fingerOfGodSelected = false;
-			fingerOfGodBought = true;
+			prefs.putBoolean("fingerOfGod", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - fingerOfGodPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			fingerOfGodSelected = false;
 		}
 		
 		if(hornOfChampPrice <= prefs.getLong("currency", 0) && hornOfChampSelected){
-			hornOfChampSelected = false;
-			hornOfChampBought = true;
+			prefs.putBoolean("hornOfChamp", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - hornOfChampPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			hornOfChampSelected = false;
 		}
 		
 		if(serfsPrice <= prefs.getLong("currency", 0) && serfsSelected){
-			serfsSelected = false;
-			serfsBought = true;
+			prefs.putBoolean("serfs", true);
+			prefs.flush();
 			long temp = prefs.getLong("currency", 0) - serfsPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
+			serfsSelected = false;
 		}	
-	}
-	
-	public boolean blizzardPuBought(){
-		return blizzardBought;
-	}
-	
-	public boolean archersPuBought(){
-		return archersBought;
-	}
-	
-	public boolean bombCatapultPuBought(){
-		return bombCatapultBought;
-	}
-	
-	public boolean magesPuBought(){
-		return magesBought;
-	}
-	
-	public boolean hornOfChampPuBought(){
-		return hornOfChampBought;
-	}
-	
-	public boolean fingerOfGodPuBought(){
-		return fingerOfGodBought;
-	}
-	
-	public boolean serfsPuBought(){
-		return serfsBought;
-	}
-	
-	public void powerUpUsed(String powerUp){
-		if(powerUp.equals("blizzard")){
-			blizzardBought = false;
-		}
-		else if(powerUp.equals("mages")){
-			magesBought = false;
-		}
-		else if(powerUp.equals("archers")){
-			archersBought = false;
-		}
-		else if(powerUp.equals("fingerOfGod")){
-			fingerOfGodBought = false;
-		}
-		else if(powerUp.equals("hornOfChamp")){
-			hornOfChampBought = false;
-		}
-		else if(powerUp.equals("bombCatapult")){
-			bombCatapultBought = false;
-		}
-		else{
-			serfsBought = false;
-		}
 	}
 	
 	@Override

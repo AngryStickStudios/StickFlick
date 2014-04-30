@@ -59,7 +59,7 @@ public class Game implements Screen{
 
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
-		
+
 	public static final int GAME_LOST = 3;
 	public static final int POWERUP_PAUSE = 2;
 	public static final int GAME_PAUSED = 1;
@@ -105,11 +105,10 @@ public class Game implements Screen{
 	Champion curChamp;
 	BoilingOil boilingOil;
 	Player player;
-	Store store;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, healthPow, godPow, championPow, boilingOilPow, magesPow, archersPow, serfsPow, freezeCD, 
-		   godCD, healthCD, explodeCD, championCD, boilingOilCD, magesCD, archersCD, serfsCD;
+	Button freezePow, explodePow, godPow, championPow, boilingOilPow, magesPow, archersPow, serfsPow, freezeCD, 
+		   godCD, explodeCD, championCD, boilingOilCD, magesCD, archersCD, serfsCD;
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
@@ -189,7 +188,6 @@ public class Game implements Screen{
 		enemyList = new Vector<Entity>();
 		projlist = new Vector<Entity>();
 		friendlylist = new Vector<Entity>();
-		store = new Store(game);
 	
 		/* Health initialization */
 		camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -451,7 +449,7 @@ public class Game implements Screen{
 			
 			if (explodeCDTimer != 0) fg.addActor(explodeCD); else fg.removeActor(explodeCD);
 			if (freezeCDTimer != 0) fg.addActor(freezeCD); else fg.removeActor(freezeCD);
-			if (healthCDTimer != 0) fg.addActor(healthCD); else fg.removeActor(healthCD);
+			if (healthCDTimer != 0) fg.addActor(serfsCD); else fg.removeActor(serfsCD);
 			if (godCDTimer != 0) fg.addActor(godCD); else fg.removeActor(godCD);
 			if (curChamp != null) fg.addActor(championCD); else fg.removeActor(championCD);
 			
@@ -734,7 +732,7 @@ public class Game implements Screen{
 		explodePow.setHeight(Gdx.graphics.getWidth() / 6);
 		explodePow.setX(Gdx.graphics.getWidth()*0.1f);
 		explodePow.setY((Gdx.graphics.getHeight()) - (1.15f*explodePow.getHeight()));
-		if(store.bombCatapultPuBought()){
+		if(prefs.getBoolean("bomb")){
 			powerupStage.addActor(explodePow);
 		}
 		//Explosion button cool down
@@ -751,7 +749,7 @@ public class Game implements Screen{
 		freezePow.setHeight(Gdx.graphics.getWidth() / 6);
 		freezePow.setX(Gdx.graphics.getWidth()/2 - freezePow.getWidth()/2);
 		freezePow.setY((Gdx.graphics.getHeight()) - (1.15f*freezePow.getHeight()));
-		if(store.blizzardPuBought()){
+		if(prefs.getBoolean("blizzard")){
 			powerupStage.addActor(freezePow);
 		}
 		//Freeze powerup cooldown button
@@ -762,20 +760,20 @@ public class Game implements Screen{
 		freezeCD.setY(Gdx.graphics.getHeight() * 0.65f);
 		
 		//Health button, restores certain percent of castle health
-		healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
-		healthPow.setWidth(Gdx.graphics.getWidth() / 6);
-		healthPow.setHeight(Gdx.graphics.getWidth() / 6);
-		healthPow.setX(Gdx.graphics.getWidth()/2 + 1.5f*healthPow.getWidth());
-		healthPow.setY((Gdx.graphics.getHeight()) - (1.15f*healthPow.getHeight()));
-		if(store.magesPuBought()){
-			powerupStage.addActor(healthPow);
-		}
+		//healthPow = new Button(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"));
+		//healthPow.setWidth(Gdx.graphics.getWidth() / 6);
+		//healthPow.setHeight(Gdx.graphics.getWidth() / 6);
+		//healthPow.setX(Gdx.graphics.getWidth()/2 + 1.5f*healthPow.getWidth());
+		//healthPow.setY((Gdx.graphics.getHeight()) - (1.15f*healthPow.getHeight()));
+		//if(prefs.getBoolean("serfs")){
+			//powerupStage.addActor(healthPow);
+		//}
 		//Health cool down button
-		healthCD = new Button(skin.getDrawable("HealPowerupButtonCD"));
-		healthCD.setWidth(Gdx.graphics.getWidth() / 16);
-		healthCD.setHeight(Gdx.graphics.getWidth() / 16);
-		healthCD.setX(Gdx.graphics.getWidth() * 0.005f);
-		healthCD.setY(Gdx.graphics.getHeight() * 0.50f);
+		//healthCD = new Button(skin.getDrawable("HealPowerupButtonCD"));
+		//healthCD.setWidth(Gdx.graphics.getWidth() / 16);
+		//healthCD.setHeight(Gdx.graphics.getWidth() / 16);
+		//healthCD.setX(Gdx.graphics.getWidth() * 0.005f);
+		//healthCD.setY(Gdx.graphics.getHeight() * 0.50f);
 		
 		//Finger of God button, tap to kill!
 		godPow = new Button(skin.getDrawable("GodPowerupButtonLight"), skin.getDrawable("GodPowerupButtonDark"));
@@ -783,7 +781,7 @@ public class Game implements Screen{
 		godPow.setHeight(Gdx.graphics.getWidth() / 6);
 		godPow.setX(Gdx.graphics.getWidth()*0.1f);
 		godPow.setY((Gdx.graphics.getHeight()) - (2.23f*godPow.getHeight()));
-		if(store.fingerOfGodPuBought()){
+		if(prefs.getBoolean("fingerOfGod")){
 			powerupStage.addActor(godPow);
 		}
 		//Finger of God cooldown button
@@ -799,7 +797,7 @@ public class Game implements Screen{
 		archersPow.setHeight(Gdx.graphics.getWidth() / 6);
 		archersPow.setX(Gdx.graphics.getWidth()/2 + 1.5f*archersPow.getWidth());
 		archersPow.setY(Gdx.graphics.getHeight()*0.02f);
-		if(store.archersPuBought()){
+		if(prefs.getBoolean("archers")){
 			powerupStage.addActor(archersPow);
 		}
 		//Archers cooldown button
@@ -815,15 +813,15 @@ public class Game implements Screen{
 		serfsPow.setHeight(Gdx.graphics.getWidth() / 6);
 		serfsPow.setX(Gdx.graphics.getWidth()/2 - serfsPow.getWidth()/2);
 		serfsPow.setY(Gdx.graphics.getHeight()*0.02f);
-		if(store.serfsPuBought()){
+		if(prefs.getBoolean("serfs")){
 			powerupStage.addActor(serfsPow);
 		}
 		//Serfs cooldown button
-		serfsCD = new Button(skin.getDrawable("IcePowerupButtonCD"));
+		serfsCD = new Button(skin.getDrawable("HealPowerupButtonCD"));
 		serfsCD.setWidth(Gdx.graphics.getWidth() / 16);
 		serfsCD.setHeight(Gdx.graphics.getWidth() / 16);
 		serfsCD.setX(Gdx.graphics.getWidth() * 0.005f);
-		serfsCD.setY(Gdx.graphics.getHeight() * 0.35f);
+		serfsCD.setY(Gdx.graphics.getHeight() * 0.50f);
 		
 		//Mages PowerUp
 		magesPow = new Button(skin.getDrawable("IcePowerupButtonDark"), skin.getDrawable("IcePowerupButtonLight"));
@@ -831,7 +829,7 @@ public class Game implements Screen{
 		magesPow.setHeight(Gdx.graphics.getWidth() / 6);
 		magesPow.setX(Gdx.graphics.getWidth()*0.1f);
 		magesPow.setY(Gdx.graphics.getHeight()*0.02f);
-		if(store.magesPuBought()){
+		if(prefs.getBoolean("mages")){
 			powerupStage.addActor(magesPow);
 		}
 		//Archers cooldown button
@@ -847,7 +845,7 @@ public class Game implements Screen{
 		championPow.setHeight(Gdx.graphics.getWidth() / 6);
 		championPow.setX(Gdx.graphics.getWidth()/2 - championPow.getWidth()/2);
 		championPow.setY((Gdx.graphics.getHeight()) - (2.23f*championPow.getHeight()));
-		if(store.hornOfChampPuBought()){
+		if(prefs.getBoolean("hornOfChamp")){
 			powerupStage.addActor(championPow);
 		}
 		//Horn of Champion cooldown button
@@ -860,7 +858,7 @@ public class Game implements Screen{
 		boilingOilPow = new Button(skin.getDrawable("ExplosionPowerupButtonDark"), skin.getDrawable("ExplosionPowerupButtonLight"));
 		boilingOilPow.setWidth(Gdx.graphics.getWidth() / 6);
 		boilingOilPow.setHeight(Gdx.graphics.getWidth() / 6);
-		boilingOilPow.setX(Gdx.graphics.getWidth()/2 + 1.5f*healthPow.getWidth());
+		boilingOilPow.setX(Gdx.graphics.getWidth()/2 + 1.5f*boilingOilPow.getWidth());
 		boilingOilPow.setY((Gdx.graphics.getHeight()) - (2.23f*boilingOilPow.getHeight()));
 		powerupStage.addActor(boilingOilPow);
 		
@@ -1000,10 +998,11 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				prefs.putBoolean("blizzard", false);
 				resumeGame();
 				
 				if (freezeCDTimer == 0) {
-					if(store.magesPuBought())
+					if(prefs.getBoolean("mages"))
 					{
 						freezeCDTimer = 13;
 					}
@@ -1017,7 +1016,6 @@ public class Game implements Screen{
 					}
 					freeze = 1;
 				}
-				//store.powerUpUsed("blizzard");
 			}
 		});
 		
@@ -1026,9 +1024,10 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				prefs.putBoolean("bomb", false);
 				resumeGame();
 				if (explodeCDTimer == 0) {
-					if(store.magesPuBought())
+					if(prefs.getBoolean("mages"))
 					{
 						explodeCDTimer = 27;
 					}
@@ -1048,18 +1047,19 @@ public class Game implements Screen{
 						}
 					}
 				}
-				//store.powerUpUsed("bombCatapult");
 			}
 		});
 		
-		healthPow.addListener(new InputListener(){
+		serfsPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				prefs.putBoolean("serfs", false);
+				
 				resumeGame();
 				if (healthCDTimer == 0) {
-					if(store.magesPuBought())
+					if(prefs.getBoolean("mages"))
 					{
 						healthCDTimer = 18;
 					}
@@ -1067,7 +1067,7 @@ public class Game implements Screen{
 					{
 						healthCDTimer = 20;
 					}
-					fg.addActor(healthCD);
+					fg.addActor(serfsCD);
 					float newHealth = player.getHealthCurrent() + healthRegen;
 				
 					if(newHealth > player.getHealthMax()) {
@@ -1085,9 +1085,10 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				prefs.putBoolean("fingerOfGod", false);
 				resumeGame();
 				if (godCDTimer == 0) {
-					if(store.magesPuBought())
+					if(prefs.getBoolean("mages"))
 					{
 						godCDTimer = 18;
 					}
@@ -1098,7 +1099,7 @@ public class Game implements Screen{
 					fg.addActor(godCD);
 					god = true;	
 				}
-				//store.powerUpUsed("fingerOfGod");
+				
 			}
 		});
 		
@@ -1120,7 +1121,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-				store.powerUpUsed("mages");
+				prefs.putBoolean("mages", false);
 				resumeGame();
 				Mage m1 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .2), (int) Math.round(Gdx.graphics.getHeight() * .2));
 		    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .75), (int) Math.round(Gdx.graphics.getHeight() * .2));
@@ -1132,24 +1133,12 @@ public class Game implements Screen{
 			}
 		});
 		
-		
-		serfsPow.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
-				return true;
-			}
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-				resumeGame();
-				//store.powerUpUsed("serfs");
-			}
-		});
-		
-		
 		archersPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
 				return true;
 			}
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-				store.powerUpUsed("archers");
+				prefs.putBoolean("archers", false);
 				resumeGame();
 				Archer a1 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .3), (int) Math.round(Gdx.graphics.getHeight() * .2));
 		    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(Gdx.graphics.getWidth() * .65), (int) Math.round(Gdx.graphics.getHeight() * .2));
@@ -1167,13 +1156,13 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				prefs.putBoolean("hornOfChamp", false);
 				resumeGame();
 				if(curChamp == null)
 				{
 					curChamp = new Champion("champ", 45, anims, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 					hg.addActor(curChamp.getImage());
 					hg.addActor(curChamp.getShadow());
-				    //store.powerUpUsed("hornOfChamp");
 				}
 			}
 		});
@@ -1327,7 +1316,7 @@ public class Game implements Screen{
 		if (healthCDTimer != 0) {
 			healthCDTimer--;
 			if (healthCDTimer == 0) {
-				fg.removeActor(healthCD);
+				fg.removeActor(serfsCD);
 			}
 		}
 	}
