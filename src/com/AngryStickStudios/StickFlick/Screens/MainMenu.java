@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.AngryStickStudios.StickFlick.StickFlick;
+import com.AngryStickStudios.StickFlick.Controller.TextButton2;
 
 public class MainMenu implements Screen{
 
@@ -30,7 +31,8 @@ public class MainMenu implements Screen{
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton playButton, storeButton, tutorialButton, optionsButton, scoreButton;
+	TextButton2 playButton;
+	TextButton storeButton, tutorialButton, optionsButton, scoreButton;
 	Sound menuTheme;
 	
 	public MainMenu(StickFlick game){
@@ -53,6 +55,8 @@ public class MainMenu implements Screen{
 	public void resize(int width, int height) {
 		stage = new Stage(width, height, true);
 		stage.clear();
+		int screenWidth = Gdx.graphics.getWidth();
+		int screenHeight = Gdx.graphics.getHeight();
 		
 		Gdx.input.setInputProcessor(stage);
 		
@@ -73,41 +77,18 @@ public class MainMenu implements Screen{
 		Label gameVersion = new Label(StickFlick.version, versionText);
 		stage.addActor(gameVersion);
 		
-		// BUTTON INITIATION
-		//New Game Button
-		playButton = new TextButton("Play", buttonStyle);
-		playButton.setWidth(Gdx.graphics.getWidth() / 6);
-		playButton.setHeight(Gdx.graphics.getHeight() / 12);
-		playButton.setX(Gdx.graphics.getWidth() / 2 - playButton.getWidth() / 2 - Gdx.graphics.getWidth() / 3);
-		playButton.setY(Gdx.graphics.getHeight() /2 + playButton.getHeight());
+		// Button creation
+		playButton = new TextButton2("Play", buttonStyle, screenWidth * 0.113f, screenHeight * 0.57f, screenWidth * 0.17f, screenHeight * 0.09f);
+		storeButton = new TextButton2("Store", buttonStyle, screenWidth * 0.213f, screenHeight * 0.45f, screenWidth * 0.17f, screenHeight * 0.09f);
+		tutorialButton = new TextButton2("Tutorial", buttonStyle, screenWidth * 0.313f, screenHeight * 0.33f, screenWidth * 0.17f, screenHeight * 0.09f);
+		optionsButton = new TextButton2("Options", buttonStyle, screenWidth * 0.413f, screenHeight * 0.21f, screenWidth * 0.17f, screenHeight * 0.09f);
+		scoreButton = new TextButton2("High Scores", buttonStyle, screenWidth * 0.8f, screenHeight * 0.9f, screenWidth * 0.17f, screenHeight * 0.09f);
+
+		// Add buttons to stage
 		stage.addActor(playButton);
-		//Load Game Button
-		storeButton = new TextButton("Store", buttonStyle);
-		storeButton.setWidth(Gdx.graphics.getWidth() / 6);
-		storeButton.setHeight(Gdx.graphics.getHeight() / 12);
-		storeButton.setX(Gdx.graphics.getWidth() / 2 - storeButton.getWidth() / 2 - Gdx.graphics.getWidth() / 4);
-		storeButton.setY(Gdx.graphics.getHeight() /2 - storeButton.getHeight() / 2);
 		stage.addActor(storeButton);
-		//Settings Button
-		tutorialButton = new TextButton("Tutorial", buttonStyle);
-		tutorialButton.setWidth(Gdx.graphics.getWidth() / 6);
-		tutorialButton.setHeight(Gdx.graphics.getHeight() / 12);
-		tutorialButton.setX(Gdx.graphics.getWidth() / 2 - tutorialButton.getWidth() / 2 - Gdx.graphics.getWidth() / 8);
-		tutorialButton.setY(Gdx.graphics.getHeight() /2 - tutorialButton.getHeight() * 2);
 		stage.addActor(tutorialButton);
-		//Credits Button
-		optionsButton = new TextButton("Options", buttonStyle);
-		optionsButton.setWidth(Gdx.graphics.getWidth() / 6);
-		optionsButton.setHeight(Gdx.graphics.getHeight() / 12);
-		optionsButton.setX(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2);
-		optionsButton.setY(Gdx.graphics.getHeight() /2 - optionsButton.getHeight() * 3.5f);
 		stage.addActor(optionsButton);
-		//High Scores
-		scoreButton = new TextButton("High Scores", buttonStyle);
-		scoreButton.setWidth(Gdx.graphics.getWidth() / 6);
-		scoreButton.setHeight(Gdx.graphics.getHeight() / 12);
-		scoreButton.setX(Gdx.graphics.getWidth() * 0.80f);
-		scoreButton.setY(Gdx.graphics.getHeight() * 0.90f);
 		stage.addActor(scoreButton);
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
