@@ -31,9 +31,9 @@ public class MainMenu implements Screen{
 	TextureAtlas atlas;
 	Skin skin;
 	SpriteBatch batch;
-	TextButton2 playButton;
-	TextButton storeButton, tutorialButton, optionsButton, scoreButton;
+	TextButton2 playButton, storeButton, tutorialButton, optionsButton, scoreButton;
 	Sound menuTheme;
+	int screenWidth, screenHeight;
 	
 	public MainMenu(StickFlick game){
 		this.game = game;
@@ -55,8 +55,8 @@ public class MainMenu implements Screen{
 	public void resize(int width, int height) {
 		stage = new Stage(width, height, true);
 		stage.clear();
-		int screenWidth = Gdx.graphics.getWidth();
-		int screenHeight = Gdx.graphics.getHeight();
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
 		
 		Gdx.input.setInputProcessor(stage);
 		
