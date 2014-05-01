@@ -30,13 +30,13 @@ public class Store implements Screen{
 
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
-	private final long bombCatapultPrice = 14;
-	private final long archersPrice = 20;
-	private final long magesPrice = 20;
-	private final long serfsPrice = 20;
-	private final long fingerOfGodPrice = 90;
-	private final long hornOfChampPrice = 14;
-	private final long blizzardPrice = 70;
+	private final long bombCatapultPrice = 400;
+	private final long archersPrice = 500;
+	private final long magesPrice = 400;
+	private final long serfsPrice = 150;
+	private final long fingerOfGodPrice = 200;
+	private final long hornOfChampPrice = 350;
+	private final long blizzardPrice = 180;
 	
 	private boolean bombCatapultSelected;
 	private boolean magesSelected;
@@ -51,6 +51,7 @@ public class Store implements Screen{
 	Label desTextLabel;
 	Label priceLabel;
 	Label desTitleLabel;
+	Label ownedLabel;
 	
 	StickFlick app;
 	Stage stage;
@@ -72,6 +73,7 @@ public class Store implements Screen{
 	String title;
 	String description;
 	String price;
+	String owned;
 	
 	//Window popup = new Window("Note", skin);
 	
@@ -84,6 +86,7 @@ public class Store implements Screen{
 		description = "";
 		price = "";
 		title = "";
+		owned = "";
 		
 	}
 	public void render(float delta) {
@@ -96,6 +99,7 @@ public class Store implements Screen{
 		desTextLabel.setText(description);
 		priceLabel.setText(price);
 		desTitleLabel.setText(title);
+		ownedLabel.setText(owned);
 		
 		
 		batch.begin();
@@ -109,10 +113,7 @@ public class Store implements Screen{
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
-		Gdx.input.setInputProcessor(stage);
-		
-		
-		
+		Gdx.input.setInputProcessor(stage);	
 		
 		storeBackground = new Texture("data/menubackground.png");
 		Image backgroundImage = new Image(storeBackground);
@@ -173,6 +174,11 @@ public class Store implements Screen{
 		priceLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(priceLabel);
 		
+		ownedLabel = new Label(owned, textStyle);
+		ownedLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
+		ownedLabel.setY(Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 1.5f);
+		ownedLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
+		stage.addActor(ownedLabel);
 		
 		buyButton = new Button(skin.getDrawable("Buy Button"), skin.getDrawable("Buy Button Pressed"));
 		buyButton.setWidth(Gdx.graphics.getWidth() / 10);
@@ -216,13 +222,13 @@ public class Store implements Screen{
 		hornOfChampButton.setPosition(Gdx.graphics.getWidth()/2 - 3*hornOfChampButton.getWidth(),Gdx.graphics.getHeight()/2 - hornOfChampButton.getHeight());
 		stage.addActor(hornOfChampButton);
 		
-		magesButton = new Button(skin.getDrawable("MagePowerupButtonLight"),skin.getDrawable("MagePowerupButtonLight"));
+		magesButton = new Button(skin.getDrawable("MagePowerupButtonLight"),skin.getDrawable("MagePowerupButtonDark"));
 		magesButton.setWidth(Gdx.graphics.getWidth() / 16);
 		magesButton.setHeight(Gdx.graphics.getWidth() / 16);
 		magesButton.setPosition(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2 - magesButton.getHeight());
 		stage.addActor(magesButton);
 		
-		archersButton = new Button(skin.getDrawable("ArcherPowerupButtonLight"),skin.getDrawable("ArcherPowerupButtonLight"));
+		archersButton = new Button(skin.getDrawable("ArcherPowerupButtonLight"),skin.getDrawable("ArcherPowerupButtonDark"));
 		archersButton.setWidth(Gdx.graphics.getWidth() / 16);
 		archersButton.setHeight(Gdx.graphics.getWidth() / 16);
 		archersButton.setPosition(Gdx.graphics.getWidth()/2 - 3*archersButton.getWidth(),Gdx.graphics.getHeight()/2 - 5*archersButton.getHeight()/2);
@@ -260,10 +266,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				blizzardSelected = true;
 				title = "Blizzard";
 				description = "Freezes the stick dudes\ngiving you 10 seconds\nto kill as many as you can.";
-				price = "Price:  7,000";
+				price = "Price:  180 coinage";
+				owned = "Owned: " + prefs.getBoolean("blizzard");
 			}
 		});
 		
@@ -272,10 +280,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				serfsSelected = true;
 				title = "Serfs";
 				description = "Brings little dudes\nto help retore the health\nof your castle.";
-				price = "Price:  2,000";
+				price = "Price:  150 coinage";
+				owned = "Owned: " + prefs.getBoolean("serfs");
 			}
 		});
 		
@@ -284,10 +294,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				bombCatapultSelected = true;
 				title = "Bomb Catapult";
 				description = "Throws bombs that kills\nall the enemy dudes on the\nscreen.";
-				price = "Price:  14,000";
+				price = "Price:  400 coinage";
+				owned = "Owned: " + prefs.getBoolean("bomb");
 			}
 		});
 		
@@ -296,10 +308,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				fingerOfGodSelected = true;
 				title = "Finger Of God";
 				description = "Gives you the ability to\ntap the dudes in order to\nkill them.";
-				price = "Price:  9,000";
+				price = "Price:  200 coinage";
+				owned = "Owned: " + prefs.getBoolean("fingerOfGod");
 			}
 		});
 		
@@ -308,10 +322,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				hornOfChampSelected = true;
 				title = "Horn Of The Champ";
 				description = "Specifically targets Big\nDudes if any exist during\nthe game. (Last 10secs)";
-				price = "Price:  14,000";
+				price = "Price:  350 coinage";
+				owned = "Owned: " + prefs.getBoolean("hornOfChamp");
 			}
 		});
 		
@@ -321,10 +337,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {	
+				deselectPowerups();
 				magesSelected = true;
 				title = "Mages";
 				description = "Reduces all ability\ncooldowns by 5%.";
-				price = "Price:  2,000";
+				price = "Price:  400 coinage";
+				owned = "Owned: " + prefs.getBoolean("mages");
 			}
 		});
 		
@@ -334,10 +352,12 @@ public class Store implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				deselectPowerups();
 				archersSelected = true;
 				title = "Archers";
 				description = "Raw damage per\nsecond increase.";	
-				price = "Price:  2,000";
+				price = "Price:  500 coinage";
+				owned = "Owned: " + prefs.getBoolean("archers");
 			}
 		});
 		
@@ -358,6 +378,16 @@ public class Store implements Screen{
 		purchase = Gdx.audio.newSound(Gdx.files.internal("data/sounds/coins.mp3"));	
 	}
 
+	public void deselectPowerups(){
+		bombCatapultSelected = false;
+		magesSelected = false;
+		archersSelected = false;
+		blizzardSelected = false;
+		serfsSelected = false;
+		fingerOfGodSelected = false;
+		hornOfChampSelected = false;
+	}
+	
 	public void buyPowerUps(){
 		
 		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected && !prefs.getBoolean("mages")){

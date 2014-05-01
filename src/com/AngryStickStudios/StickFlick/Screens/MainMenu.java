@@ -172,7 +172,7 @@ public class MainMenu implements Screen{
 
 	@Override
 	public void show() {	
-		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/sounds/menuTheme.wav"));
+		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/sounds/menuTheme.mp3"));
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 		menuTheme.play();
 

@@ -47,7 +47,7 @@ public class SplashScreen2 implements Screen{
 
 	@Override
 	public void show() {
-		swoosh = Gdx.audio.newSound(Gdx.files.internal("data/sounds/splashSwoosh.wav"));
+		swoosh = Gdx.audio.newSound(Gdx.files.internal("data/sounds/splashSwoosh.mp3"));
 		swoosh.play();
 		
 		splashTexture = new Texture("data/SplashScreen2.png");
@@ -78,6 +78,7 @@ public class SplashScreen2 implements Screen{
 	}
 	
 	private void tweenCompleted(){
+		game.anims.loadFirstAnims();
 		game.anims.loadSecondAnims();
 		game.setScreen(new MainMenu(game));
 	}

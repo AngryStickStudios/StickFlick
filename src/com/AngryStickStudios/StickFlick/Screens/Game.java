@@ -64,7 +64,7 @@ public class Game implements Screen{
 	//Stores currency and high scores
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 
-	boolean developerMode = true;
+	boolean developerMode = false;
 	public static final int GAME_LOST = 3;
 	public static final int POWERUP_PAUSE = 2;
 	public static final int GAME_PAUSED = 1;
@@ -121,6 +121,7 @@ public class Game implements Screen{
 	boolean justUnfrozen = false, priestButtonDown = false;
 	AnimationLoader anims;
 	int screenWidth, screenHeight;
+	boolean bombUsed = false, blizzardUsed = false, fogUsed = false, hocUsed = false, serfsUsed = false;
 	
 	
 	public Game(StickFlick game){
@@ -207,6 +208,8 @@ public class Game implements Screen{
 	    
 	    if(prefs.getBoolean("mages") || developerMode == true)
 		{
+			prefs.putBoolean("mages", false);
+			
 			Mage m1 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .2), (int) Math.round(screenHeight * .2));
 	    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .75), (int) Math.round(screenHeight * .2));
 	    	
@@ -216,8 +219,12 @@ public class Game implements Screen{
 		
 		if(prefs.getBoolean("archers") || developerMode == true)
 		{
+			prefs.putBoolean("archers", false);
+			
 			Archer a1 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .3), (int) Math.round(screenHeight * .2));
 	    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .65), (int) Math.round(screenHeight * .2));
+	    	
+	    	
 	    	
 	    	friendlylist.add(a1);
 	    	friendlylist.add(a2);
@@ -231,7 +238,14 @@ public class Game implements Screen{
 		
 		
 		if(player.getIsAlive() == false){
+			if(bombUsed == true) prefs.putBoolean("bomb", false);
+			if(blizzardUsed == true) prefs.putBoolean("blizzard", false);
+			if(fogUsed == true) prefs.putBoolean("fingerOfGod", false);
+			if(hocUsed == true) prefs.putBoolean("hornOfChamp", false);
+			if(serfsUsed == true) prefs.putBoolean("serfs", false);
+			
 			gameStatus = GAME_LOST;
+			
 			Gdx.input.setInputProcessor(deathStage);
 			
 			//Saves currency count when game is over
@@ -358,23 +372,6 @@ public class Game implements Screen{
 				hg.addActor(curChamp.getImage());
 				hg.addActor(curChamp.getShadow());
 			}
-			
-			/*
-			if(Gdx.input.isKeyPressed(Keys.P) && priestButtonDown == false)
-			{
-				Entity newPriest = new Priest("priest", 100, Gdx.input.getX(), screenHeight - Gdx.input.getY());
-				enemyList.add(newPriest);
-				hg.addActor(newPriest.getImage());
-				hg.addActor(newPriest.getShadow());
-				newPriest.setChanged(true);
-				newPriest.setPeak(0);
-				priestButtonDown = true;
-			}
-			else
-			{
-				priestButtonDown = false;
-			}
-			*/
 
 			int enemiesAtWall = 0;
 			
@@ -780,7 +777,7 @@ public class Game implements Screen{
 		
 		//BOILING OIL BUTTON
 		boilingOilPow = new Button2(skin.getDrawable("BoilingOilPowerupButtonLight"), skin.getDrawable("BoilingOilPowerupButtonDark"), screenWidth * 0.7f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
-			powerupStage.addActor(boilingOilPow);
+		powerupStage.addActor(boilingOilPow);
 		boilingOilCD = new Image2(skin.getDrawable("BoilingOilPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.18f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
 		//POWERUP SCREEN RESUME BUTTON
@@ -902,17 +899,17 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				prefs.putBoolean("blizzard", false);
+				blizzardUsed = true;
 				resumeGame();
 				
 				if (freezeCDTimer == 0) {
 					if(prefs.getBoolean("mages"))
 					{
-						freezeCDTimer = 13;
+						freezeCDTimer = 52;
 					}
 					else
 					{
-						freezeCDTimer = 15;
+						freezeCDTimer = 60;
 					}
 					fg.addActor(freezeCD);
 					for(int i = 0; i < enemyList.size(); i++){
@@ -928,16 +925,16 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				prefs.putBoolean("bomb", false);
+				bombUsed = true;
 				resumeGame();
 				if (explodeCDTimer == 0) {
 					if(prefs.getBoolean("mages"))
 					{
-						explodeCDTimer = 27;
+						explodeCDTimer = 52;
 					}
 					else
 					{
-						explodeCDTimer = 30;
+						explodeCDTimer = 60;
 					}
 					fg.addActor(explodeCD);
 					for(int i = 0; i < enemyList.size(); i++){
@@ -959,8 +956,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				prefs.putBoolean("serfs", false);
-				
+				serfsUsed = true;
 				resumeGame();
 				if (healthCDTimer == 0) {
 					if(prefs.getBoolean("mages"))
@@ -989,7 +985,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				prefs.putBoolean("fingerOfGod", false);
+				fogUsed = true;
 				resumeGame();
 				if (godCDTimer == 0) {
 					if(prefs.getBoolean("mages"))
@@ -1024,7 +1020,7 @@ public class Game implements Screen{
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				prefs.putBoolean("hornOfChamp", false);
+				hocUsed = true;
 				resumeGame();
 				if(curChamp == null)
 				{
@@ -1065,6 +1061,14 @@ public class Game implements Screen{
 		
 		mainMenuButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if(bombUsed == true) prefs.putBoolean("bomb", false);
+				if(blizzardUsed == true) prefs.putBoolean("blizzard", false);
+				if(fogUsed == true) prefs.putBoolean("fingerOfGod", false);
+				if(hocUsed == true) prefs.putBoolean("hornOfChamp", false);
+				if(serfsUsed == true) prefs.putBoolean("serfs", false);
+				prefs.putLong("currency", getCoinage());
+				prefs.flush();
+				
 				buttonClick.stop();
 				buttonClick.play();
 				return true;
