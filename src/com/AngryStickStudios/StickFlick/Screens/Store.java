@@ -216,13 +216,13 @@ public class Store implements Screen{
 		hornOfChampButton.setPosition(Gdx.graphics.getWidth()/2 - 3*hornOfChampButton.getWidth(),Gdx.graphics.getHeight()/2 - hornOfChampButton.getHeight());
 		stage.addActor(hornOfChampButton);
 		
-		magesButton = new Button(skin.getDrawable("ExplosionPowerupButtonLight"),skin.getDrawable("ExplosionPowerupButtonDark"));
+		magesButton = new Button(skin.getDrawable("MagePowerupButtonLight"),skin.getDrawable("MagePowerupButtonLight"));
 		magesButton.setWidth(Gdx.graphics.getWidth() / 16);
 		magesButton.setHeight(Gdx.graphics.getWidth() / 16);
 		magesButton.setPosition(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2 - magesButton.getHeight());
 		stage.addActor(magesButton);
 		
-		archersButton = new Button(skin.getDrawable("IcePowerupButtonLight"),skin.getDrawable("IcePowerupButtonDark"));
+		archersButton = new Button(skin.getDrawable("ArcherPowerupButtonLight"),skin.getDrawable("ArcherPowerupButtonLight"));
 		archersButton.setWidth(Gdx.graphics.getWidth() / 16);
 		archersButton.setHeight(Gdx.graphics.getWidth() / 16);
 		archersButton.setPosition(Gdx.graphics.getWidth()/2 - 3*archersButton.getWidth(),Gdx.graphics.getHeight()/2 - 5*archersButton.getHeight()/2);
@@ -355,7 +355,7 @@ public class Store implements Screen{
 		textFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		totalFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		desTextFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
-		purchase = Gdx.audio.newSound(Gdx.files.internal("data/coins.mp3"));	
+		purchase = Gdx.audio.newSound(Gdx.files.internal("data/sounds/coins.mp3"));	
 	}
 
 	public void buyPowerUps(){

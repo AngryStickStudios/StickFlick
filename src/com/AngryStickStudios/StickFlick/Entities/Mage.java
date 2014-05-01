@@ -29,7 +29,7 @@ public class Mage extends Entity{
 		scale = 0.4f;
         mscale = 0.4f;
         
-        orb_shot = Gdx.audio.newSound(Gdx.files.internal("data/mage_shoot.mp3"));
+        orb_shot = Gdx.audio.newSound(Gdx.files.internal("data/sounds/mage_shoot.mp3"));
 		
 		currentanim = anims.getAnim("mageright");
         currentframe = currentanim.getKeyFrame(animationStateTime, true);

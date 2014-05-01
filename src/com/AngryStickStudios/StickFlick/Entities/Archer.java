@@ -29,7 +29,7 @@ public class Archer extends Entity{
 		scale = 0.4f;
         mscale = 0.4f;
         
-        arrowShot= Gdx.audio.newSound(Gdx.files.internal("data/arrow_shot.mp3"));
+        arrowShot= Gdx.audio.newSound(Gdx.files.internal("data/sounds/arrow_shot.mp3"));
 		
 		currentanim = anims.getAnim("archerright");
         currentframe = currentanim.getKeyFrame(animationStateTime, true);

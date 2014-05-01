@@ -50,8 +50,8 @@ public class Champion extends Entity {
                 shadow.setY(posY);
                 shadow.setScale(scale*4);
                 
-                attack = Gdx.audio.newSound(Gdx.files.internal("data/champion_slash.mp3"));
-                spawn = Gdx.audio.newSound(Gdx.files.internal("data/champion_arriving.mp3"));
+                attack = Gdx.audio.newSound(Gdx.files.internal("data/sounds/champion_slash.mp3"));
+                spawn = Gdx.audio.newSound(Gdx.files.internal("data/sounds/champion_arriving.mp3"));
                 spawn.stop();
                 spawn.play();
                

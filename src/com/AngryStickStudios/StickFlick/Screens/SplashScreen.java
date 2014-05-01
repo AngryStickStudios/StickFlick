@@ -47,7 +47,7 @@ public class SplashScreen implements Screen{
 
 	@Override
 	public void show() {
-		swoosh = Gdx.audio.newSound(Gdx.files.internal("data/splashSwoosh.wav"));
+		swoosh = Gdx.audio.newSound(Gdx.files.internal("data/sounds/splashSwoosh.wav"));
 		swoosh.play();
 		
 		splashTexture = new Texture("data/SplashScreen1.png");

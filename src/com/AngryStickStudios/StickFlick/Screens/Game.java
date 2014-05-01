@@ -102,7 +102,7 @@ public class Game implements Screen{
 	GestureDetection gd;
 	TextureAtlas atlas;
 	InputMultiplexer im;
-	TextButton pauseButton, powerupButton, resumeButton, mainMenuButton, mainMenuButton2;
+	TextButton pauseButton, powerupButton, resumeButton, powerupResumeButton, mainMenuButton, mainMenuButton2;
 	LabelStyle labelStyle, labelStyleCoinage, labelStyleDeath, labelStyleScore; 
 	Label timer, coinageDisplay, deathMessage, finalScore;
 	Vector<Entity> enemyList;
@@ -748,41 +748,44 @@ public class Game implements Screen{
 		if(prefs.getBoolean("bomb") || developerMode == true){
 			powerupStage.addActor(explodePow);
 		}
-		explodeCD = new Image2(skin.getDrawable("ExplosionPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.8f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		explodeCD = new Image2(skin.getDrawable("ExplosionPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.83f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
 		//FREEZE BUTTON
 		freezePow = new Button2(skin.getDrawable("IcePowerupButtonLight"), skin.getDrawable("IcePowerupButtonDark"), screenWidth * 0.4f, screenHeight * 0.68f, screenWidth * 0.17f, screenWidth * 0.17f);
 		if(prefs.getBoolean("blizzard") || developerMode == true){
 			powerupStage.addActor(freezePow);
 		}
-		freezeCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.65f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		freezeCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.7f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
 		//FINGER OF GOD BUTTON
 		godPow = new Button2(skin.getDrawable("GodPowerupButtonLight"), skin.getDrawable("GodPowerupButtonDark"), screenWidth * 0.7f, screenHeight * 0.68f, screenWidth * 0.17f, screenWidth * 0.17f);
 		if(prefs.getBoolean("fingerOfGod") || developerMode == true){
 			powerupStage.addActor(godPow);
 		}
-		godCD = new Image2(skin.getDrawable("GodPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.65f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		godCD = new Image2(skin.getDrawable("GodPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.57f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
-		//ARCHERS POWERUP BUTTON
+		//HORN OF CHAMPION POWERUP BUTTON
 		championPow = new Button2(skin.getDrawable("HornPowerupButtonLight"), skin.getDrawable("HornPowerupButtonDark"), screenWidth * 0.1f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
 		if(prefs.getBoolean("hornOfChamp") || developerMode == true){
 			powerupStage.addActor(championPow);
 		}
-		championCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.02f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		championCD = new Image2(skin.getDrawable("HornPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.44f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
 		//SERFS BUTTON
 		serfsPow = new Button2(skin.getDrawable("HealPowerupButtonLight"), skin.getDrawable("HealPowerupButtonDark"), screenWidth * 0.4f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
 		if(prefs.getBoolean("serfs") || developerMode == true){
 			powerupStage.addActor(serfsPow);
 		}
-		serfsCD = new Image2(skin.getDrawable("HealPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.5f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		serfsCD = new Image2(skin.getDrawable("HealPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.31f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
-		//MAGES BUTTON
-		boilingOilPow = new Button2(skin.getDrawable("IcePowerupButtonDark"), skin.getDrawable("IcePowerupButtonLight"), screenWidth * 0.7f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
+		//BOILING OIL BUTTON
+		boilingOilPow = new Button2(skin.getDrawable("BoilingOilPowerupButtonLight"), skin.getDrawable("BoilingOilPowerupButtonDark"), screenWidth * 0.7f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
 			powerupStage.addActor(boilingOilPow);
-		boilingOilCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.35f, screenWidth * 0.0625f, screenWidth * 0.0625f);
-
+		boilingOilCD = new Image2(skin.getDrawable("BoilingOilPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.18f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		
+		//POWERUP SCREEN RESUME BUTTON
+		powerupResumeButton = new TextButton2("Resume", buttonStyle, screenWidth * 0.4f, screenHeight * 0.15f, screenWidth * 0.17f, screenHeight * 0.09f);
+		powerupStage.addActor(powerupResumeButton);
 		
 		//PAUSE SCREEN RESUME BUTTON
 		resumeButton = new TextButton2("Resume", buttonStyle, screenWidth/2 - (screenWidth * 0.17f) / 2, screenHeight/2 - (screenHeight * 0.09f) / 2, screenWidth * 0.17f, screenHeight * 0.09f);
@@ -1049,6 +1052,17 @@ public class Game implements Screen{
 			}
 		});
 		
+		powerupResumeButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				resumeGame();
+			}
+		});
+		
 		mainMenuButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
@@ -1095,7 +1109,7 @@ public class Game implements Screen{
 		skin.addRegions(atlas);
 		
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public abstract class Entity {
 		this.isAlive = true;
 		this.anims = ganims;
 		
-		dead = Gdx.audio.newSound(Gdx.files.internal("data/enemy_death.mp3"));
+		dead = Gdx.audio.newSound(Gdx.files.internal("data/sounds/enemy_death.mp3"));
 
 	}
 

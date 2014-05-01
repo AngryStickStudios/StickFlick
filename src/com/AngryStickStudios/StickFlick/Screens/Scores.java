@@ -106,7 +106,7 @@ public class Scores implements Screen {
 
 	@Override
 	public void show() {
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas("data/Textures.atlas");
 		skin = new Skin();

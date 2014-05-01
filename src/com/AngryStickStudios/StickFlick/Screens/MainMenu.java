@@ -172,8 +172,8 @@ public class MainMenu implements Screen{
 
 	@Override
 	public void show() {	
-		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/menuTheme.wav"));
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
+		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/sounds/menuTheme.wav"));
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 		menuTheme.play();
 
 		batch = new SpriteBatch();
