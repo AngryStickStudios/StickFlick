@@ -1,6 +1,7 @@
 package com.AngryStickStudios.StickFlick.Entities;
  
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -25,6 +26,7 @@ public class Champion extends Entity {
         float animationStateTime;
        
         Image enemy, shadow;
+        Sound spawn, attack;
  
         public Champion(String name, int health, AnimationLoader anims, int posX, int posY){
                 super(name, health, anims);
@@ -47,6 +49,11 @@ public class Champion extends Entity {
                 shadow.setX(posX);
                 shadow.setY(posY);
                 shadow.setScale(scale*4);
+                
+                attack = Gdx.audio.newSound(Gdx.files.internal("data/champion_slash.mp3"));
+                spawn = Gdx.audio.newSound(Gdx.files.internal("data/champion_arriving.mp3"));
+                spawn.stop();
+                spawn.play();
                
                 life = 45f;
                 attackdelay = 0;
@@ -112,7 +119,9 @@ public class Champion extends Entity {
                         attackdelay -= Gdx.graphics.getDeltaTime();
                         if(attackdelay <= 0 && target.getIsAlive())
                         {
-                                target.decreaseHealth(200);
+                        		attack.stop();
+                        		attack.play();
+                        		target.decreaseHealth(200);
                                 if(target.getIsAlive() == false)
                                 {
                                 	target.setState(0);

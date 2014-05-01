@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -96,6 +97,7 @@ public class Game implements Screen{
 	Stage stage, pauseStage, powerupStage, deathStage;
 	Group bg, hg, fg;
 	Skin skin;
+	Sound buttonClick;
 	BitmapFont white;
 	GestureDetection gd;
 	TextureAtlas atlas;
@@ -860,6 +862,8 @@ public class Game implements Screen{
 		//LISTENERS
 		pauseButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -875,6 +879,8 @@ public class Game implements Screen{
 		
 		powerupButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -1028,6 +1034,8 @@ public class Game implements Screen{
 		
 		resumeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -1043,6 +1051,8 @@ public class Game implements Screen{
 		
 		mainMenuButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -1058,6 +1068,8 @@ public class Game implements Screen{
 		
 		mainMenuButton2.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -1083,6 +1095,7 @@ public class Game implements Screen{
 		skin.addRegions(atlas);
 		
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
 	}
 
 	@Override
@@ -1123,6 +1136,7 @@ public class Game implements Screen{
 		stage.dispose();
 		pauseStage.dispose();
 		skin.dispose();	
+		buttonClick.dispose();
 	}
 
 	//If the freeze powerup is enabled, spawn will not be called

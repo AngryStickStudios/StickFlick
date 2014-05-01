@@ -33,6 +33,7 @@ public class MainMenu implements Screen{
 	SpriteBatch batch;
 	TextButton2 playButton, storeButton, tutorialButton, optionsButton, scoreButton;
 	Sound menuTheme;
+	Sound buttonClick;
 	int screenWidth, screenHeight;
 	
 	public MainMenu(StickFlick game){
@@ -96,6 +97,8 @@ public class MainMenu implements Screen{
 		// Play the game
 		playButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -112,6 +115,8 @@ public class MainMenu implements Screen{
 		
 		storeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -129,6 +134,8 @@ public class MainMenu implements Screen{
 		// Go to options menu
 		optionsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -145,6 +152,8 @@ public class MainMenu implements Screen{
 		
 		scoreButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -164,6 +173,7 @@ public class MainMenu implements Screen{
 	@Override
 	public void show() {	
 		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/menuTheme.wav"));
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
 		menuTheme.play();
 
 		batch = new SpriteBatch();
@@ -197,6 +207,7 @@ public class MainMenu implements Screen{
 		white.dispose();
 		stage.dispose();
 		menuTheme.dispose();
+		buttonClick.dispose();
 	}
 	
 

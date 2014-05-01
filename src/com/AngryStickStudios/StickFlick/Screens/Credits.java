@@ -4,6 +4,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ public class Credits implements Screen {
 	Skin skin;
 	SpriteBatch batch;
 	TextButton backButton, creditsButton;
+	Sound buttonClick;
 	
 	
 	public Credits(StickFlick game){
@@ -119,6 +121,8 @@ public class Credits implements Screen {
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -140,6 +144,7 @@ public class Credits implements Screen {
 		skin = new Skin();
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
 	}
 
 	@Override
@@ -165,6 +170,7 @@ public class Credits implements Screen {
 		atlas.dispose();
 		white.dispose();
 		stage.dispose();
+		buttonClick.dispose();
 	}
 	
 }

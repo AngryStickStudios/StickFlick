@@ -4,6 +4,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ public class Scores implements Screen {
 	Skin skin;
 	SpriteBatch batch;
 	TextButton backButton, creditsButton;
+	Sound buttonClick;
 	
 	
 	public Scores(StickFlick game){
@@ -87,6 +89,8 @@ public class Scores implements Screen {
 		
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -102,6 +106,7 @@ public class Scores implements Screen {
 
 	@Override
 	public void show() {
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas("data/Textures.atlas");
 		skin = new Skin();
@@ -132,6 +137,7 @@ public class Scores implements Screen {
 		atlas.dispose();
 		white.dispose();
 		stage.dispose();
+		buttonClick.dispose();
 	}
 	
 }

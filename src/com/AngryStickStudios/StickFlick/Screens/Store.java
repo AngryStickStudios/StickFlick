@@ -4,6 +4,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,6 +54,7 @@ public class Store implements Screen{
 	
 	StickFlick app;
 	Stage stage;
+	Sound purchase;
 	
 	
 	BitmapFont titleFont;
@@ -353,9 +355,7 @@ public class Store implements Screen{
 		textFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		totalFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		desTextFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
-		
-		
-		
+		purchase = Gdx.audio.newSound(Gdx.files.internal("data/coins.mp3"));	
 	}
 
 	public void buyPowerUps(){
@@ -367,6 +367,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("mages", true);
 			prefs.flush();
+			purchase.play();
 			magesSelected = false;
 		}
 		
@@ -377,6 +378,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("archers", true);
 			prefs.flush();
+			purchase.play();
 			archersSelected = false;
 		}
 		
@@ -387,6 +389,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("bomb", true);
 			prefs.flush();
+			purchase.play();
 			bombCatapultSelected = false;
 		}
 		
@@ -397,6 +400,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("blizzard", true);
 			prefs.flush();
+			purchase.play();
 			blizzardSelected = false;
 		}
 		
@@ -407,6 +411,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("fingerOfGod", true);
 			prefs.flush();
+			purchase.play();
 			fingerOfGodSelected = false;
 		}
 		
@@ -417,6 +422,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("hornOfChamp", true);
 			prefs.flush();
+			purchase.play();
 			hornOfChampSelected = false;
 		}
 		
@@ -427,6 +433,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("serfs", true);
 			prefs.flush();
+			purchase.play();
 			serfsSelected = false;
 		}	
 	}
@@ -458,6 +465,7 @@ public class Store implements Screen{
 		desTextFont.dispose();
 		stage.dispose();
 		totalFont.dispose();
+		purchase.dispose();
 		
 	}
 

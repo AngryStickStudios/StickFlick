@@ -4,6 +4,7 @@ import com.AngryStickStudios.StickFlick.StickFlick;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -32,6 +33,7 @@ public class Options implements Screen {
 	Skin skin;
 	SpriteBatch batch;
 	TextButton backButton, creditsButton, leftyButton;
+	Sound buttonClick;
 	
 	public Options(StickFlick game){
 		this.game = game;
@@ -120,6 +122,8 @@ public class Options implements Screen {
 		
 		creditsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -134,6 +138,8 @@ public class Options implements Screen {
 		
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -148,6 +154,8 @@ public class Options implements Screen {
 		
 		leftyButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.stop();
+				buttonClick.play();
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -172,6 +180,7 @@ public class Options implements Screen {
 		skin = new Skin();
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
 	}
 
 	@Override
@@ -197,6 +206,7 @@ public class Options implements Screen {
 		atlas.dispose();
 		white.dispose();
 		stage.dispose();
+		buttonClick.dispose();
 	}
 	
 }
