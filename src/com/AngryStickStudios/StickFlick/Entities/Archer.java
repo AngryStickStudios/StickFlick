@@ -1,6 +1,8 @@
 package com.AngryStickStudios.StickFlick.Entities;
 
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -17,6 +19,7 @@ public class Archer extends Entity{
     protected TextureRegion currentframe;
     protected TextureRegionDrawable enemyDrawable;
     float animationStateTime;
+    Sound arrowShot;
     
     Image enemy;
 	
@@ -25,6 +28,8 @@ public class Archer extends Entity{
 		
 		scale = 0.4f;
         mscale = 0.4f;
+        
+        arrowShot= Gdx.audio.newSound(Gdx.files.internal("data/arrow_shot.mp3"));
 		
 		currentanim = anims.getAnim("archerright");
         currentframe = currentanim.getKeyFrame(animationStateTime, true);
@@ -72,6 +77,7 @@ public class Archer extends Entity{
 		{
 			if(lastShot > 1 && target != null && target.getIsAlive())
 			{
+				arrowShot.play(0.25f);
 				lastShot = 0;
 				firedShot = true;
 				animationStateTime = 0;

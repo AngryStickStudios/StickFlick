@@ -2,6 +2,7 @@ package com.AngryStickStudios.StickFlick.Entities;
 
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,6 +18,7 @@ public abstract class Entity {
 	private boolean changedLayer = false;
 	private int splatting = 0;
 	AnimationLoader anims;
+	Sound dead;
 
 	private int castleMaxHealth;
 
@@ -26,6 +28,8 @@ public abstract class Entity {
 		this.healthCurrent = healthMax;
 		this.isAlive = true;
 		this.anims = ganims;
+		
+		dead = Gdx.audio.newSound(Gdx.files.internal("data/enemy_death.mp3"));
 
 	}
 
@@ -179,6 +183,7 @@ public abstract class Entity {
 		if(healthCurrent - x <= 0){
 			healthCurrent = 0;
 			isAlive = false;
+			dead.play();
 		}
 		else
 			healthCurrent = healthCurrent - x;
