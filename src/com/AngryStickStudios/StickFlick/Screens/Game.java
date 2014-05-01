@@ -1241,16 +1241,16 @@ public class Game implements Screen{
 	            
 	        int yourFate = generator.nextInt(100) + 1;
 	        if(yourFate > 0 && yourFate < 6) {
-	        	newEnemy = new BigDude("BigDude", 600, anims, x, y);
+	        	newEnemy = new BigDude("BigDude", 1200, anims, x, y);
 	        } else if(yourFate > 5 && yourFate < 11) {
-	        	newEnemy = new Priest("Priest", 100, anims, x, y);
+	        	newEnemy = new Priest("Priest", 200, anims, x, y);
 	        } else if(yourFate > 10 && yourFate < 21) {
-	        	newEnemy = new DemoDude("Demo", 100, anims, x, y);
+	        	newEnemy = new DemoDude("Demo", 200, anims, x, y);
 	        } else if(yourFate > 20 && yourFate < 26){
-	        	newEnemy = new ArcherDude("Archer",100, anims, x, y);
+	        	newEnemy = new ArcherDude("Archer",200, anims, x, y);
 	        }
 	        else {
-	        	newEnemy = new StickDude("Basic", 100, anims, x, y);
+	        	newEnemy = new StickDude("Basic", 200, anims, x, y);
 	        }
 	       
             bg.addActor(newEnemy.getShadow());
