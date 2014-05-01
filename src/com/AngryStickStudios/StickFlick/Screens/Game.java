@@ -123,7 +123,7 @@ public class Game implements Screen{
 	
 	public Game(StickFlick game){
 		this.game = game;
-		anims = new AnimationLoader();
+		anims = game.anims;
 		atlas = new TextureAtlas("data/Textures.atlas");
 		
 		screenWidth = Gdx.graphics.getWidth();

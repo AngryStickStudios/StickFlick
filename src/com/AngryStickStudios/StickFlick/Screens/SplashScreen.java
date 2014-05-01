@@ -76,6 +76,7 @@ public class SplashScreen implements Screen{
 	}
 	
 	private void tweenCompleted(){
+		game.anims.loadFirstAnims();
 		game.setScreen(new SplashScreen2(game));
 	}
 

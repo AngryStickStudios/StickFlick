@@ -19,8 +19,10 @@ public class AnimationLoader {
         public AnimationLoader(){
         	Animlist = new Vector<AnimationLoaderClass>();
         	Texlist = new Vector<TextureLoaderClass>();
-        	
-        	//game
+        }
+        
+        public void loadFirstAnims()
+        {
         	setupTex("gameBG", "data/gamebackground.png");
         	setupTex("gameHills", "data/gamehills.png");
         	setupTex("gameCastle", "data/castleonly.png");
@@ -44,8 +46,11 @@ public class AnimationLoader {
             setupAnim("priest_walk_b", "data/enemyTextures/priest_back.png", 6, 5, (float) 0.025);
             setupAnim("priest_walk_l", "data/enemyTextures/priest_left.png", 6, 5, (float) 0.025);
             setupAnim("priest_walk_r", "data/enemyTextures/priest_right.png", 6, 5, (float) 0.025);
-            
-            //normal dude
+        }
+        
+        public void loadSecondAnims()
+        {
+        	//normal dude
             setupAnim("dude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.04);
             
             //demo
