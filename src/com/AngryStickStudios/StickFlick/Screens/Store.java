@@ -16,24 +16,26 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 public class Store implements Screen{
 
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
-	private final long bombCatapultPrice = 14000;
-	private final long archersPrice = 2000;
-	private final long magesPrice = 2000;
-	private final long serfsPrice = 2000;
-	private final long fingerOfGodPrice = 9000;
-	private final long hornOfChampPrice = 14000;
-	private final long blizzardPrice = 7000;
+	private final long bombCatapultPrice = 14;
+	private final long archersPrice = 20;
+	private final long magesPrice = 20;
+	private final long serfsPrice = 20;
+	private final long fingerOfGodPrice = 90;
+	private final long hornOfChampPrice = 14;
+	private final long blizzardPrice = 70;
 	
 	private boolean bombCatapultSelected;
 	private boolean magesSelected;
@@ -42,6 +44,7 @@ public class Store implements Screen{
 	private boolean serfsSelected;
 	private boolean fingerOfGodSelected;
 	private boolean hornOfChampSelected;
+	
 	
 	Label coinLabel;
 	Label desTextLabel;
@@ -68,8 +71,13 @@ public class Store implements Screen{
 	String description;
 	String price;
 	
+	//Window popup = new Window("Note", skin);
+	
+	
 	public Store(StickFlick game){
 		app = game;
+		
+		//popup.setPosition(0, 0);
 		
 		description = "";
 		price = "";
@@ -100,6 +108,9 @@ public class Store implements Screen{
 		stage.clear();
 		
 		Gdx.input.setInputProcessor(stage);
+		
+		
+		
 		
 		storeBackground = new Texture("data/menubackground.png");
 		Image backgroundImage = new Image(storeBackground);
@@ -172,14 +183,6 @@ public class Store implements Screen{
 		backButton.setHeight(Gdx.graphics.getWidth() / 24);
 		backButton.setPosition(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/2.8f, Gdx.graphics.getHeight()/20);
 		stage.addActor(backButton);
-		/*
-		if(blizzard2 == 2){
-			powerUpSelection = new Button(skin.getDrawable("Powerup Selection"));
-			powerUpSelection.setWidth(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setHeight(Gdx.graphics.getWidth() / 16);
-			powerUpSelection.setPosition(Gdx.graphics.getWidth()/4 - 2*powerUpSelection.getWidth(),Gdx.graphics.getHeight()/2 + powerUpSelection.getHeight()/2);
-			stage.addActor(powerUpSelection);
-		}*/
 		
 		blizzardButton = new Button(skin.getDrawable("IcePowerupButtonLight"),skin.getDrawable("IcePowerupButtonDark"));
 		blizzardButton.setWidth(Gdx.graphics.getWidth() / 16);
@@ -357,65 +360,72 @@ public class Store implements Screen{
 
 	public void buyPowerUps(){
 		
-		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected){
-			prefs.putBoolean("mages", true);
-			prefs.flush();
+		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected && !prefs.getBoolean("mages")){
+			
 			long temp = prefs.getLong("currency", 0) - magesPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("mages", true);
 			prefs.flush();
 			magesSelected = false;
 		}
 		
-		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected){
-			prefs.putBoolean("archers", true);
-			prefs.flush();
+		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected && !prefs.getBoolean("archers")){
+			
 			long temp = prefs.getLong("currency", 0) - archersPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("archers", true);
 			prefs.flush();
 			archersSelected = false;
 		}
 		
-		if(bombCatapultPrice <= prefs.getLong("currency", 0) && bombCatapultSelected){
-			prefs.putBoolean("bomb", true);
-			prefs.flush();
+		if(bombCatapultPrice <= prefs.getLong("currency", 0) && bombCatapultSelected && !prefs.getBoolean("bomb")){
+			
 			long temp = prefs.getLong("currency", 0) - bombCatapultPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("bomb", true);
 			prefs.flush();
 			bombCatapultSelected = false;
 		}
 		
-		if(blizzardPrice <= prefs.getLong("currency", 0) && blizzardSelected){
-			prefs.putBoolean("blizzard", true);
-			prefs.flush();
+		if(blizzardPrice <= prefs.getLong("currency", 0) && blizzardSelected && !prefs.getBoolean("blizzard")){
+			
 			long temp = prefs.getLong("currency", 0) - blizzardPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("blizzard", true);
 			prefs.flush();
 			blizzardSelected = false;
 		}
 		
-		if(fingerOfGodPrice <= prefs.getLong("currency", 0) && fingerOfGodSelected){
-			prefs.putBoolean("fingerOfGod", true);
-			prefs.flush();
+		if(fingerOfGodPrice <= prefs.getLong("currency", 0) && fingerOfGodSelected && !prefs.getBoolean("fingerOfGod")){
+			
 			long temp = prefs.getLong("currency", 0) - fingerOfGodPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("fingerOfGod", true);
 			prefs.flush();
 			fingerOfGodSelected = false;
 		}
 		
-		if(hornOfChampPrice <= prefs.getLong("currency", 0) && hornOfChampSelected){
-			prefs.putBoolean("hornOfChamp", true);
-			prefs.flush();
+		if(hornOfChampPrice <= prefs.getLong("currency", 0) && hornOfChampSelected && !prefs.getBoolean("hornOfChamp")){
+			
 			long temp = prefs.getLong("currency", 0) - hornOfChampPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("hornOfChamp", true);
 			prefs.flush();
 			hornOfChampSelected = false;
 		}
 		
-		if(serfsPrice <= prefs.getLong("currency", 0) && serfsSelected){
-			prefs.putBoolean("serfs", true);
-			prefs.flush();
+		if(serfsPrice <= prefs.getLong("currency", 0) && serfsSelected && !prefs.getBoolean("serfs")){
+			
 			long temp = prefs.getLong("currency", 0) - serfsPrice;
 			prefs.putLong("currency", temp);
+			prefs.flush();
+			prefs.putBoolean("serfs", true);
 			prefs.flush();
 			serfsSelected = false;
 		}	
