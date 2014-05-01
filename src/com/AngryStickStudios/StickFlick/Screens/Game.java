@@ -111,8 +111,8 @@ public class Game implements Screen{
 	Player player;
 	OrthographicCamera camera;
 	ShapeRenderer sp;
-	Button freezePow, explodePow, godPow, championPow, boilingOilPow, magesPow, archersPow, serfsPow;
-	Image explodeCD, freezeCD, godCD, archersCD, serfsCD, magesCD, championCD, boilingOilCD;
+	Button freezePow, explodePow, godPow, championPow, boilingOilPow, serfsPow;
+	Image explodeCD, freezeCD, godCD, serfsCD, championCD, boilingOilCD;
 	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
@@ -202,6 +202,24 @@ public class Game implements Screen{
 	    camera.setToOrtho(true, screenWidth, screenHeight);
 	    camera.update();
 	    sp = new ShapeRenderer();
+	    
+	    if(prefs.getBoolean("mages") || developerMode == true)
+		{
+			Mage m1 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .2), (int) Math.round(screenHeight * .2));
+	    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .75), (int) Math.round(screenHeight * .2));
+	    	
+	    	friendlylist.add(m1);
+	    	friendlylist.add(m2);
+		}
+		
+		if(prefs.getBoolean("archers") || developerMode == true)
+		{
+			Archer a1 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .3), (int) Math.round(screenHeight * .2));
+	    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .65), (int) Math.round(screenHeight * .2));
+	    	
+	    	friendlylist.add(a1);
+	    	friendlylist.add(a2);
+		}
 	}
 	
 	@Override
@@ -762,20 +780,6 @@ public class Game implements Screen{
 		boilingOilPow = new Button2(skin.getDrawable("IcePowerupButtonDark"), skin.getDrawable("IcePowerupButtonLight"), screenWidth * 0.7f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
 			powerupStage.addActor(boilingOilPow);
 		boilingOilCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.35f, screenWidth * 0.0625f, screenWidth * 0.0625f);
-		
-		//HORN OF THE CHAMPION BUTTON
-		archersPow = new Button2(skin.getDrawable("HornPowerupButtonLight"), skin.getDrawable("HornPowerupButtonDark"), screenWidth * 0.1f, screenHeight * 0.02f, screenWidth * 0.17f, screenWidth * 0.17f);
-		if(prefs.getBoolean("archers") || developerMode == true){
-			powerupStage.addActor(archersPow);
-		}
-		archersCD = new Image2(skin.getDrawable("HornPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.2f, screenWidth * 0.0625f, screenWidth * 0.0625f);
-		
-		//BOILING OIL BUTTON
-		magesPow = new Button2(skin.getDrawable("ExplosionPowerupButtonDark"), skin.getDrawable("ExplosionPowerupButtonLight"), screenWidth * 0.4f, screenHeight * 0.02f, screenWidth * 0.17f, screenWidth * 0.17f);
-		if(prefs.getBoolean("mages") || developerMode == true){
-			powerupStage.addActor(magesPow);
-		}
-		magesCD = new Image2(skin.getDrawable("IcePowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.2f, screenWidth * 0.0625f, screenWidth * 0.0625f );
 
 		
 		//PAUSE SCREEN RESUME BUTTON
@@ -1005,42 +1009,6 @@ public class Game implements Screen{
 				fg.addActor(boilingOil.getImage());
 			}
 		});
-		
-		
-		magesPow.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
-				return true;
-			}
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-				prefs.putBoolean("mages", false);
-				resumeGame();
-				Mage m1 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .2), (int) Math.round(screenHeight * .2));
-		    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .75), (int) Math.round(screenHeight * .2));
-		    	
-		    	friendlylist.add(m1);
-		    	friendlylist.add(m2);
-		    	fg.addActor(m1.getImage());
-		    	fg.addActor(m2.getImage());
-			}
-		});
-		
-		archersPow.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
-				return true;
-			}
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-				prefs.putBoolean("archers", false);
-				resumeGame();
-				Archer a1 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .3), (int) Math.round(screenHeight * .2));
-		    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .65), (int) Math.round(screenHeight * .2));
-		    	
-		    	friendlylist.add(a1);
-		    	friendlylist.add(a2);
-		    	fg.addActor(a1.getImage());
-		    	fg.addActor(a2.getImage());
-			}
-		});
-		
 		
 		championPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
