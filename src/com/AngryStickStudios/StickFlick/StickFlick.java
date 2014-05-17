@@ -7,7 +7,7 @@ import com.badlogic.gdx.Game;
 
 public class StickFlick extends Game {
 
-	public static final String version = "0.1 Beta (functional store, sounds, and balancing work)";
+	public static final String version = "0.11 Beta (pause & powerup menu UI Improvements)";
 	public static final String LOG = "StickFlick";
 	public AnimationLoader anims;
 	

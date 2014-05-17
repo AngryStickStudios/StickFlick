@@ -675,7 +675,7 @@ public class Game implements Screen{
 		gd = new GestureDetection(this);
 		
 		stage = new Stage(width, height, true);
-		//stage.clear();
+		stage.clear();
 		
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();

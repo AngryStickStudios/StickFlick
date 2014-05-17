@@ -23,7 +23,7 @@ public class AnimationLoader {
         
         public void loadFirstAnims()
         {
-        	setupTex("gameBG", "data/gamebackground.png");
+        	setupTex("gameBG", "data/mountainsonly.png");
         	setupTex("gameHills", "data/gamehills.png");
         	setupTex("gameCastle", "data/castleonly.png");
         	
