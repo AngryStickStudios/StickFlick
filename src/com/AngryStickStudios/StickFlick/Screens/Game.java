@@ -115,7 +115,7 @@ public class Game implements Screen{
 	ShapeRenderer sp;
 	Button freezePow, explodePow, godPow, championPow, boilingOilPow, serfsPow;
 	Image explodeCD, freezeCD, godCD, serfsCD, championCD, boilingOilCD;
-	Timer spawnTimer, spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
+	Timer spawnTimerOuter, spawnTimerInner, freezeTimer, godTimer, coolDownTimer;
 	double timeSpawn, timeEquation, timeSetSpawn = 0;
 	final double DEATHTIME = .25;
 	boolean justUnfrozen = false, priestButtonDown = false;
@@ -133,6 +133,13 @@ public class Game implements Screen{
 		screenHeight = Gdx.graphics.getHeight();
 		
 		generateSpawnLocations();
+		
+		spawnTimerOuter = new Timer();
+		spawnTimerInner = new Timer();
+		freezeTimer = new Timer();
+		godTimer = new Timer();
+		coolDownTimer = new Timer();
+		
 		
 		 spawnTimerOuter.schedule(new Task() {
              @Override
@@ -171,6 +178,7 @@ public class Game implements Screen{
                      timeSetSpawn += .25;
              }
      }, 0, .25f);
+		 
 
 		
 		freezeTimer.schedule(new Task() {
@@ -482,11 +490,13 @@ public class Game implements Screen{
 		} else if(gameStatus == GAME_PAUSED) {
 			pauseStage.act(Gdx.graphics.getDeltaTime());
 			batch.begin();
+			stage.draw();
 			pauseStage.draw();
 			batch.end();
 		} else if(gameStatus == POWERUP_PAUSE){
 			powerupStage.act(Gdx.graphics.getDeltaTime());
 			batch.begin();
+			stage.draw();
 			powerupStage.draw();
 			batch.end();
 		} else if(gameStatus == GAME_LOST){
@@ -665,7 +675,7 @@ public class Game implements Screen{
 		gd = new GestureDetection(this);
 		
 		stage = new Stage(width, height, true);
-		stage.clear();
+		//stage.clear();
 		
 		pauseStage = new Stage(width, height, true);
 		pauseStage.clear();
@@ -855,8 +865,7 @@ public class Game implements Screen{
 			hg.addActor(curChamp.getShadow());
 		}
 		
-		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
-		pauseStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1)));
+		pauseStage.addAction(Actions.sequence(Actions.fadeIn(1)));
 		
 		
 		//LISTENERS
@@ -868,7 +877,7 @@ public class Game implements Screen{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				
-				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+				stage.addAction(Actions.sequence(Actions.alpha(.3f, .3f), Actions.run(new Runnable() {
 					@Override
 					public void run() {
 						pauseGame();
@@ -885,7 +894,7 @@ public class Game implements Screen{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				
-				stage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+				stage.addAction(Actions.sequence(Actions.alpha(.3f, .3f), Actions.run(new Runnable() {
 					@Override
 					public void run() {
 						powerupPause();
@@ -1039,7 +1048,7 @@ public class Game implements Screen{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				
-				pauseStage.addAction(Actions.sequence(Actions.fadeOut(.3f), Actions.run(new Runnable() {
+				pauseStage.addAction(Actions.sequence(Actions.run(new Runnable() {
 					@Override
 					public void run() {
 						resumeGame();
@@ -1100,6 +1109,7 @@ public class Game implements Screen{
 				})));
 			}
 		});
+		
 	}
 
 	//SHOW METHOD
@@ -1231,7 +1241,7 @@ public class Game implements Screen{
 	}
 
 	public void spawn() {
-        if(freeze == 0) {
+        if(freeze == 0 && gameStatus == GAME_RUNNING) {
         	Random generator = new Random();
 	           
         	int x = generator.nextInt((int)(screenWidth*4/5) + 1) + (int)(screenWidth/10);
@@ -1261,7 +1271,7 @@ public class Game implements Screen{
             newEnemy = null;
         }
 	}
-
+	
 	/*********************************
 	 * BOILING OIL
 	 *********************************/

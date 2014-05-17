@@ -81,9 +81,9 @@ public class MainMenu implements Screen{
 		// Button creation
 		playButton = new TextButton2("Play", buttonStyle, screenWidth * 0.113f, screenHeight * 0.57f, screenWidth * 0.17f, screenHeight * 0.09f);
 		storeButton = new TextButton2("Store", buttonStyle, screenWidth * 0.213f, screenHeight * 0.45f, screenWidth * 0.17f, screenHeight * 0.09f);
-		tutorialButton = new TextButton2("Tutorial", buttonStyle, screenWidth * 0.313f, screenHeight * 0.33f, screenWidth * 0.17f, screenHeight * 0.09f);
+		tutorialButton = new TextButton2("Tutorial", buttonStyle, screenWidth * 0.8f, screenHeight * 0.9f, screenWidth * 0.17f, screenHeight * 0.09f);
 		optionsButton = new TextButton2("Options", buttonStyle, screenWidth * 0.413f, screenHeight * 0.21f, screenWidth * 0.17f, screenHeight * 0.09f);
-		scoreButton = new TextButton2("High Scores", buttonStyle, screenWidth * 0.8f, screenHeight * 0.9f, screenWidth * 0.17f, screenHeight * 0.09f);
+		scoreButton = new TextButton2("High Scores", buttonStyle, screenWidth * 0.313f, screenHeight * 0.33f, screenWidth * 0.17f, screenHeight * 0.09f);
 
 		// Add buttons to stage
 		stage.addActor(playButton);
