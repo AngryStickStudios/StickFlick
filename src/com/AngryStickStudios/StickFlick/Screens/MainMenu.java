@@ -34,7 +34,7 @@ public class MainMenu implements Screen{
 	TextButton2 playButton, storeButton, tutorialButton, optionsButton, scoreButton;
 	Sound menuTheme;
 	Sound buttonClick;
-	int screenWidth, screenHeight;
+	float screenWidth, screenHeight;
 	
 	public MainMenu(StickFlick game){
 		this.game = game;
@@ -69,13 +69,14 @@ public class MainMenu implements Screen{
 		// Background Image
 		Texture backgroundTexture = new Texture("data/menubackground.png");
 		Image backgroundImage = new Image(backgroundTexture);
-		backgroundImage.setWidth(Gdx.graphics.getWidth());
-		backgroundImage.setHeight(Gdx.graphics.getHeight());
+		backgroundImage.setWidth(screenWidth);
+		backgroundImage.setHeight(screenHeight);
 		stage.addActor(backgroundImage);
 
 		// Label
 		LabelStyle versionText = new LabelStyle(white, Color.WHITE);
 		Label gameVersion = new Label(StickFlick.version, versionText);
+		gameVersion.setFontScale(screenHeight/650);
 		stage.addActor(gameVersion);
 		
 		// Button creation

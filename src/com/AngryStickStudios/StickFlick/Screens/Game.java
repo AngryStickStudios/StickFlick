@@ -443,7 +443,6 @@ public class Game implements Screen{
 			sp.setColor(Color.RED);
 				
 			float healthBarSize = screenWidth/2 * (player.getHealthCurrent()/player.getHealthMax());
-				
 			sp.rect(screenWidth/4,screenHeight*.025f, healthBarSize, screenHeight/24);
 			sp.end();
 			batch.begin();
@@ -804,16 +803,18 @@ public class Game implements Screen{
 		
 		//DEATH MESSAGE
 		labelStyleDeath = new LabelStyle(white, Color.RED);
-		deathMessage = new Label("Game Over...", labelStyleDeath);
-		deathMessage.setX(screenWidth / 2 - deathMessage.getWidth()/2);
-		deathMessage.setY(screenHeight / 2 + deathMessage.getHeight() * 3);
+		deathMessage = new Label("GAME OVER", labelStyleDeath);
+		deathMessage.setX(screenWidth/2f - (deathMessage.getWidth()/2) * (screenWidth/300f));
+		deathMessage.setY(screenHeight/2f + deathMessage.getHeight() * 3);
+		deathMessage.setFontScale(screenWidth/300f);
 		deathStage.addActor(deathMessage);
 		
 		//FINAL SCORE`
 		labelStyleScore = new LabelStyle(white, Color.ORANGE);
 		finalScore = new Label("Score: 999", labelStyleScore);
-		finalScore.setX(screenWidth / 2 - finalScore.getWidth()/2);
-		finalScore.setY(screenHeight / 2);
+		finalScore.setX(screenWidth / 2f - (finalScore.getWidth()/2) * (screenWidth/500f));
+		finalScore.setY(screenHeight / 2f);
+		finalScore.setFontScale(screenWidth/500f);
 		deathStage.addActor(finalScore);
 		
 		//Return to main menu
@@ -824,18 +825,18 @@ public class Game implements Screen{
 		if (!lefty) position = 0.025f; else position = 0.95f;
 		labelStyle = new LabelStyle(white, Color.BLACK);
 		timer = new Label(formattedTime, labelStyle);
-		timer.setHeight(screenHeight / 24);
 		timer.setX(screenWidth * position);
-		timer.setY(screenHeight * 0.95f);
+		timer.setY(screenHeight * 0.93f);
+		timer.setFontScale(screenWidth/1000f);
 		fg.addActor(timer);
 
 		//COINAGE
 		if (!lefty) position = 0.085f; else position = 0.875f;
 	    labelStyleCoinage = new LabelStyle(white, Color.ORANGE);
 		coinageDisplay = new Label(String.valueOf(getCoinage()), labelStyleCoinage);
-		coinageDisplay.setHeight(screenHeight / 24);
 		coinageDisplay.setX(screenWidth * position);
-		coinageDisplay.setY(screenHeight * 0.95f);
+		coinageDisplay.setY(screenHeight * 0.93f);
+		coinageDisplay.setFontScale(screenWidth/1000f);
 		stage.addActor(coinageDisplay);
 		
 		for(int i = 0; i < enemyList.size(); i++) {
