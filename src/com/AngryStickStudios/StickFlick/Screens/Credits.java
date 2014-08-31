@@ -144,7 +144,7 @@ public class Credits implements Screen {
 		skin = new Skin();
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/button2.mp3"));
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 	}
 
 	@Override

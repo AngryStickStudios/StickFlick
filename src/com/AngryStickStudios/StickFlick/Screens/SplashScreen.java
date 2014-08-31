@@ -8,7 +8,7 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -24,7 +24,7 @@ public class SplashScreen implements Screen{
 	SpriteBatch batch;
 	StickFlick game;
 	TweenManager manager;
-	Sound swoosh;
+	Music swoosh;
 	
 	public SplashScreen(StickFlick game){
 		this.game = game;
@@ -47,7 +47,7 @@ public class SplashScreen implements Screen{
 
 	@Override
 	public void show() {
-		swoosh = Gdx.audio.newSound(Gdx.files.internal("data/sounds/splashSwoosh.mp3"));
+		swoosh = Gdx.audio.newMusic(Gdx.files.internal("data/sounds/splashSwoosh.mp3"));
 		swoosh.play();
 		
 		splashTexture = new Texture("data/SplashScreen1.png");

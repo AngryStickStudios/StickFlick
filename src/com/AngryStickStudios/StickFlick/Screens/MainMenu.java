@@ -3,6 +3,7 @@ package com.AngryStickStudios.StickFlick.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -32,7 +33,7 @@ public class MainMenu implements Screen{
 	Skin skin;
 	SpriteBatch batch;
 	TextButton2 playButton, storeButton, tutorialButton, optionsButton, scoreButton;
-	Sound menuTheme;
+	Music menuTheme;
 	Sound buttonClick;
 	float screenWidth, screenHeight;
 	
@@ -173,7 +174,7 @@ public class MainMenu implements Screen{
 
 	@Override
 	public void show() {	
-		menuTheme = Gdx.audio.newSound(Gdx.files.internal("data/sounds/menuTheme.mp3"));
+		menuTheme = Gdx.audio.newMusic(Gdx.files.internal("data/sounds/menuTheme.mp3"));
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 		menuTheme.play();
 
