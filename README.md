@@ -11,7 +11,7 @@ Project Name: Stick Flick
   Installation
   ------------
   The game is currently in Beta.
-  In the future the game will be made availiable on the google play market for Android.
+  In the future the game will be made available on the google play market for Android.
 
 
   Licensing
