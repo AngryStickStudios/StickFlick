@@ -38,31 +38,14 @@ public class Store implements Screen{
 	private final long hornOfChampPrice = 350;
 	private final long blizzardPrice = 180;
 	
-	private boolean bombCatapultSelected;
-	private boolean magesSelected;
-	private boolean archersSelected;
-	private boolean blizzardSelected;
-	private boolean serfsSelected;
-	private boolean fingerOfGodSelected;
-	private boolean hornOfChampSelected;
-	
-	
-	Label coinLabel;
-	Label desTextLabel;
-	Label priceLabel;
-	Label desTitleLabel;
-	Label ownedLabel;
+	private boolean bombCatapultSelected, magesSelected, archersSelected, blizzardSelected, serfsSelected, fingerOfGodSelected, hornOfChampSelected;
+	Label coinLabel, desTextLabel, priceLabel, desTitleLabel, ownedLabel;
 	
 	StickFlick app;
 	Stage stage;
-	Sound purchase, buttonClick;;
+	Sound purchase, buttonClick;
 	
-	
-	BitmapFont titleFont;
-	BitmapFont descriptionFont;
-	BitmapFont textFont;
-	BitmapFont desTextFont;
-	BitmapFont totalFont;
+	BitmapFont titleFont, descriptionFont, textFont, desTextFont, totalFont;
 
 	TextureAtlas atlas;
 	Skin skin;
@@ -70,10 +53,8 @@ public class Store implements Screen{
 	Button buyButton, backButton, bombCatapultButton, fingerOfGodButton, hornOfChampButton, blizzardButton, archersButton, magesButton, serfsButton, powerUpSelection;
 	Texture storeBackground, transBackground, desBackground;
 	
-	String title;
-	String description;
-	String price;
-	String owned;
+	String title, description, price, owned;
+
 	
 	//Window popup = new Window("Note", skin);
 	
@@ -137,47 +118,41 @@ public class Store implements Screen{
 		desImage.setX(Gdx.graphics.getWidth()/2 + desImage.getWidth()/2);
 		stage.addActor(desImage);
 		
-		titleFont.setScale(2f);
+		titleFont.setScale(width * 0.0007f);
 		LabelStyle titleStyle = new LabelStyle(titleFont, Color.BLACK);
 		Label powerUpLabel = new Label("Power Ups", titleStyle);
 		powerUpLabel.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/8);
-		powerUpLabel.setFontScale(Gdx.graphics.getWidth()*0.0015f,Gdx.graphics.getHeight()*0.003f);
 		stage.addActor(powerUpLabel);
 		
-		descriptionFont.setScale(1.3f);
+		descriptionFont.setScale(width * 0.0004f);
 		LabelStyle desTitleStyle = new LabelStyle(descriptionFont, Color.BLACK);
 		desTitleLabel = new Label(title, desTitleStyle);
 		desTitleLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
 		desTitleLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/8);
-		desTitleLabel.setFontScale(Gdx.graphics.getWidth()*0.0009f,Gdx.graphics.getHeight()*0.0025f);
 		stage.addActor(desTitleLabel);
 		
-		textFont.setScale(1.3f);
+		textFont.setScale(width * 0.0004f);
 		LabelStyle textStyle = new LabelStyle(textFont, Color.BLACK);
 		coinLabel = new Label("Spendable Coins: " + prefs.getLong("currency", 0), textStyle);
 		coinLabel.setX(Gdx.graphics.getWidth()/20);
 		coinLabel.setY(Gdx.graphics.getHeight()/20);
-		coinLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(coinLabel);
 		
-		desTextFont.setScale(0.95f);
+		desTextFont.setScale(width * 0.0003f);
 		LabelStyle desTextStyle = new LabelStyle(desTextFont, Color.BLACK);
 		desTextLabel = new Label(description, desTextStyle);
 		desTextLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
 		desTextLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/3f);
-		desTextLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(desTextLabel);
 
 		priceLabel = new Label(price, desTextStyle);
 		priceLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
 		priceLabel.setY(Gdx.graphics.getHeight()- Gdx.graphics.getHeight()/2);
-		priceLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(priceLabel);
 		
 		ownedLabel = new Label(owned, textStyle);
 		ownedLabel.setX(Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()/5);
 		ownedLabel.setY(Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 1.5f);
-		ownedLabel.setFontScale(Gdx.graphics.getWidth()*0.00075f,Gdx.graphics.getHeight()*0.0015f);
 		stage.addActor(ownedLabel);
 		
 		buyButton = new Button(skin.getDrawable("Buy Button"), skin.getDrawable("Buy Button Pressed"));

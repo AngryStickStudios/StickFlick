@@ -58,6 +58,7 @@ public class Credits implements Screen {
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
+		white.setScale(width * 0.0003f);
 		Gdx.input.setInputProcessor(stage);
 		
 		// Styles for text buttons, slider and labels
@@ -77,7 +78,7 @@ public class Credits implements Screen {
 		creditsT.setX(Gdx.graphics.getWidth() *0.5f);
 		creditsT.setY(Gdx.graphics.getHeight() * 0.90f);
 		creditsT.setAlignment(0,2);
-		creditsT.setFontScale(1.25f);
+		creditsT.setFontScale(width * 0.0004f);
 		stage.addActor(creditsT);
 		
 		//Credits Header
@@ -91,7 +92,7 @@ public class Credits implements Screen {
 		creditsH.setX(Gdx.graphics.getWidth() *0.5f);
 		creditsH.setY(Gdx.graphics.getHeight() * 0.77f);
 		creditsH.setAlignment(0,2);
-		creditsH.setFontScale(1f);
+		creditsH.setFontScale(width * 0.0004f);
 		stage.addActor(creditsH);
 
 		//Credits Test
@@ -105,7 +106,7 @@ public class Credits implements Screen {
 		credits.setX(Gdx.graphics.getWidth() *0.5f);
 		credits.setY(Gdx.graphics.getHeight() * 0.65f);
 		credits.setAlignment(0,2);
-		credits.setFontScale(0.9f);
+		credits.setFontScale(width * 0.0003f);
 		stage.addActor(credits);
 		
 		//Back Button

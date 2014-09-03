@@ -58,6 +58,7 @@ public class Scores implements Screen {
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
+		white.setScale(width * 0.0004f);
 		Gdx.input.setInputProcessor(stage);
 		
 		// Styles for text buttons, slider and labels

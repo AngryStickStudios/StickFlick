@@ -689,6 +689,8 @@ public class Game implements Screen{
 		hg = new Group();
 		fg = new Group();
 		
+		white.setScale(width * 0.0003f);
+		
 		if(gameStatus == GAME_RUNNING) {
 			im = new InputMultiplexer(new GestureDetector(gd) , stage);
 			Gdx.input.setInputProcessor(im);
@@ -804,21 +806,21 @@ public class Game implements Screen{
 		//DEATH MESSAGE
 		labelStyleDeath = new LabelStyle(white, Color.RED);
 		deathMessage = new Label("GAME OVER", labelStyleDeath);
-		deathMessage.setX(screenWidth/2f - (deathMessage.getWidth()/2) * (screenWidth/300f));
-		deathMessage.setY(screenHeight/2f + deathMessage.getHeight() * 3);
-		deathMessage.setFontScale(screenWidth/300f);
+		deathMessage.setX(screenWidth * 0.5f - (deathMessage.getWidth() * screenWidth * 0.0008f) * 0.5f);
+		deathMessage.setY(screenHeight * 0.5f + deathMessage.getHeight() * 3);
+		deathMessage.setFontScale(width * 0.0008f);
 		deathStage.addActor(deathMessage);
 		
 		//FINAL SCORE`
 		labelStyleScore = new LabelStyle(white, Color.ORANGE);
 		finalScore = new Label("Score: 999", labelStyleScore);
-		finalScore.setX(screenWidth / 2f - (finalScore.getWidth()/2) * (screenWidth/500f));
-		finalScore.setY(screenHeight / 2f);
-		finalScore.setFontScale(screenWidth/500f);
+		finalScore.setX(screenWidth * 0.5f - (finalScore.getWidth() * screenWidth * 0.0005f) * 0.5f);
+		finalScore.setY(screenHeight * 0.5f);
+		finalScore.setFontScale(width * 0.0005f);
 		deathStage.addActor(finalScore);
 		
 		//Return to main menu
-		mainMenuButton2 = new TextButton2("Main Menu", buttonStyle, screenWidth/2 - (screenWidth * 0.17f) / 2, screenHeight/2 - (screenHeight * 0.09f) * 2, screenWidth * 0.17f, screenHeight * 0.09f);
+		mainMenuButton2 = new TextButton2("Main Menu", buttonStyle, screenWidth * 0.5f - (screenWidth * 0.17f) * 0.5f, screenHeight * 0.5f - (screenHeight * 0.09f) * 2, screenWidth * 0.17f, screenHeight * 0.09f);
 		deathStage.addActor(mainMenuButton2);
 		
 		//TIMER
@@ -827,7 +829,6 @@ public class Game implements Screen{
 		timer = new Label(formattedTime, labelStyle);
 		timer.setX(screenWidth * position);
 		timer.setY(screenHeight * 0.93f);
-		timer.setFontScale(screenWidth/1000f);
 		fg.addActor(timer);
 
 		//COINAGE
@@ -836,7 +837,6 @@ public class Game implements Screen{
 		coinageDisplay = new Label(String.valueOf(getCoinage()), labelStyleCoinage);
 		coinageDisplay.setX(screenWidth * position);
 		coinageDisplay.setY(screenHeight * 0.93f);
-		coinageDisplay.setFontScale(screenWidth/1000f);
 		stage.addActor(coinageDisplay);
 		
 		for(int i = 0; i < enemyList.size(); i++) {

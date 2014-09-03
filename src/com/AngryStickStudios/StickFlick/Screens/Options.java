@@ -56,6 +56,7 @@ public class Options implements Screen {
 		stage = new Stage(width, height, true);
 		stage.clear();
 		
+		white.setScale(width * 0.0004f);
 		Gdx.input.setInputProcessor(stage);
 		
 		// Styles for text buttons, slider and labels
@@ -69,26 +70,26 @@ public class Options implements Screen {
 		// Sliders
 		// Music Slider
 		Label musicVolumeLabel = new Label("Music Volume", labelStyle);
-		musicVolumeLabel.setX(Gdx.graphics.getWidth() / 4);
-		musicVolumeLabel.setY(Gdx.graphics.getHeight() /3);
+		musicVolumeLabel.setX(Gdx.graphics.getWidth() * 0.25f);
+		musicVolumeLabel.setY(Gdx.graphics.getHeight() * 0.33f);
 		
 		Slider musicVolume = new Slider(1, 100, 1, false, slidStyle);
-		musicVolume.setWidth(Gdx.graphics.getWidth() / 6);
-		musicVolume.setX(Gdx.graphics.getWidth() / 2 - musicVolume.getWidth() / 2);
-		musicVolume.setY(Gdx.graphics.getHeight() /3);
+		musicVolume.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		musicVolume.setX(Gdx.graphics.getWidth() * 0.5f);
+		musicVolume.setY(Gdx.graphics.getHeight() * 0.34f);
 		
 		stage.addActor(musicVolumeLabel);
 		stage.addActor(musicVolume);
 		
 		//SFX Slider
 		Label SFXVolumeLabel = new Label("SFX Volume", labelStyle);
-		SFXVolumeLabel.setX(Gdx.graphics.getWidth() / 4);
-		SFXVolumeLabel.setY(Gdx.graphics.getHeight() /4);
+		SFXVolumeLabel.setX(Gdx.graphics.getWidth() * 0.25f);
+		SFXVolumeLabel.setY(Gdx.graphics.getHeight() * 0.25f);
 		
 		Slider SFXVolume = new Slider(1, 100, 1, false, slidStyle);
-		SFXVolume.setWidth(Gdx.graphics.getWidth() / 6);
-		SFXVolume.setX(Gdx.graphics.getWidth() / 2 - SFXVolume.getWidth() / 2);
-		SFXVolume.setY(Gdx.graphics.getHeight() /4);
+		SFXVolume.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		SFXVolume.setX(Gdx.graphics.getWidth() * 0.5f);
+		SFXVolume.setY(Gdx.graphics.getHeight() * 0.26f);
 		
 		stage.addActor(SFXVolumeLabel);
 		stage.addActor(SFXVolume);

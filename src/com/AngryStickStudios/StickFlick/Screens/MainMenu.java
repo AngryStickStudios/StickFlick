@@ -57,9 +57,11 @@ public class MainMenu implements Screen{
 	public void resize(int width, int height) {
 		stage = new Stage(width, height, true);
 		stage.clear();
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
+		screenWidth = width;
+		screenHeight = height;
 		
+		
+		white.setScale(width * 0.0004f);
 		Gdx.input.setInputProcessor(stage);
 		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
@@ -77,7 +79,6 @@ public class MainMenu implements Screen{
 		// Label
 		LabelStyle versionText = new LabelStyle(white, Color.WHITE);
 		Label gameVersion = new Label(StickFlick.version, versionText);
-		gameVersion.setFontScale(screenHeight/650);
 		stage.addActor(gameVersion);
 		
 		// Button creation
