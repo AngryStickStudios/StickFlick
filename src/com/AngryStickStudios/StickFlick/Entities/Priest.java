@@ -2,14 +2,11 @@ package com.AngryStickStudios.StickFlick.Entities;
  
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
  
 public class Priest extends Entity {
@@ -195,8 +192,8 @@ public class Priest extends Entity {
                        
                         scale = ((Gdx.graphics.getHeight() - lastPos.y) / 1000) * mscale;
                         enemy.setScale(scale);
-                        shadow.setScale(scale / mscale);
-                       
+                        shadow.setScale((float) ((scale / mscale) * 2.5));
+                        
                         if(newPos.x < Gdx.graphics.getWidth() * 0.01f){
                                 newPos.x = Gdx.graphics.getWidth() * 0.01f;
                         }
@@ -227,20 +224,20 @@ public class Priest extends Entity {
                 }
                
                 //walk up... and shit
-                                if(peakamt > 0 && frozen == false)
-                                {
-                                        currentanim = anims.getAnim("priest_walk_f");
-                                        scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
-                                        enemy.setScale(scale);
-                                        shadow.setScale((float) ((scale / mscale) * 2.5));
-                                       
-                                        setPosition(getPosition().x, getPosition().y + (20 * delta));
-                                        peakamt -= (20*delta);
-                                        shadow.setX(enemy.getX());
-                                        shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
-                                        return;
-                                }
-               
+                if(peakamt > 0 && frozen == false)
+                {
+                	currentanim = anims.getAnim("priest_walk_f");
+                	scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * mscale;
+                	enemy.setScale(scale);
+                	shadow.setScale((float) ((scale / mscale) * 2.5));
+
+                	setPosition(getPosition().x, getPosition().y + (20 * delta * Gdx.graphics.getHeight() * 0.005f));
+                	peakamt -= (20*delta * Gdx.graphics.getHeight() * 0.005f);
+                	shadow.setX(enemy.getX());
+                	shadow.setY(getPosition().y - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
+                	return;
+                }
+
                 if(healdelay > 0)
                 {
                         healdelay -= Gdx.graphics.getDeltaTime();

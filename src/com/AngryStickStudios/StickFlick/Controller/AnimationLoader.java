@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoaderClass;
 import com.AngryStickStudios.StickFlick.Controller.TextureLoaderClass;
  
@@ -51,13 +49,13 @@ public class AnimationLoader {
         public void loadSecondAnims()
         {
         	//normal dude
-            setupAnim("dude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.04);
+            setupAnim("dude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.03);
             
             //demo
             setupAnim("demo_walk", "data/enemyTextures/demo_run.png", 6, 5, (float) 0.025);
             
             //big dude
-            setupAnim("bigdude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.06);
+            setupAnim("bigdude_walk", "data/enemyTextures/stickdude_run.png", 6, 5, (float) 0.05);
             
             //Archer dude
             setupAnim("archer_walk", "data/enemyTextures/archerduderunning.png", 6, 5, (float) 0.025);

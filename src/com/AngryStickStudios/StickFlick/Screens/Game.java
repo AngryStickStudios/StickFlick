@@ -1,6 +1,5 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
-import java.util.Hashtable;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -52,7 +51,6 @@ import com.AngryStickStudios.StickFlick.Entities.Missile;
 import com.AngryStickStudios.StickFlick.Entities.Player;
 import com.AngryStickStudios.StickFlick.Entities.Priest;
 import com.AngryStickStudios.StickFlick.Entities.StickDude;
-import com.AngryStickStudios.StickFlick.Entities.WalkingEnemy;
 
 import java.util.Random;
 
@@ -389,11 +387,8 @@ public class Game implements Screen{
 					if((enemyList.get(i).getName()).equals("Basic") || (enemyList.get(i).getName()).equals("Archer") || (enemyList.get(i).getName()).equals("Flier")){
 						enemiesAtWall++;
 					}
-					else if((enemyList.get(i).getName()).equals("HeavyFlier")){
-						enemiesAtWall += 2;
-					}
 					else if((enemyList.get(i).getName()).equals("BigDude")){
-						enemiesAtWall += 40; //4% of castle health/second accounting for 0.1% = one enemy at wall
+						enemiesAtWall += 10;
 					}
 					else if((enemyList.get(i).getName()).equals("Demo")){
 						//immediately decreases castle health by 1.2%
@@ -786,10 +781,12 @@ public class Game implements Screen{
 		}
 		serfsCD = new Image2(skin.getDrawable("HealPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.31f, screenWidth * 0.0625f, screenWidth * 0.0625f);
 		
+		/*		CURRENTLY NOT FUNCTIONING CORRECTLY
 		//BOILING OIL BUTTON
 		boilingOilPow = new Button2(skin.getDrawable("BoilingOilPowerupButtonLight"), skin.getDrawable("BoilingOilPowerupButtonDark"), screenWidth * 0.7f, screenHeight * 0.35f, screenWidth * 0.17f, screenWidth * 0.17f);
 		powerupStage.addActor(boilingOilPow);
 		boilingOilCD = new Image2(skin.getDrawable("BoilingOilPowerupButtonCD"), screenWidth * 0.005f, screenHeight * 0.18f, screenWidth * 0.0625f, screenWidth * 0.0625f);
+		*/
 		
 		//POWERUP SCREEN RESUME BUTTON
 		powerupResumeButton = new TextButton2("Resume", buttonStyle, screenWidth * 0.4f, screenHeight * 0.15f, screenWidth * 0.17f, screenHeight * 0.09f);
@@ -1013,6 +1010,7 @@ public class Game implements Screen{
 			}
 		});
 		
+		/*			CURRENTLY NOT WORKING CORRECTLY
 		boilingOilPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
 				return true;
@@ -1024,6 +1022,7 @@ public class Game implements Screen{
 				fg.addActor(boilingOil.getImage());
 			}
 		});
+		*/
 		
 		championPow.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

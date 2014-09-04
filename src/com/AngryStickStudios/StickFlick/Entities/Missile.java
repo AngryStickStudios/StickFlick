@@ -79,7 +79,7 @@ public class Missile extends Entity{
                 	     {
                 	                if(Math.abs(tpos.x - target.getPosition().x) < (Gdx.graphics.getWidth() * 0.06f))
                 	                {
-                	                	target.decreaseHealth(27);
+                	                	target.decreaseHealth(150);
                 		 
                 	                	if(target.getIsAlive() == false)
                 	                	{
@@ -96,7 +96,7 @@ public class Missile extends Entity{
 		
 		Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
         Vector2 normVec = compVec.nor();
-        Vector2 walkVec = normVec.scl(250 * delta);
+        Vector2 walkVec = normVec.scl(250 * delta * Gdx.graphics.getHeight() * 0.002f);
                
         scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * 0.5f;
         enemy.setScale(scale);

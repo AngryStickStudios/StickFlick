@@ -78,8 +78,8 @@ public class DemoDude extends WalkingEnemy{
 			shadow.setWidth(enemy.getWidth());
 			shadow.setScale(scale);
 			
-			setPosition(getPosition().x, getPosition().y + (20 * delta));
-			peakamt -= (20*delta);
+			setPosition(getPosition().x, getPosition().y + (20 * delta * Gdx.graphics.getHeight() * 0.01f));
+			peakamt -= (20*delta * Gdx.graphics.getHeight() * 0.01f);
 			shadow.setX(enemy.getX());
 			shadow.setY(getPosition().y + (Gdx.graphics.getHeight() / 100) - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			return;
@@ -89,7 +89,7 @@ public class DemoDude extends WalkingEnemy{
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(8 * delta);
+			Vector2 walkVec = normVec.scl(8 * delta * Gdx.graphics.getHeight() * 0.01f);
 			
 			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);

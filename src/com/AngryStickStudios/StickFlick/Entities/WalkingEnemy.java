@@ -2,14 +2,11 @@ package com.AngryStickStudios.StickFlick.Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.AnimationLoader;
 
 public class WalkingEnemy extends Entity {
@@ -228,8 +225,8 @@ public class WalkingEnemy extends Entity {
 			shadow.setWidth(enemy.getWidth());
 			shadow.setScale(scale);
 			
-			setPosition(getPosition().x, getPosition().y + (20 * delta));
-			peakamt -= (20*delta);
+			setPosition(getPosition().x, getPosition().y + (20 * delta * Gdx.graphics.getHeight() * 0.007f));
+			peakamt -= (20 * delta * Gdx.graphics.getHeight() * 0.007f);
 			shadow.setX(enemy.getX());
 			shadow.setY(getPosition().y + (Gdx.graphics.getHeight() / 100) - ((enemy.getHeight() / 2) * scale) - ((shadow.getHeight() / 2) * scale));
 			return;
@@ -239,7 +236,7 @@ public class WalkingEnemy extends Entity {
 		if(getPosition().y > Gdx.graphics.getHeight() * 0.1f && frozen == false){
 			Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
 			Vector2 normVec = compVec.nor();
-			Vector2 walkVec = normVec.scl(8 * delta);
+			Vector2 walkVec = normVec.scl(8 * delta * Gdx.graphics.getHeight() * 0.007f);
 			
 			scale = ((Gdx.graphics.getHeight() - getPosition().y) / 1000) * scaleMultiplier;
 			enemy.setScale(scale);

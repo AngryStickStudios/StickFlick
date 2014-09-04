@@ -98,7 +98,7 @@ public class Arrow extends Entity{
 		
 		Vector2 compVec = new Vector2(destination.x - getPosition().x, destination.y - getPosition().y);
         Vector2 normVec = compVec.nor();
-        Vector2 walkVec = normVec.scl(400 * delta);
+        Vector2 walkVec = normVec.scl(400 * delta * Gdx.graphics.getHeight() * 0.003f);
        
         if(walkVec.x < 0)
         {
