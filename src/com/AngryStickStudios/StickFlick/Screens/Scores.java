@@ -35,6 +35,7 @@ public class Scores implements Screen {
 	SpriteBatch batch;
 	TextButton backButton, creditsButton;
 	Sound buttonClick;
+	float SFXVolume;
 	
 	
 	public Scores(StickFlick game){
@@ -91,7 +92,7 @@ public class Scores implements Screen {
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -107,12 +108,13 @@ public class Scores implements Screen {
 
 	@Override
 	public void show() {
-		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas("data/Textures.atlas");
 		skin = new Skin();
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
+		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
+		SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
 	}
 
 	@Override

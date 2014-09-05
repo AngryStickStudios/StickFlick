@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Options implements Screen {
 	
@@ -34,6 +36,9 @@ public class Options implements Screen {
 	SpriteBatch batch;
 	TextButton backButton, creditsButton, leftyButton;
 	Sound buttonClick;
+	Label musicVolumeLabel, musicVolumeLabelPercent, SFXVolumeLabel, SFXVolumeLabelPercent;
+	Slider musicVolumeSlider, SFXVolumeSlider;
+	float SFXVolume;
 	
 	public Options(StickFlick game){
 		this.game = game;
@@ -69,30 +74,61 @@ public class Options implements Screen {
 		
 		// Sliders
 		// Music Slider
-		Label musicVolumeLabel = new Label("Music Volume", labelStyle);
+		musicVolumeLabel = new Label("Music Volume", labelStyle);
 		musicVolumeLabel.setX(Gdx.graphics.getWidth() * 0.25f);
 		musicVolumeLabel.setY(Gdx.graphics.getHeight() * 0.33f);
 		
-		Slider musicVolume = new Slider(1, 100, 1, false, slidStyle);
-		musicVolume.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		musicVolume.setX(Gdx.graphics.getWidth() * 0.5f);
-		musicVolume.setY(Gdx.graphics.getHeight() * 0.34f);
+		musicVolumeLabelPercent = new Label(Integer.toString(prefs.getInteger("musicVolume")) + "%", labelStyle);
+		musicVolumeLabelPercent.setX(Gdx.graphics.getWidth() * 0.75f);
+		musicVolumeLabelPercent.setY(Gdx.graphics.getHeight() * 0.33f);
+		
+		musicVolumeSlider = new Slider(1, 100, 1, false, slidStyle);
+		musicVolumeSlider.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		musicVolumeSlider.setX(Gdx.graphics.getWidth() * 0.5f);
+		musicVolumeSlider.setY(Gdx.graphics.getHeight() * 0.34f);
+		
+		//Listeners and setting in preferences
+		musicVolumeSlider.setValue(prefs.getInteger("musicVolume"));
+		musicVolumeSlider.addCaptureListener( new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				prefs.putInteger("musicVolume", (int) musicVolumeSlider.getValue());
+				prefs.flush();
+				updateVolumeLabels();
+			}
+		});
 		
 		stage.addActor(musicVolumeLabel);
-		stage.addActor(musicVolume);
+		stage.addActor(musicVolumeLabelPercent);
+		stage.addActor(musicVolumeSlider);
+		
 		
 		//SFX Slider
-		Label SFXVolumeLabel = new Label("SFX Volume", labelStyle);
+		SFXVolumeLabel = new Label("SFX Volume", labelStyle);
 		SFXVolumeLabel.setX(Gdx.graphics.getWidth() * 0.25f);
 		SFXVolumeLabel.setY(Gdx.graphics.getHeight() * 0.25f);
 		
-		Slider SFXVolume = new Slider(1, 100, 1, false, slidStyle);
-		SFXVolume.setWidth(Gdx.graphics.getWidth() * 0.2f);
-		SFXVolume.setX(Gdx.graphics.getWidth() * 0.5f);
-		SFXVolume.setY(Gdx.graphics.getHeight() * 0.26f);
+		SFXVolumeLabelPercent = new Label(Integer.toString(prefs.getInteger("SFXVolume")) + "%", labelStyle);
+		SFXVolumeLabelPercent.setX(Gdx.graphics.getWidth() * 0.75f);
+		SFXVolumeLabelPercent.setY(Gdx.graphics.getHeight() * 0.25f);
+		
+		SFXVolumeSlider = new Slider(1, 100, 1, false, slidStyle);
+		SFXVolumeSlider.setWidth(Gdx.graphics.getWidth() * 0.2f);
+		SFXVolumeSlider.setX(Gdx.graphics.getWidth() * 0.5f);
+		SFXVolumeSlider.setY(Gdx.graphics.getHeight() * 0.26f);
+		
+		//Listeners and setting in preferences
+		SFXVolumeSlider.setValue(prefs.getInteger("SFXVolume"));
+		SFXVolumeSlider.addCaptureListener( new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				prefs.putInteger("SFXVolume", (int) SFXVolumeSlider.getValue());
+				prefs.flush();
+				updateVolumeLabels();
+			}
+		});
 		
 		stage.addActor(SFXVolumeLabel);
-		stage.addActor(SFXVolume);
+		stage.addActor(SFXVolumeLabelPercent);
+		stage.addActor(SFXVolumeSlider);
 		
 		// BUTTON INITIATION
 		//Lefty Button
@@ -124,7 +160,7 @@ public class Options implements Screen {
 		creditsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -140,7 +176,7 @@ public class Options implements Screen {
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -156,7 +192,7 @@ public class Options implements Screen {
 		leftyButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);	
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -182,6 +218,9 @@ public class Options implements Screen {
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
+		
+		//Set Volumes
+		SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
 	}
 
 	@Override
@@ -209,5 +248,11 @@ public class Options implements Screen {
 		stage.dispose();
 		buttonClick.dispose();
 	}
+	
+    private void updateVolumeLabels()
+    {
+        musicVolumeLabelPercent.setText(Integer.toString(prefs.getInteger("musicVolume")) + "%");
+        SFXVolumeLabelPercent.setText(Integer.toString(prefs.getInteger("SFXVolume")) + "%");
+    }
 	
 }

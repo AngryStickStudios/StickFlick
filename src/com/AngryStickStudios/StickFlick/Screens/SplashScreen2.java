@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL10;
@@ -19,6 +20,8 @@ import com.AngryStickStudios.StickFlick.TweenAccessors.SpriteTween;
 
 public class SplashScreen2 implements Screen{
 
+	Preferences prefs = Gdx.app.getPreferences("Preferences");
+	
 	Texture splashTexture;
 	Sprite splashSprite;
 	SpriteBatch batch;
@@ -48,6 +51,10 @@ public class SplashScreen2 implements Screen{
 	@Override
 	public void show() {
 		swoosh = Gdx.audio.newMusic(Gdx.files.internal("data/sounds/splashSwoosh.mp3"));
+		
+		//Set Volumes
+		swoosh.setVolume(prefs.getInteger("SFXVolume") * 0.01f);
+		
 		swoosh.play();
 		
 		splashTexture = new Texture("data/SplashScreen2.png");
@@ -100,7 +107,9 @@ public class SplashScreen2 implements Screen{
 
 	@Override
 	public void dispose() {
-		
+		swoosh.dispose();
+		splashTexture.dispose();
+		batch.dispose();
 	}
 
 }

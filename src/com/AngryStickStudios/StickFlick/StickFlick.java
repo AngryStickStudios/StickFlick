@@ -6,14 +6,15 @@ import com.AngryStickStudios.StickFlick.Screens.SplashScreen;
 import com.badlogic.gdx.Game;
 
 public class StickFlick extends Game {
-
-	public static final String version = "0.12 Beta (Bug Fixes and Balancing)";
+	
+	public static final String version = "0.13 Beta (In game sound control)";
 	public static final String LOG = "StickFlick";
 	public AnimationLoader anims;
 	
 	@Override
 	public void create() {
 		anims = new AnimationLoader();
+		
 		setScreen(new SplashScreen(this));
 		//setScreen(new MainMenu(this));
 	}

@@ -18,8 +18,8 @@ public class Mage extends Entity{
 	protected Animation currentanim;
     protected TextureRegion currentframe;
     protected TextureRegionDrawable enemyDrawable;
-    float animationStateTime;
-    Sound orb_shot;
+    float animationStateTime, SFXVolume;
+   	Sound orb_shot;
     
     Image enemy;
 	
@@ -30,6 +30,7 @@ public class Mage extends Entity{
         mscale = 0.4f;
         
         orb_shot = Gdx.audio.newSound(Gdx.files.internal("data/sounds/mage_shoot.mp3"));
+        SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
 		
 		currentanim = anims.getAnim("mageright");
         currentframe = currentanim.getKeyFrame(animationStateTime, true);
@@ -77,7 +78,7 @@ public class Mage extends Entity{
 		{
 			if(lastShot > 1 && target != null && target.getIsAlive())
 			{
-				orb_shot.play(0.25f);
+				orb_shot.play(SFXVolume * 0.25f);
 				lastShot = 0;
 				firedShot = true;
 				animationStateTime = 0;

@@ -1,6 +1,7 @@
 package com.AngryStickStudios.StickFlick.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -24,6 +25,8 @@ import com.AngryStickStudios.StickFlick.Controller.TextButton2;
 
 public class MainMenu implements Screen{
 
+	Preferences prefs = Gdx.app.getPreferences("Preferences");
+	
 	StickFlick game;
 	Stage stage;
 	BitmapFont white;
@@ -33,7 +36,7 @@ public class MainMenu implements Screen{
 	TextButton2 playButton, storeButton, tutorialButton, optionsButton, scoreButton;
 	Music menuTheme;
 	Sound buttonClick;
-	float screenWidth, screenHeight;
+	float screenWidth, screenHeight, SFXVolume;
 	
 	public MainMenu(StickFlick game){
 		this.game = game;
@@ -44,6 +47,8 @@ public class MainMenu implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		System.out.println(prefs.getInteger("musicVolume"));
+		
 		stage.act(Gdx.graphics.getDeltaTime());
 	
 		batch.begin();
@@ -52,7 +57,7 @@ public class MainMenu implements Screen{
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize(int width, int height) {		
 		stage = new Stage(width, height, true);
 		stage.clear();
 		screenWidth = width;
@@ -99,7 +104,7 @@ public class MainMenu implements Screen{
 		playButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -117,7 +122,7 @@ public class MainMenu implements Screen{
 		storeButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -136,7 +141,7 @@ public class MainMenu implements Screen{
 		optionsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -154,7 +159,7 @@ public class MainMenu implements Screen{
 		scoreButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -175,6 +180,11 @@ public class MainMenu implements Screen{
 	public void show() {	
 		menuTheme = Gdx.audio.newMusic(Gdx.files.internal("data/sounds/menuTheme.mp3"));
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
+		
+		//Set Volumes
+		menuTheme.setVolume(prefs.getInteger("musicVolume") * 0.01f);
+		SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
+		
 		menuTheme.play();
 
 		batch = new SpriteBatch();

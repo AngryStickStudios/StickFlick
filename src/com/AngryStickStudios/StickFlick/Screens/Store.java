@@ -39,6 +39,7 @@ public class Store implements Screen{
 	StickFlick app;
 	Stage stage;
 	Sound purchase, buttonClick;
+	float SFXVolume;
 	
 	BitmapFont titleFont, descriptionFont, textFont, desTextFont, totalFont;
 
@@ -210,7 +211,7 @@ public class Store implements Screen{
 		buyButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -222,7 +223,7 @@ public class Store implements Screen{
 		backButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -238,7 +239,7 @@ public class Store implements Screen{
 		blizzardButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -254,7 +255,7 @@ public class Store implements Screen{
 		serfsButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -270,7 +271,7 @@ public class Store implements Screen{
 		bombCatapultButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -286,7 +287,7 @@ public class Store implements Screen{
 		fingerOfGodButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -302,7 +303,7 @@ public class Store implements Screen{
 		hornOfChampButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -319,7 +320,7 @@ public class Store implements Screen{
 		magesButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {	
@@ -336,7 +337,7 @@ public class Store implements Screen{
 		archersButton.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -365,6 +366,9 @@ public class Store implements Screen{
 		desTextFont = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		purchase = Gdx.audio.newSound(Gdx.files.internal("data/sounds/coins.mp3"));	
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
+		
+		//Set Volumes
+		SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
 	}
 
 	public void deselectPowerups(){
@@ -386,7 +390,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("mages", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			magesSelected = false;
 		}
 		
@@ -397,7 +401,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("archers", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			archersSelected = false;
 		}
 		
@@ -408,7 +412,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("bomb", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			bombCatapultSelected = false;
 		}
 		
@@ -419,7 +423,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("blizzard", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			blizzardSelected = false;
 		}
 		
@@ -430,7 +434,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("fingerOfGod", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			fingerOfGodSelected = false;
 		}
 		
@@ -441,7 +445,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("hornOfChamp", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			hornOfChampSelected = false;
 		}
 		
@@ -452,7 +456,7 @@ public class Store implements Screen{
 			prefs.flush();
 			prefs.putBoolean("serfs", true);
 			prefs.flush();
-			purchase.play();
+			purchase.play(SFXVolume);
 			serfsSelected = false;
 		}	
 	}
@@ -484,6 +488,7 @@ public class Store implements Screen{
 		desTextFont.dispose();
 		stage.dispose();
 		totalFont.dispose();
+		buttonClick.dispose();
 		purchase.dispose();
 		
 	}

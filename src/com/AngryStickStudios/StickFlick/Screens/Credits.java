@@ -35,6 +35,7 @@ public class Credits implements Screen {
 	SpriteBatch batch;
 	TextButton backButton, creditsButton;
 	Sound buttonClick;
+	float SFXVolume;
 	
 	
 	public Credits(StickFlick game){
@@ -123,7 +124,7 @@ public class Credits implements Screen {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
 				buttonClick.stop();
-				buttonClick.play();
+				buttonClick.play(SFXVolume);
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -146,6 +147,7 @@ public class Credits implements Screen {
 		skin.addRegions(atlas);
 		white = new BitmapFont(Gdx.files.internal("data/whiteFont.fnt"), false);
 		buttonClick = Gdx.audio.newSound(Gdx.files.internal("data/sounds/button2.mp3"));
+		SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
 	}
 
 	@Override
