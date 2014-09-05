@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.AngryStickStudios.StickFlick.StickFlick;
 import com.AngryStickStudios.StickFlick.Controller.Button2;
 import com.AngryStickStudios.StickFlick.Controller.GestureDetection;
@@ -804,7 +805,8 @@ public class Game implements Screen{
 		//DEATH MESSAGE
 		labelStyleDeath = new LabelStyle(white, Color.RED);
 		deathMessage = new Label("GAME OVER", labelStyleDeath);
-		deathMessage.setX(screenWidth * 0.5f - (deathMessage.getWidth() * screenWidth * 0.0008f) * 0.5f);
+		deathMessage.setX(screenWidth * 0.5f - deathMessage.getWidth() * 0.5f);
+		deathMessage.setAlignment(Align.center);
 		deathMessage.setY(screenHeight * 0.5f + deathMessage.getHeight() * 3);
 		deathMessage.setFontScale(width * 0.0008f);
 		deathStage.addActor(deathMessage);
@@ -812,7 +814,8 @@ public class Game implements Screen{
 		//FINAL SCORE`
 		labelStyleScore = new LabelStyle(white, Color.ORANGE);
 		finalScore = new Label("Score: 999", labelStyleScore);
-		finalScore.setX(screenWidth * 0.5f - (finalScore.getWidth() * screenWidth * 0.0005f) * 0.5f);
+		finalScore.setX(screenWidth * 0.5f - finalScore.getWidth() * 0.5f);
+		finalScore.setAlignment(Align.center);
 		finalScore.setY(screenHeight * 0.5f);
 		finalScore.setFontScale(width * 0.0005f);
 		deathStage.addActor(finalScore);
