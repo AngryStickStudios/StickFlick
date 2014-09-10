@@ -14,7 +14,7 @@ public class Archer extends Entity{
 	
 	Preferences prefs = Gdx.app.getPreferences("Preferences");
 	
-	float scale, mscale;
+	float scale;
 	float lastShot = 0;
 	boolean firedShot = false;
 	Entity target = null;
@@ -28,9 +28,6 @@ public class Archer extends Entity{
 	
 	public Archer(String name, int health, AnimationLoader anims, int posX, int posY){
 		super(name, health,anims);
-		
-		scale = 0.4f;
-        mscale = 0.4f;
         
         arrowShot= Gdx.audio.newSound(Gdx.files.internal("data/sounds/arrow_shot.mp3"));
         SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
@@ -43,6 +40,8 @@ public class Archer extends Entity{
 		enemy = new Image(enemyDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
+		
+		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 2000);
 		enemy.setScale(scale);
 	}
 	

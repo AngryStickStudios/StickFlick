@@ -329,7 +329,7 @@ public class Store implements Screen{
 				title = "Mages";
 				description = "Reduces all ability\ncooldowns by 5%.";
 				price = "Price:  400 coinage";
-				owned = "Owned: " + prefs.getBoolean("mages");
+				owned = "Owned: " + Integer.toString(prefs.getInteger("mages", 0)) + " (Max: 2)";
 			}
 		});
 		
@@ -346,7 +346,7 @@ public class Store implements Screen{
 				title = "Archers";
 				description = "Raw damage per\nsecond increase.";	
 				price = "Price:  500 coinage";
-				owned = "Owned: " + prefs.getBoolean("archers");
+				owned = "Owned: " + Integer.toString(prefs.getInteger("archers", 0)) + " (Max: 2)";
 			}
 		});
 		
@@ -383,23 +383,23 @@ public class Store implements Screen{
 	
 	public void buyPowerUps(){
 		
-		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected && !prefs.getBoolean("mages")){
+		if(magesPrice <= prefs.getLong("currency", 0) && magesSelected && prefs.getInteger("mages", 0) <= 2){
 			
 			long temp = prefs.getLong("currency", 0) - magesPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
-			prefs.putBoolean("mages", true);
+			prefs.putInteger("mages", prefs.getInteger("mages") + 1);
 			prefs.flush();
 			purchase.play(SFXVolume);
 			magesSelected = false;
 		}
 		
-		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected && !prefs.getBoolean("archers")){
+		if(archersPrice <= prefs.getLong("currency", 0) && archersSelected && prefs.getInteger("archers", 0) <= 2){
 			
 			long temp = prefs.getLong("currency", 0) - archersPrice;
 			prefs.putLong("currency", temp);
 			prefs.flush();
-			prefs.putBoolean("archers", true);
+			prefs.putInteger("archers", prefs.getInteger("archers") + 1);
 			prefs.flush();
 			purchase.play(SFXVolume);
 			archersSelected = false;

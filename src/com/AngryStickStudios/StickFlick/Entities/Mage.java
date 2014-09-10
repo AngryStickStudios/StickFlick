@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Mage extends Entity{
 	
-	float scale, mscale;
+	float scale;
 	float lastShot = 0;
 	boolean firedShot = false;
 	Entity target = null;
@@ -25,9 +25,6 @@ public class Mage extends Entity{
 	
 	public Mage(String name, int health, AnimationLoader anims, int posX, int posY){
 		super(name, health,anims);
-		
-		scale = 0.4f;
-        mscale = 0.4f;
         
         orb_shot = Gdx.audio.newSound(Gdx.files.internal("data/sounds/mage_shoot.mp3"));
         SFXVolume = prefs.getInteger("SFXVolume") * 0.01f;
@@ -40,6 +37,9 @@ public class Mage extends Entity{
 		enemy = new Image(enemyDrawable);
 		enemy.setX(posX);
 		enemy.setY(posY);
+		enemy.setScale(scale);
+		
+		scale = ((Gdx.graphics.getHeight() - getPosition().y) / 2000);
 		enemy.setScale(scale);
 	}
 	

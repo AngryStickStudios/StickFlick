@@ -69,7 +69,7 @@ public class Game implements Screen{
 	public static final int GAME_PAUSED = 1;
 	public static final int GAME_RUNNING = 0;
 	private int gameStatus = GAME_RUNNING;
-	private float timeTrack = 0;
+	private float timeTrack = 0, timeTrack2 = 0;
 	private int seconds = 0;
 	private int minutes = 0;
 	private String formattedTime = "0:00";
@@ -214,28 +214,34 @@ public class Game implements Screen{
 	    camera.update();
 	    sp = new ShapeRenderer();
 	    
-	    if(prefs.getBoolean("mages") || developerMode == true)
+	    if(prefs.getInteger("mages") > 0 || developerMode == true)
 		{
-			prefs.putBoolean("mages", false);
-			
-			Mage m1 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .2), (int) Math.round(screenHeight * .2));
-	    	Mage m2 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .75), (int) Math.round(screenHeight * .2));
+			if(prefs.getInteger("mages") == 1 || prefs.getInteger("mages") == 2){
+				Mage m1 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .2), (int) Math.round(screenHeight * .2));
+				friendlylist.add(m1);
+			}
+		
+			if(prefs.getInteger("mages") == 2){
+				Mage m2 = new Mage("mage", 100, anims, (int) Math.round(screenWidth * .75), (int) Math.round(screenHeight * .2));
+				friendlylist.add(m2);
+			}
 	    	
-	    	friendlylist.add(m1);
-	    	friendlylist.add(m2);
+	    	prefs.putInteger("mages", 0);
 		}
 		
-		if(prefs.getBoolean("archers") || developerMode == true)
+		if(prefs.getInteger("archers") > 0 || developerMode == true)
 		{
-			prefs.putBoolean("archers", false);
-			
-			Archer a1 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .3), (int) Math.round(screenHeight * .2));
-	    	Archer a2 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .65), (int) Math.round(screenHeight * .2));
+			if(prefs.getInteger("archers") == 1 || prefs.getInteger("archers") == 2){
+				Archer a1 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .3), (int) Math.round(screenHeight * .2));
+	    		friendlylist.add(a1);
+			}
+			if(prefs.getInteger("archers") == 2){
+				Archer a2 = new Archer("archer", 100, anims, (int) Math.round(screenWidth * .65), (int) Math.round(screenHeight * .2));
+				friendlylist.add(a2);
+			}
 	    	
+	    	prefs.putInteger("archers", 0);
 	    	
-	    	
-	    	friendlylist.add(a1);
-	    	friendlylist.add(a2);
 		}
 	}
 	
@@ -244,6 +250,8 @@ public class Game implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		timeTrack += Gdx.graphics.getDeltaTime();
+		timeTrack2 += Gdx.graphics.getDeltaTime();
 		
 		if(player.getIsAlive() == false){
 			if(bombUsed == true) prefs.putBoolean("bomb", false);
@@ -325,8 +333,9 @@ public class Game implements Screen{
 				{
 					friendlylist.get(i).Update(delta);
 					
-					if(enemyList.size() > 0 && (friendlylist.get(i).getTarget() == null || friendlylist.get(i).getTarget().getIsAlive() == false))
+					if(enemyList.size() > 0 && (timeTrack2 > 0.5f || friendlylist.get(i).getTarget() == null || friendlylist.get(i).getTarget().getIsAlive() == false))
 					{
+						timeTrack2 = 0;
 						friendlylist.get(i).setTarget(PriorityTarget2(friendlylist.get(i)));
 					}
 					
@@ -435,13 +444,14 @@ public class Game implements Screen{
 			
 			/* Drawing health bar and decreasing health when needed */
 			batch.end();
+			
 			sp.setProjectionMatrix(camera.combined);
 			sp.begin(ShapeType.Filled);
 			sp.setColor(Color.RED);
 				
-			float healthBarSize = screenWidth/2 * (player.getHealthCurrent()/player.getHealthMax());
-			sp.rect(screenWidth/4,screenHeight*.025f, healthBarSize, screenHeight/24);
+			sp.rect(screenWidth * 0.25f,screenHeight * 0.025f, (screenWidth * 0.5f) * (player.getHealthCurrent()/player.getHealthMax()), screenHeight * 0.04f);
 			sp.end();
+			
 			batch.begin();
 			
 			if(enemyGrabbed && !Gdx.input.isTouched())
@@ -450,7 +460,6 @@ public class Game implements Screen{
 				grabbed.Released(new Vector2(0,0));
 			}
 			
-			timeTrack += Gdx.graphics.getDeltaTime();
 			if (timeTrack >= 1f) {
 				
 				timeTrack = timeTrack - 1f;
@@ -592,7 +601,7 @@ public class Game implements Screen{
 		Entity lEnt = null;
 
 		for(int i = 0; i < enemyList.size(); i++) {
-			if(enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged() && !Targeted(enemyList.get(i))) {
+			if(enemyList.get(i).getIsAlive() && enemyList.get(i).getSplatting() == 0 && enemyList.get(i).getChanged()/* && !Targeted(enemyList.get(i))*/) {
 				
 				priority = (int) Math.sqrt(sqr(enemyList.get(i).getPosition().x - friend.getPosition().x) + sqr(enemyList.get(i).getPosition().y - friend.getPosition().y));
 				priority += enemyList.get(i).getGroundPosition().y;
@@ -612,15 +621,7 @@ public class Game implements Screen{
 				}
 			}
 		}
-		
-		if(MathUtils.randomBoolean())
-		{
-			return lEnt;
-		}
-		else
-		{
-			return null;
-		}
+		return lEnt;
 	}
 	
 	public Entity PriorityHeal(Entity curPriest)
@@ -691,6 +692,7 @@ public class Game implements Screen{
 		if(gameStatus == GAME_RUNNING) {
 			im = new InputMultiplexer(new GestureDetector(gd) , stage);
 			Gdx.input.setInputProcessor(im);
+			
 		} else if(gameStatus == GAME_PAUSED){
 			Gdx.input.setInputProcessor(pauseStage);
 		} else if(gameStatus == POWERUP_PAUSE){
